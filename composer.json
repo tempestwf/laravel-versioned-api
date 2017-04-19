@@ -28,7 +28,8 @@
     "tymon/jwt-auth": "0.5.*",
     "laravel-doctrine/extensions": "1.0.*",
     "gedmo/doctrine-extensions": "^2.4",
-    "beberlei/DoctrineExtensions": "^1.0"
+    "beberlei/DoctrineExtensions": "^1.0",
+    "laravel-doctrine/migrations": "1.0.*"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
