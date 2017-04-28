@@ -136,4 +136,14 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
     {
         return $this->organisations;
     }
+
+    /**
+     * @param ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[] $roles
+     * @return User
+     */
+    public function setRoles($roles):User
+    {
+        $this->roles = $roles;
+        return $this;
+    }
 }

@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping AS ORM;
 use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use LaravelDoctrine\ACL\Permissions\HasPermissions;
-use LaravelDoctrine\ACL\Permissions\Permission;
 use LaravelDoctrine\ACL\Mappings as ACL;
 
 /**
@@ -50,10 +49,10 @@ class Role implements RoleContract
     }
 
     /**
-     * @param mixed $permissions
+     * @param ArrayCollection $permissions
      * @return Role
      */
-    public function setPermissions(Permission $permissions):Role
+    public function setPermissions(ArrayCollection $permissions):Role
     {
         $this->permissions = $permissions;
         return $this;
@@ -65,5 +64,15 @@ class Role implements RoleContract
     public function getPermissions():ArrayCollection
     {
         return $this->permissions;
+    }
+
+    /**
+     * @param string $name
+     * @return Role
+     */
+    public function setName(String $name):Role
+    {
+        $this->name = $name;
+        return $this;
     }
 }
