@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
 	/** @var EntityManagerInterface $em */
-	private $em;
+	protected $em;
 	
 	/**
 	 * DatabaseSeeder constructor.
