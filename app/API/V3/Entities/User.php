@@ -2,6 +2,7 @@
 
 namespace App\API\V3\Entities;
 
+use App\Entities\Traits\Deletable;
 use App\Entities\User AS UserEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping AS ORM;
@@ -19,7 +20,7 @@ use LaravelDoctrine\ACL\Organisations\BelongsToOrganisation;
  */
 class User extends UserEntity implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract
 {
-	use HasRoles, HasPermissions, BelongsToOrganisation;
+	use HasRoles, HasPermissions, BelongsToOrganisation, Deletable;
 	
 	/**
 	 * @ORM\Column(name="name", type="string")

@@ -7,7 +7,7 @@ use LaravelDoctrine\ACL\Contracts\Organisation AS OrganisationContract;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V3\Repositories\OrganisationRepository")
- * @ORM\Table(name="team")
+ * @ORM\Table(name="organisations")
  */
 class Organisation implements OrganisationContract
 {

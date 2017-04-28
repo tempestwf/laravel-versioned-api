@@ -7,6 +7,7 @@ use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use LaravelDoctrine\ACL\Permissions\HasPermissions;
 use LaravelDoctrine\ACL\Permissions\Permission;
+use LaravelDoctrine\ACL\Mappings as ACL;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V3\Repositories\RoleRepository")
