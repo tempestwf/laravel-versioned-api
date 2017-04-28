@@ -1,5 +1,8 @@
 <?php
 
+use App\API\V3\Entities\Role;
+use App\API\V3\Entities\Organisation;
+
 return [
 
     /*
@@ -8,7 +11,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'roles'         => [
-        'entity' => App\Role::class,
+        'entity' => Role::class,
     ],
     /*
     |--------------------------------------------------------------------------
@@ -22,7 +25,8 @@ return [
     'permissions'   => [
         'driver' => 'config',
         'entity' => LaravelDoctrine\ACL\Permissions\Permission::class,
-        'list'   => [],
+        'list'   => [
+        ],
     ],
     /*
     |--------------------------------------------------------------------------
@@ -30,6 +34,6 @@ return [
     |--------------------------------------------------------------------------
     */
     'organisations' => [
-        'entity' => App\Organisation::class,
+        'entity' => Organisation::class,
     ],
 ];
