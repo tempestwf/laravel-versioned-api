@@ -51,7 +51,7 @@ class DoctrineAclSeeder extends DatabaseSeeder
         $superAdminRole->setName('super-admin');
 
         $baseUser = $this->em->getRepository(User::class)->find(1);
-        $baseUser->setRoles(new ArrayCollection($guestRole, $userRole, $adminRole, $superAdminRole));
+        $baseUser->setRoles(new ArrayCollection([$guestRole, $userRole, $adminRole, $superAdminRole]));
 
 
         $this->em->persist($authenticatePerm);
