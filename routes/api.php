@@ -60,7 +60,10 @@ $api->version(
 
 $api->version(
 	'V3',
-	[],
+    [
+        'middleware' => ['acl.middleware'],
+		'provider'   => 'V3',
+	],
 	function () use ($api)
 	{
 		$api->post('auth/authenticate', 'App\API\V3\Controllers\AuthController@authenticate');
@@ -71,7 +74,7 @@ $api->version(
 $api->version(
 	'V3',
 	[
-		'middleware' => 'api.auth',
+		'middleware' => ['api.auth'],
 		'provider'   => 'V3',
 	],
 	function () use ($api)
