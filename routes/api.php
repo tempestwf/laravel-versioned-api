@@ -61,7 +61,6 @@ $api->version(
 $api->version(
 	'V3',
     [
-        'middleware' => ['acl.middleware'],
 		'provider'   => 'V3',
 	],
 	function () use ($api)
@@ -74,8 +73,9 @@ $api->version(
 $api->version(
 	'V3',
 	[
-		'middleware' => ['api.auth'],
+		'middleware' => ['api.auth', 'acl'],
 		'provider'   => 'V3',
+        'permissions' => ['test']
 	],
 	function () use ($api)
 	{

@@ -3,6 +3,7 @@
 namespace App\API\V3\Entities;
 
 use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\ORM\PersistentCollection;
 use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use LaravelDoctrine\ACL\Permissions\HasPermissions;
@@ -59,9 +60,9 @@ class Role implements RoleContract
     }
 
     /**
-     * @return ArrayCollection
+     * @return PersistentCollection
      */
-    public function getPermissions():ArrayCollection
+    public function getPermissions():PersistentCollection
     {
         return $this->permissions;
     }

@@ -45,6 +45,6 @@ class Kernel extends HttpKernel
 		'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
 		'can'        => \Illuminate\Foundation\Http\Middleware\Authorize::class,
 		'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'acl.middleware' => \TempestTools\AclMiddleware\Http\Middleware\Acl::class
+        'acl' => \TempestTools\AclMiddleware\Http\Middleware\Acl::class
 	];
 }

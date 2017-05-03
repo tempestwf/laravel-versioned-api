@@ -6,6 +6,7 @@ use App\Entities\Traits\Deletable;
 use App\Entities\User AS UserEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\ORM\PersistentCollection;
 use LaravelDoctrine\ACL\Contracts\Permission;
 use LaravelDoctrine\ACL\Permissions\HasPermissions;
 use LaravelDoctrine\ACL\Roles\HasRoles;
@@ -104,9 +105,9 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
 	}
 
     /**
-     * @return ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
+     * @return PersistentCollection|\LaravelDoctrine\ACL\Contracts\Role[]
      */
-    public function getRoles(): ArrayCollection
+    public function getRoles(): PersistentCollection
     {
         return $this->roles;
     }
@@ -122,17 +123,17 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
     }
 
     /**
-     * @return ArrayCollection
+     * @return PersistentCollection
      */
-    public function getPermissions():ArrayCollection
+    public function getPermissions():PersistentCollection
     {
         return $this->permissions;
     }
 
     /**
-     * @return ArrayCollection|Organisation[]
+     * @return PersistentCollection|Organisation[]
      */
-    public function getOrganisations():ArrayCollection
+    public function getOrganisations():PersistentCollection
     {
         return $this->organisations;
     }
