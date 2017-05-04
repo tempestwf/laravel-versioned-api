@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\ORM\PersistentCollection;
 use LaravelDoctrine\ACL\Contracts\Permission;
-use LaravelDoctrine\ACL\Permissions\HasPermissions;
+use TempestTools\AclMiddleware\Permissions\HasPermissionsOptimized;
 use LaravelDoctrine\ACL\Roles\HasRoles;
 use LaravelDoctrine\ACL\Mappings as ACL;
 use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
@@ -21,7 +21,7 @@ use LaravelDoctrine\ACL\Organisations\BelongsToOrganisation;
  */
 class User extends UserEntity implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract
 {
-	use HasRoles, HasPermissions, BelongsToOrganisation, Deletable;
+	use HasRoles, HasPermissionsOptimized, BelongsToOrganisation, Deletable;
 	
 	/**
 	 * @ORM\Column(name="name", type="string")
@@ -77,7 +77,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
 	 *
 	 * @return User
 	 */
-	public function setName($name):User
+	public function setName(string $name):User
 	{
 		$this->name = $name;
 		
@@ -97,7 +97,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
 	 *
 	 * @return User
 	 */
-	public function setJob($job):User
+	public function setJob(string $job):User
 	{
 		$this->job = $job;
 		
@@ -142,7 +142,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
      * @param ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[] $roles
      * @return User
      */
-    public function setRoles($roles):User
+    public function setRoles(ArrayCollection $roles):User
     {
         $this->roles = $roles;
         return $this;

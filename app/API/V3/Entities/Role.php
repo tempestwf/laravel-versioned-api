@@ -71,7 +71,7 @@ class Role implements RoleContract
      * @param string $name
      * @return Role
      */
-    public function setName(String $name):Role
+    public function setName(string $name):Role
     {
         $this->name = $name;
         return $this;
