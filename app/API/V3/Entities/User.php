@@ -8,20 +8,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\ORM\PersistentCollection;
 use LaravelDoctrine\ACL\Contracts\Permission;
-use LaravelDoctrine\ACL\Permissions\HasPermissions;
 use LaravelDoctrine\ACL\Roles\HasRoles;
 use LaravelDoctrine\ACL\Mappings as ACL;
 use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
 use LaravelDoctrine\ACL\Contracts\HasPermissions as HasPermissionContract;
 use LaravelDoctrine\ACL\Contracts\BelongsToOrganisations as BelongsToOrganisationsContract;
 use LaravelDoctrine\ACL\Organisations\BelongsToOrganisation;
+use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTriat;
+
 /**
  * @ORM\Entity(repositoryClass="App\API\V3\Repositories\UserRepository")
  * @ORM\Table(name="users")
  */
 class User extends UserEntity implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract
 {
-	use HasPermissions, HasRoles, BelongsToOrganisation, Deletable;
+	use HasPermissionsOptimizedTriat, HasRoles, BelongsToOrganisation, Deletable;
 	
 	/**
 	 * @ORM\Column(name="name", type="string")
