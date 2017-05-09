@@ -14,15 +14,16 @@ use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
 use LaravelDoctrine\ACL\Contracts\HasPermissions as HasPermissionContract;
 use LaravelDoctrine\ACL\Contracts\BelongsToOrganisations as BelongsToOrganisationsContract;
 use LaravelDoctrine\ACL\Organisations\BelongsToOrganisation;
-use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTriat;
+use TempestTools\AclMiddleware\Contracts\HasId;
+use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V3\Repositories\UserRepository")
  * @ORM\Table(name="users")
  */
-class User extends UserEntity implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract
+class User extends UserEntity implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract, HasId
 {
-	use HasPermissionsOptimizedTriat, HasRoles, BelongsToOrganisation, Deletable;
+	use HasPermissionsOptimizedTrait, HasRoles, BelongsToOrganisation, Deletable;
 	
 	/**
 	 * @ORM\Column(name="name", type="string")
