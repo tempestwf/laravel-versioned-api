@@ -43,7 +43,7 @@ class Organisation implements OrganisationContract
      * @param string $name
      * @return Organisation
      */
-    public function setName(string $name)
+    public function setName(string $name): Organisation
     {
         $this->name = $name;
         return $this;
