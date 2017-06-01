@@ -16,14 +16,16 @@ use LaravelDoctrine\ACL\Contracts\BelongsToOrganisations as BelongsToOrganisatio
 use LaravelDoctrine\ACL\Organisations\BelongsToOrganisation;
 use TempestTools\AclMiddleware\Contracts\HasId;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
+use TempestTools\Common\Contracts\Extractable;
+use TempestTools\Common\Utility\ExtractorOptionsTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V3\Repositories\UserRepository")
  * @ORM\Table(name="users")
  */
-class User extends UserEntity implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract, HasId
+class User extends UserEntity implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract, HasId, Extractable
 {
-	use HasPermissionsOptimizedTrait, HasRoles, BelongsToOrganisation, Deletable;
+	use HasPermissionsOptimizedTrait, HasRoles, BelongsToOrganisation, Deletable, ExtractorOptionsTrait;
 	
 	/**
 	 * @ORM\Column(name="name", type="string")
@@ -65,6 +67,20 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
      * @var Organisation[]
      */
     protected $organisations;
+
+    public function extractValues() : array
+    {
+        return [
+            'userEntity' => [
+                'id'=>$this->getId(),
+                'name'=>$this->getName(),
+                'job'=>$this->getJob(),
+                'password'=>$this->getPassword(),
+                'email'=>$this->getEmail(),
+                'timeDeleted'=>$this->getTimeDeleted()
+            ]
+        ];
+    }
 	
 	/**
 	 * @return string
