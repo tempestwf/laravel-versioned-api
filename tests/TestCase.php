@@ -7,7 +7,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      *
      * @var string
      */
-    protected $baseUrl = 'http://tempest-tools-skeleton.app';
+    protected $baseUrl = 'http://tempest-tools-skeleton.app/';
 
     /**
      * Creates the application.
