@@ -1,5 +1,6 @@
 <?php
 
+use App\API\V3\Entities\User;
 use TempestTools\Common\Helper\ArrayHelper;
 
 class ArrayHelperTest extends TestCase
@@ -23,10 +24,25 @@ class ArrayHelperTest extends TestCase
         $this->assertSame($result4['goGetIt'], '?:one:retrieve');
         $this->assertSame($result4['retrieve'], 'foo');
         $this->assertSame($result4['extended'], [':two', ':one', ':base', ':four']);
-
-
     }
 
+    /**
+     * Test extraction works
+     */
+    public function testExtraction() {
+        $arrayHelper = new ArrayHelper();
+        $user = new User();
+        $user->setEmail('bobs@youruncle.com');
+        $arrayHelper->extract([$user]);
+        $array = $arrayHelper->getArray();
+
+        $this->assertSame($array['userEntity']['email'], 'bobs@youruncle.com');
+    }
+
+    /**
+     * Get a test array object to work with
+     * @return ArrayObject
+     */
     protected function getTestArray():ArrayObject {
         return new ArrayObject([
            'base'=> [

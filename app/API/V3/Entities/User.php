@@ -85,7 +85,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
 	/**
 	 * @return string
 	 */
-	public function getName():String
+	public function getName():?String
 	{
 		return $this->name;
 	}
@@ -105,7 +105,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
 	/**
 	 * @return string
 	 */
-	public function getJob():String
+	public function getJob():?String
 	{
 		return $this->job;
 	}
@@ -125,7 +125,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
     /**
      * @return PersistentCollection|\LaravelDoctrine\ACL\Contracts\Role[]
      */
-    public function getRoles(): PersistentCollection
+    public function getRoles(): ?PersistentCollection
     {
         return $this->roles;
     }
@@ -143,7 +143,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
     /**
      * @return PersistentCollection
      */
-    public function getPermissions():PersistentCollection
+    public function getPermissions():?PersistentCollection
     {
         return $this->permissions;
     }
@@ -151,7 +151,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
     /**
      * @return PersistentCollection|Organisation[]
      */
-    public function getOrganisations():PersistentCollection
+    public function getOrganisations():?PersistentCollection
     {
         return $this->organisations;
     }
