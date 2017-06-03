@@ -7,10 +7,10 @@ use App\API\V1\Entities\User;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller as BaseController;
+use TempestTools\Common\Laravel\Controller\BaseController;
 
 use App;
-use JWTAuth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class APIController extends BaseController
 {
