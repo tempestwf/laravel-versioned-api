@@ -1,12 +1,12 @@
 <?php
 
-namespace App\API\V3\Entities;
+namespace App\API\V1\Entities;
 
 use Doctrine\ORM\Mapping AS ORM;
 use LaravelDoctrine\ACL\Contracts\Organisation AS OrganisationContract;
 
 /**
- * @ORM\Entity(repositoryClass="App\API\V3\Repositories\OrganisationRepository")
+ * @ORM\Entity(repositoryClass="App\API\V1\Repositories\OrganisationRepository")
  * @ORM\Table(name="organisations")
  */
 class Organisation implements OrganisationContract

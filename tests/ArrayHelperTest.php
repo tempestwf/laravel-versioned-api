@@ -1,6 +1,6 @@
 <?php
 
-use App\API\V3\Entities\User;
+use App\API\V1\Entities\User;
 use TempestTools\Common\Helper\ArrayHelper;
 
 class ArrayHelperTest extends TestCase

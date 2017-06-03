@@ -1,6 +1,6 @@
 <?php
 
-namespace App\API\V3\Entities;
+namespace App\API\V1\Entities;
 
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -10,7 +10,7 @@ use LaravelDoctrine\ACL\Permissions\HasPermissions;
 use LaravelDoctrine\ACL\Mappings as ACL;
 
 /**
- * @ORM\Entity(repositoryClass="App\API\V3\Repositories\RoleRepository")
+ * @ORM\Entity(repositoryClass="App\API\V1\Repositories\RoleRepository")
  * @ORM\Table(name="roles")
  */
 class Role implements RoleContract

@@ -1,7 +1,7 @@
 <?php
 
-use App\API\V3\Entities\Role;
-use App\API\V3\Entities\Organisation;
+use App\API\V1\Entities\Role;
+use App\API\V1\Entities\Organisation;
 
 return [
 
