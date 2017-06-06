@@ -50,6 +50,7 @@ class AclMiddlewareTest extends TestCase
 
             $em->flush();
 
+
             $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => $user->getPassword()]);
             $result = $response->decodeResponseJson();
 
