@@ -39,9 +39,6 @@ class DoctrineAclSeeder extends DatabaseSeeder
         $refreshPerm = new Permission('auth/refresh:GET');
         $mePerm = new Permission('auth/me:GET');
 
-        $guestRole = new Role();
-        $guestRole->setName('guest');
-        $guestRole->setPermissions(new ArrayCollection([$authenticatePerm]));
         $userRole = new Role();
         $userRole->setName('user');
         $userRole->setPermissions(new ArrayCollection([$refreshPerm, $mePerm]));
@@ -51,14 +48,13 @@ class DoctrineAclSeeder extends DatabaseSeeder
         $superAdminRole->setName('super-admin');
 
         $baseUser = $this->em->getRepository(User::class)->find(1);
-        $baseUser->setRoles(new ArrayCollection([$guestRole, $userRole, $adminRole, $superAdminRole]));
+        $baseUser->setRoles(new ArrayCollection([$userRole, $adminRole, $superAdminRole]));
 
 
         $this->em->persist($authenticatePerm);
         $this->em->persist($refreshPerm);
         $this->em->persist($mePerm);
 
-        $this->em->persist($guestRole);
         $this->em->persist($userRole);
         $this->em->persist($adminRole);
         $this->em->persist($superAdminRole);

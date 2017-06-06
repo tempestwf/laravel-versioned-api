@@ -165,4 +165,22 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
         $this->roles = $roles;
         return $this;
     }
+
+    /**
+     * @param string $address
+     * @return User
+     */
+    public function setAddress(string $address): User
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
 }
