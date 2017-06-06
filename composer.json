@@ -1,6 +1,6 @@
 {
-  "name": "mitchdav/laravel-versioned-api",
-  "description": "A basic starter skeleton for working with versioned APIs using Laravel 5.3, Doctrine 2, Dingo 1.0 and JWT 0.5.",
+  "name": "tempest-tools/tempest-tools-skeleton",
+  "description": "A fork of: mitchdav/laravel-versioned-api. This fork is designed by a one stop shop for creating apis. It leverages many other 3rd party libraries and other tempest tools components.",
   "keywords": [
     "framework",
     "laravel",
@@ -21,7 +21,7 @@
     }
   ],
   "require": {
-    "php": ">=5.6.4",
+    "php": ">=7.1.0",
     "laravel/framework": "5.3.*",
     "laravel-doctrine/orm": "1.2.*",
     "dingo/api": "1.0.x@dev",
