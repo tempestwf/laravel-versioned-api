@@ -42,9 +42,6 @@ class AclMiddlewareTest extends TestCase
             $repo = $this->em->getRepository(Role::class);
             $userRole = $repo->findOneBy(['name' => 'user']);
 
-            //$userRole = new Role();
-            //$userRole->setName('user');
-
             $user = $this->makeUser();
 
             $user->setRoles(new ArrayCollection([$userRole]));
@@ -87,10 +84,6 @@ class AclMiddlewareTest extends TestCase
         $conn->beginTransaction();
         try {
             $repo = $this->em->getRepository(Role::class);
-            $userRole = $repo->findOneBy(['name' => 'user']);
-
-            //$userRole = new Role();
-            //$userRole->setName('user');
 
             $user = $this->makeUser();
 
