@@ -12,12 +12,28 @@ class AclMiddlewareTest extends TestCase
     use MakeEmTrait;
 
     /**
-     * Test that acl middle ware works
+     * @return User
+     */
+    protected function makeUser(): User
+    {
+        $generator = Factory::create();
+        $user = new User();
+        $user
+            ->setEmail($generator->safeEmail)
+            ->setPassword('password')
+            ->setName($generator->name)
+            ->setJob($generator->jobTitle)
+            ->setAddress($generator->address);
+        return $user;
+    }
+
+    /**
+     * Test that acl middle ware works in allowing some one to access an end point
      *
      * @return void
      * @throws Exception
      */
-    public function testAclMiddleware()
+    public function testAclMiddlewareAllows()
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -29,15 +45,8 @@ class AclMiddlewareTest extends TestCase
             //$userRole = new Role();
             //$userRole->setName('user');
 
-            $generator = Factory::create();
-            $user = new User();
+            $user = $this->makeUser();
 
-            $user
-                ->setEmail($generator->safeEmail)
-                ->setPassword('password')
-                ->setName($generator->name)
-                ->setJob($generator->jobTitle)
-                ->setAddress($generator->address);
             $user->setRoles(new ArrayCollection([$userRole]));
 
             $em->persist($user);
@@ -51,12 +60,58 @@ class AclMiddlewareTest extends TestCase
             // This would not work with out storing to the db and then removing it after
             $conn->commit();
             $this->refreshApplication();
-
+            $conn->beginTransaction();
             $response = $this->json('GET', '/auth/me', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->assertEquals($result['email'], $user->getEmail());
             $em->remove($user);
             $em->flush();
+            $conn->commit();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * Test that acl middle ware works in allowing some one to access an end point
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAclMiddlewareDenies()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $repo = $this->em->getRepository(Role::class);
+            $userRole = $repo->findOneBy(['name' => 'user']);
+
+            //$userRole = new Role();
+            //$userRole->setName('user');
+
+            $user = $this->makeUser();
+
+            $em->persist($user);
+
+            $em->flush();
+
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => $user->getPassword()]);
+            $result = $response->decodeResponseJson();
+
+            $token = $result['token'];
+            // This would not work with out storing to the db and then removing it after
+            $conn->commit();
+            $this->refreshApplication();
+            $conn->beginTransaction();
+            $response = $this->json('GET', '/auth/me', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+
+            $response->assertResponseStatus(403);
+            $em->remove($user);
+            $em->flush();
+            $conn->commit();
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
