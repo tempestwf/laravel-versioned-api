@@ -1,0 +1,6 @@
+[submodule "packages/tempesttools/acl-middleware"]
+	path = packages/tempesttools/acl-middleware
+	url = https://tempestwf@github.com/tempestwf/tempest-tools-acl-middleware.git
+[submodule "packages/tempesttools/common"]
+	path = packages/tempesttools/common
+	url = https://tempestwf@github.com/tempestwf/tempest-tools-common.git

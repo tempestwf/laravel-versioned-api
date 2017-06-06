@@ -12,11 +12,17 @@
 */
 
 /** @var Dingo\Api\Routing\Router $api */
+use TempestTools\AclMiddleware\Constants\PermissionsTemplates;
+
 $api = app('Dingo\Api\Routing\Router');
+
+
 
 $api->version(
 	'V1',
-	[],
+    [
+		'provider'   => 'V1',
+	],
 	function () use ($api)
 	{
 		$api->post('auth/authenticate', 'App\API\V1\Controllers\AuthController@authenticate');
@@ -27,55 +33,12 @@ $api->version(
 $api->version(
 	'V1',
 	[
-		'middleware' => 'api.auth',
+		'middleware' => ['api.auth', 'acl'],
 		'provider'   => 'V1',
+        'permissions' => [PermissionsTemplates::URI_AND_REQUEST_METHOD]
 	],
 	function () use ($api)
 	{
 		$api->get('auth/me', 'App\API\V1\Controllers\UserController@me');
-	}
-);
-
-$api->version(
-	'V2',
-	[],
-	function () use ($api)
-	{
-		$api->post('auth/authenticate', 'App\API\V2\Controllers\AuthController@authenticate');
-		$api->get('auth/refresh', 'App\API\V2\Controllers\AuthController@refresh');
-	}
-);
-
-$api->version(
-	'V2',
-	[
-		'middleware' => 'api.auth',
-		'provider'   => 'V2',
-	],
-	function () use ($api)
-	{
-		$api->get('auth/me', 'App\API\V2\Controllers\UserController@me');
-	}
-);
-
-$api->version(
-	'V3',
-	[],
-	function () use ($api)
-	{
-		$api->post('auth/authenticate', 'App\API\V3\Controllers\AuthController@authenticate');
-		$api->get('auth/refresh', 'App\API\V3\Controllers\AuthController@refresh');
-	}
-);
-
-$api->version(
-	'V3',
-	[
-		'middleware' => 'api.auth',
-		'provider'   => 'V3',
-	],
-	function () use ($api)
-	{
-		$api->get('auth/me', 'App\API\V3\Controllers\UserController@me');
 	}
 );
