@@ -35,7 +35,8 @@ class DatabaseSeeder extends Seeder
 			->setEmail($generator->safeEmail)
 			->setPassword('password')
 			->setName($generator->name)
-			->setJob($generator->jobTitle);
+			->setJob($generator->jobTitle)
+            ->setAddress($generator->address);
 		
 		$this->em->persist($user);
 		
