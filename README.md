@@ -33,17 +33,17 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
 
 ## What’s currently included in v1.0.0 (1st Party)
 1. https://github.com/tempestwf/tempest-tools-common
-a. Contains common libraries used by other Tempest Tools packages.
-2. https://github.com/tempestwf/tempest-tools-skeleton
-a. Contains easily configurable middleware that can be applied to any route restrict access to it based on a templating system that allows developers to easily define which permissions (stored in the database VIA;  https://packagist.org/packages/laravel-doctrine/acl) are required to access it.
+  a. Contains common libraries used by other Tempest Tools packages.
+2. https://github.com/tempestwf/tempest-tools-acl-middleware
+  a. Contains easily configurable middleware that can be applied to any route restrict access to it based on a templating system that allows developers to easily define which permissions (stored in the database VIA;  https://packagist.org/packages/laravel-doctrine/acl) are required to access it.
 
 ## What’s currently in development
 1. Tempest Tools CRUD
-a. The fastest, most secure, and extendable way to write RESTful APIs
+  a. The fastest, most secure, and extendable way to write RESTful APIs
 2. Tempest Tools Cache Tagging System
-a. Tag cache items based on the templating system from Tempest Tools Common ArrayHelper. Apply tags to cache in distributed cache environments that don’t commonly support it.
+  a. Tag cache items based on the templating system from Tempest Tools Common ArrayHelper. Apply tags to cache in distributed cache environments that don’t commonly support it.
 3. User management system
-a. A user management system based on Tempest Tools CRUD
+  a. A user management system based on Tempest Tools CRUD
 
 ## What’s planned:
 1. Improved error handling and logging.
@@ -80,7 +80,7 @@ You have two options to get the Skeleton setup:
 
 This will setup the project's dependencies, however you will still need to setup the database. You must first create a MySQL database, and then store its details in the .env file like so:
 
-	DB_DATABASE=mydatabase
+	    DB_DATABASE=mydatabase
     	DB_USERNAME=root
     	DB_PASSWORD=
 
