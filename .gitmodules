@@ -4,3 +4,7 @@
 [submodule "packages/tempesttools/common"]
 	path = packages/tempesttools/common
 	url = https://tempestwf@github.com/tempestwf/tempest-tools-common.git
+[submodule "packages/tempesttools/crud"]
+        path = packages/tempesttools/crud
+        url = https://tempestwf@github.com/tempestwf/tempest-tools-crud.git
+
