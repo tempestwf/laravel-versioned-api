@@ -46,7 +46,8 @@
     "psr-4": {
       "App\\": "app/",
       "TempestTools\\AclMiddleware\\": "packages/tempesttools/acl-middleware/src",
-      "TempestTools\\Common\\": "packages/tempesttools/common/src"
+      "TempestTools\\Common\\": "packages/tempesttools/common/src",
+      "TempestTools\\Crud\\": "packages/tempesttools/crud/src"
     },
     "files": [
       "app/helpers.php"
