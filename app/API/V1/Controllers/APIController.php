@@ -26,7 +26,6 @@ class APIController extends BaseController
 	 */
 	public function getUser()
 	{
-	    $this->validate();
 		try
 		{
 			if(($user = JWTAuth::parseToken()->authenticate()) == FALSE)
