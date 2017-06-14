@@ -60,7 +60,7 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
     /**
      * @ACL\HasPermissions
      */
-    public $permissions;
+    protected $permissions;
 
     /**
      * @ACL\BelongsToOrganisations
