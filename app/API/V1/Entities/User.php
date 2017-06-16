@@ -3,7 +3,6 @@
 namespace App\API\V1\Entities;
 
 use App\Entities\Traits\Deletable;
-use App\Entities\User AS UserEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -18,38 +17,48 @@ use TempestTools\AclMiddleware\Contracts\HasId;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Contracts\Extractable;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use App\Entities\Traits\Authenticatable;
+use TempestTools\Crud\Laravel\EntityAbstract;
+
+/** @noinspection LongInheritanceChainInspection */
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\UserRepository")
  * @ORM\Table(name="users")
  */
-class User extends UserEntity implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract, HasId, Extractable
+class User extends EntityAbstract implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract, HasId, Extractable, AuthenticatableContract
 {
-	use HasPermissionsOptimizedTrait, HasRoles, BelongsToOrganisation, Deletable, ExtractorOptionsTrait;
+    use Authenticatable, HasPermissionsOptimizedTrait, HasRoles, BelongsToOrganisation, Deletable, ExtractorOptionsTrait;
 	
 	/**
-	 * @ORM\Column(name="name", type="string")
+	 * @ORM\Column(type="string", nullable=true, name="name")
 	 * @var string $name
 	 */
 	protected $name;
 
     /**
-     * @ORM\Column(name="email", type="string")
-     * @var string $name
-     */
-    protected $email;
-
-    /**
-     * @ORM\Column(name="address", type="string")
+     * @ORM\Column(type="string", nullable=true, name="address")
      * @var string $name
      */
     protected $address;
 
 	/**
-	 * @ORM\Column(name="job", type="string")
+	 * @ORM\Column(type="string", nullable=true, name="job")
 	 * @var string $job
 	 */
 	protected $job;
+
+	/**
+     * ArrayCollection|App\API\V1\Entities\Album[]
+	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Album", inversedBy="user")
+	 * @ORM\JoinTable(
+	 *     name="AlbumToUser",
+	 *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)},
+	 *     inverseJoinColumns={@ORM\JoinColumn(name="album_id", referencedColumnName="id", nullable=false)}
+	 * )
+	 */
+	protected $albums;
 
     /**
      * @ACL\HasRoles()
@@ -67,6 +76,46 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
      * @var Organisation[]
      */
     protected $organisations;
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer", name="id")
+     * @var int $id
+     */
+    public $id;
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->albums = new ArrayCollection();
+        $this->roles = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
+        $this->organisations = new ArrayCollection();
+        parent::__construct();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId():int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return User
+     */
+    public function setId($id):User
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     public function extractValues() : array
     {
@@ -141,17 +190,17 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
     }
 
     /**
-     * @return PersistentCollection
+     * @return ArrayCollection|PersistentCollection|Permission[]
      */
-    public function getPermissions():?PersistentCollection
+    public function getPermissions()
     {
         return $this->permissions;
     }
 
     /**
-     * @return PersistentCollection|Organisation[]
+     * @return ArrayCollection|PersistentCollection|Organisation[]
      */
-    public function getOrganisations():?PersistentCollection
+    public function getOrganisations()
     {
         return $this->organisations;
     }
@@ -182,5 +231,31 @@ class User extends UserEntity implements HasRolesContract, HasPermissionContract
     public function getAddress(): string
     {
         return $this->address;
+    }
+
+    /**
+     * @return ArrayCollection|Album[]
+     */
+    public function getAlbums()
+    {
+        return $this->albums;
+    }
+
+    /**
+     * @param Album $album
+     */
+    public function addAlbum(Album $album)
+    {
+        $album->addUser($this);
+        $this->albums[] = $album;
+    }
+
+    /**
+     * @param Album $album
+     */
+    public function removeAlbum(Album $album)
+    {
+        $album->removeUser($this);
+        $this->albums->removeElement($album);
     }
 }
