@@ -53,19 +53,26 @@ class Album extends EntityAbstract
 
     /**
      * @param User $user
+     * @param bool $preventLoop
      */
-    public function addUser(User $user)
+    public function addUser(User $user, bool $preventLoop = false)
     {
-        $user->addAlbum($this);
+        if ($preventLoop === false) {
+            $user->addAlbum($this, true);
+        }
+
         $this->users[] = $user;
     }
 
     /**
      * @param User $user
+     * @param bool $preventLoop
      */
-    public function removeUser(User $user)
+    public function removeUser(User $user, bool $preventLoop = false)
     {
-        $user->removeAlbum($this);
+        if ($preventLoop === false) {
+            $user->removeAlbum($this, true);
+        }
         $this->users->removeElement($user);
     }
 

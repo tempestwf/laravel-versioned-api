@@ -243,19 +243,27 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
 
     /**
      * @param Album $album
+     * @param bool $preventLoop
      */
-    public function addAlbum(Album $album)
+    public function addAlbum(Album $album, bool $preventLoop = false)
     {
-        $album->addUser($this);
+        if ($preventLoop === false) {
+            $album->addUser($this, true);
+        }
+
         $this->albums[] = $album;
     }
 
     /**
      * @param Album $album
+     * @param bool $preventLoop
      */
-    public function removeAlbum(Album $album)
+    public function removeAlbum(Album $album, bool $preventLoop = false)
     {
-        $album->removeUser($this);
+        if ($preventLoop === false) {
+            $album->removeUser($this, true);
+        }
+
         $this->albums->removeElement($album);
     }
 }
