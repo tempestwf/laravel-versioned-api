@@ -26,7 +26,7 @@ class Artist extends EntityAbstract
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\API\V1\Entities\Album", mappedBy="artist", cascade={"persist","remove"})
+     * @ORM\OneToMany(targetEntity="App\API\V1\Entities\Album", mappedBy="artist", cascade={"persist"})
      */
     private $albums;
 

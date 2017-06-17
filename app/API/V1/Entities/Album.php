@@ -31,13 +31,14 @@ class Album extends EntityAbstract
     private $releaseDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\API\V1\Entities\Artist", inversedBy="album", cascade={"persist","remove"})
-     * @ORM\JoinColumn(name="artist_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="App\API\V1\Entities\Artist", inversedBy="albums", cascade={"persist"})
+     * @ORM\JoinColumn(name="artist_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $artist;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", mappedBy="album")
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", mappedBy="albums")
+     * 
      */
     private $users;
 

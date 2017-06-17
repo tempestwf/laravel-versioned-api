@@ -29,15 +29,16 @@
         <attribute name="side-owning">
           <attribute name="cascade">
             <attribute name="cascade-persist">true</attribute>
-            <attribute name="cascade-remove">true</attribute>
+            <attribute name="cascade-remove">false</attribute>
           </attribute>
         </attribute>
         <attribute name="side-inverse">
           <attribute name="cascade">
             <attribute name="cascade-persist">true</attribute>
-            <attribute name="cascade-remove">true</attribute>
+            <attribute name="cascade-remove">false</attribute>
           </attribute>
         </attribute>
+        <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <entity name="\App\API\V1\Entities\Artist" local-name="Artist" namespace="\App\API\V1\Entities" uuid="e33edf88-b81b-4067-b273-3bb63155408e">
@@ -128,8 +129,14 @@
       <field name="id" type="integer" required="true" unique="true" primary="true" uuid="2c640704-6292-486d-84a9-3fa63f5486ed"/>
     </entity>
     <many-to-many mn-entity="\App\API\V1\Entities\AlbumToUser" caption="Album to User" uuid="bf0e11b6-da69-4d0d-b7ae-4ccbd347718b">
-      <many-to-many-entity name="\App\API\V1\Entities\User" owning-side="true" alias="user" uuid="5f0fe318-29a2-418a-974d-f34759534ef1">
+      <many-to-many-entity name="\App\API\V1\Entities\User" owning-side="true" alias="users" uuid="5f0fe318-29a2-418a-974d-f34759534ef1">
         <many-to-many-field from="user_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-detach">false</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+        </orm-attributes>
       </many-to-many-entity>
       <many-to-many-entity name="\App\API\V1\Entities\Album" owning-side="false" alias="albums" uuid="f770372a-3366-4658-9a7d-02893a3b9a46">
         <many-to-many-field from="album_id" to="id"/>
