@@ -9,7 +9,7 @@ use TempestTools\Crud\Laravel\EntityAbstract;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\AlbumRepository")
- * @ORM\Table(indexes={@ORM\Index(name="name_idx", columns={"name"}),@ORM\Index(name="releaseDate_idx", columns={"releaseDate"})})
+ * @ORM\Table(indexes={@ORM\Index(name="name_idx", columns={"name"}),@ORM\Index(name="releaseDate_idx", columns={"release_date"})})
  */
 class Album extends EntityAbstract
 {
@@ -26,7 +26,7 @@ class Album extends EntityAbstract
     private $name;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="release_date", type="datetime", nullable=true)
      */
     private $releaseDate;
 
