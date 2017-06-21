@@ -49,18 +49,18 @@ class AclMiddlewareTest extends TestCase
 
             $em->persist($user);
 
-            //$em->flush();
+            $em->flush();
 
-            //$response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => $user->getPassword()]);
-            //$result = $response->decodeResponseJson();
-            $auth = App::make(JWTAuth::class);
-            $result = $auth->attempt(['email' => $user->getEmail(), 'password' => $user->getPassword()]);
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => $user->getPassword()]);
+            $result = $response->decodeResponseJson();
+            //$auth = App::make(JWTAuth::class);
+            //$result = $auth->attempt(['email' => $user->getEmail(), 'password' => $user->getPassword()]);
 
             $token = $result['token'];
             // This would not work with out storing to the db and then removing it after
-            //$conn->commit();
-            //$this->refreshApplication();
-            //$conn->beginTransaction();
+            $conn->commit();
+            $this->refreshApplication();
+            $conn->beginTransaction();
             $response = $this->json('GET', '/auth/me', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->assertEquals($result['email'], $user->getEmail());

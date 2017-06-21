@@ -2,13 +2,13 @@
 
 namespace App\Transformers;
 
-use App\Entities\Entity;
 use Doctrine\Common\Proxy\Proxy;
 use League\Fractal\TransformerAbstract;
+use TempestTools\Crud\Laravel\EntityAbstract;
 
 class Transformer extends TransformerAbstract
 {
-	public function verifyItem(Entity $item)
+	public function verifyItem(EntityAbstract $item)
 	{
 		if($item instanceof Proxy)
 		{
