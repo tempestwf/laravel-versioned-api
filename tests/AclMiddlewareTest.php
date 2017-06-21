@@ -5,8 +5,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Faker\Factory;
 use App\API\V1\Entities\User;
 use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
-use Tymon\JWTAuth\JWTAuth;
-
 
 class AclMiddlewareTest extends TestCase
 {
