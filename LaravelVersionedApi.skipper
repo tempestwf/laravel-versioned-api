@@ -1,46 +1,6 @@
 <?xml version="1.0"?>
 <skipper version="3.2.10.1370" mvc="Symfony3" orm="Doctrine2" name="Laravel-versioned-api" uuid="3f0a34a9-0654-4157-838f-c2267ab6d16a">
   <module name="\app/API/V1/Entities" local-name="app/API/V1/Entities" namespace="\App\API\V1\Entities" local-namespace="\App\API\V1\Entities" export-format="Doctrine2Php" export-path="app/API/V1/Entities" uuid="4c2bc012-cb72-4b02-93df-d1bf00d5807b">
-    <entity name="\App\API\V1\Entities\Album" local-name="Album" namespace="\App\API\V1\Entities" description="List of albums owned by a user" uuid="b9413c05-f48a-45b6-9cdb-af25b6b72f2d">
-      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="7eb3f52e-9281-46b4-8ecc-795c37a28552">
-        <orm-attributes>
-          <attribute name="generator">
-            <attribute name="strategy">AUTO</attribute>
-          </attribute>
-        </orm-attributes>
-      </field>
-      <field name="name" type="string" uuid="cbc22433-5601-455d-87a8-71eba7af5417"/>
-      <field name="releaseDate" type="datetime" uuid="6fba0ab6-d380-4b81-9ba4-8e860fc2a861"/>
-      <field name="artist_id" type="integer" uuid="a62e2747-7eed-4795-83ea-75d66756f805"/>
-      <index name="name_idx">
-        <index-field name="name"/>
-      </index>
-      <index name="releaseDate_idx">
-        <index-field name="releaseDate"/>
-      </index>
-      <orm-attributes>
-        <attribute name="repository-class">App\API\V1\Repositories\AlbumRepository</attribute>
-        <attribute name="export-file-name">Album.php</attribute>
-      </orm-attributes>
-    </entity>
-    <association from="\App\API\V1\Entities\Album" to="\App\API\V1\Entities\Artist" caption="Artist Album" owner-alias="albums" inverse-alias="artist" many-owner="true" many-inverse="false" uuid="be507a13-0322-4f96-ae12-fe155f33bdc0">
-      <association-field from="artist_id" to="id"/>
-      <orm-attributes>
-        <attribute name="side-owning">
-          <attribute name="cascade">
-            <attribute name="cascade-persist">true</attribute>
-            <attribute name="cascade-remove">false</attribute>
-          </attribute>
-        </attribute>
-        <attribute name="side-inverse">
-          <attribute name="cascade">
-            <attribute name="cascade-persist">true</attribute>
-            <attribute name="cascade-remove">false</attribute>
-          </attribute>
-        </attribute>
-        <attribute name="on-delete">CASCADE</attribute>
-      </orm-attributes>
-    </association>
     <entity name="\App\API\V1\Entities\Artist" local-name="Artist" namespace="\App\API\V1\Entities" uuid="e33edf88-b81b-4067-b273-3bb63155408e">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="99a3972c-ab4e-4d58-93d4-35d245e9b68a">
         <orm-attributes>
@@ -140,8 +100,55 @@
       </many-to-many-entity>
       <many-to-many-entity name="\App\API\V1\Entities\Album" owning-side="false" alias="albums" uuid="f770372a-3366-4658-9a7d-02893a3b9a46">
         <many-to-many-field from="album_id" to="id"/>
+        <orm-attributes>
+          <attribute name="on-delete">CASCADE</attribute>
+        </orm-attributes>
       </many-to-many-entity>
     </many-to-many>
+    <entity name="\App\API\V1\Entities\Album" local-name="Album" namespace="\App\API\V1\Entities" description="List of albums owned by a user" uuid="b9413c05-f48a-45b6-9cdb-af25b6b72f2d">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="7eb3f52e-9281-46b4-8ecc-795c37a28552">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" type="string" uuid="cbc22433-5601-455d-87a8-71eba7af5417"/>
+      <field name="releaseDate" type="datetime" uuid="6fba0ab6-d380-4b81-9ba4-8e860fc2a861">
+        <orm-attributes>
+          <attribute name="column">release_date</attribute>
+        </orm-attributes>
+      </field>
+      <field name="artist_id" type="integer" uuid="a62e2747-7eed-4795-83ea-75d66756f805"/>
+      <index name="name_idx">
+        <index-field name="name"/>
+      </index>
+      <index name="releaseDate_idx">
+        <index-field name="releaseDate"/>
+      </index>
+      <orm-attributes>
+        <attribute name="repository-class">App\API\V1\Repositories\AlbumRepository</attribute>
+        <attribute name="export-file-name">Album.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\App\API\V1\Entities\Album" to="\App\API\V1\Entities\Artist" caption="Artist Album" owner-alias="" inverse-alias="artist" many-owner="true" many-inverse="false" uuid="be507a13-0322-4f96-ae12-fe155f33bdc0">
+      <association-field from="artist_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+            <attribute name="cascade-remove">false</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+            <attribute name="cascade-remove">false</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
     <orm-attributes>
       <attribute name="filename-format">entity-name-only</attribute>
     </orm-attributes>

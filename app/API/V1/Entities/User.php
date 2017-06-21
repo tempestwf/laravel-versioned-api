@@ -55,7 +55,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
 	 * @ORM\JoinTable(
 	 *     name="AlbumToUser",
 	 *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},
-	 *     inverseJoinColumns={@ORM\JoinColumn(name="album_id", referencedColumnName="id", nullable=false)}
+	 *     inverseJoinColumns={@ORM\JoinColumn(name="album_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")}
 	 * )
 	 */
 	protected $albums;

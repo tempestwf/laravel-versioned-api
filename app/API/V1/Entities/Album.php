@@ -26,7 +26,7 @@ class Album extends EntityAbstract
     private $name;
 
     /**
-     * @ORM\Column(name="release_date", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true, name="release_date")
      */
     private $releaseDate;
 
