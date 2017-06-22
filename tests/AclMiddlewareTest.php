@@ -65,6 +65,7 @@ class AclMiddlewareTest extends TestCase
             $em->remove($user);
             $em->flush();
             $conn->commit();
+            $this->refreshApplication();
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
