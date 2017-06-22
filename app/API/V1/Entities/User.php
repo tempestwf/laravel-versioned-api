@@ -299,7 +299,8 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                     'id'=>':userEntity:id'
                 ],
                 'fields'=>[
-                    'email'=>[
+                    'password'=>[
+                        'permissive'=>true,
                         'mutate'=>function (){
                             /** @noinspection NullPointerExceptionInspection */
                             return Hash::make($this->getArrayHelper()->parseArrayPath([Extractor::EXTRACTOR_KEY_NAME, 'config', 'hashSecret']));
