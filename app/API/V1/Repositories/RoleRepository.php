@@ -2,9 +2,9 @@
 
 namespace App\API\V1\Repositories;
 
-use App\Repositories\Repository;
+use TempestTools\Crud\Doctrine\RepositoryAbstract;
 
-class RoleRepository extends Repository
+class RoleRepository extends RepositoryAbstract
 {
 	protected $entity = \App\API\V1\Entities\Role::class;
 }
