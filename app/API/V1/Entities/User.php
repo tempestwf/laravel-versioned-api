@@ -290,6 +290,15 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                     'messages'=>NULL,
                     'customAttributes'=>NULL,
                 ],
+                'fields'=>[
+                    'password'=>[
+                        'permissive'=>true,
+                        'mutate'=>function (){
+                            /** @noinspection NullPointerExceptionInspection */
+                            return Hash::make($this->getArrayHelper()->parseArrayPath([Extractor::EXTRACTOR_KEY_NAME, 'config', 'hashSecret']));
+                        }
+                    ],
+                ]
             ],
             'user'=>[
                 'extends'=>[':default'],
@@ -299,13 +308,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                     'id'=>':userEntity:id'
                 ],
                 'fields'=>[
-                    'password'=>[
-                        'permissive'=>true,
-                        'mutate'=>function (){
-                            /** @noinspection NullPointerExceptionInspection */
-                            return Hash::make($this->getArrayHelper()->parseArrayPath([Extractor::EXTRACTOR_KEY_NAME, 'config', 'hashSecret']));
-                        }
-                    ],
                     'albums'=>[
                         'permissive'=>false,
                         'assign'=>[
