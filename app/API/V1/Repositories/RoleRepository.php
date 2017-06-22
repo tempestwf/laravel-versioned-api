@@ -2,9 +2,12 @@
 
 namespace App\API\V1\Repositories;
 
-use TempestTools\Crud\Doctrine\RepositoryAbstract;
+use App\API\V1\Entities\Role;
+use App\Repositories\Repository;
 
-class RoleRepository extends RepositoryAbstract
+/** @noinspection LongInheritanceChainInspection */
+class RoleRepository extends Repository
 {
-	protected $entity = \App\API\V1\Entities\Role::class;
+	protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
+        $entity = Role::class;
 }

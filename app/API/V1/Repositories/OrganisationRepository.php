@@ -2,9 +2,12 @@
 
 namespace App\API\V1\Repositories;
 
-use TempestTools\Crud\Doctrine\RepositoryAbstract;
+use App\API\V1\Entities\Organisation;
+use App\Repositories\Repository;
 
-class OrganisationRepository extends RepositoryAbstract
+/** @noinspection LongInheritanceChainInspection */
+class OrganisationRepository extends Repository
 {
-	protected $entity = \App\API\V1\Entities\Organisation::class;
+	protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
+        $entity = Organisation::class;
 }
