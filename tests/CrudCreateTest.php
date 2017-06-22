@@ -62,7 +62,8 @@ class CrudCreateTest extends TestCase
                 ]
             ]);
             $em->flush();
-            $conn->commit();
+            $conn->rollBack();
+            //$conn->commit();
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
