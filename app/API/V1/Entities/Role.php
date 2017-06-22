@@ -85,7 +85,7 @@ class Role extends EntityAbstract implements RoleContract
     {
         return [
             'default'=>[
-                'create'=>[
+                'create'=>[ // the only thing we enforce on artists is the validator
                     'allowed'=>false,
                     'validator'=>[
                         'fields'=>[
@@ -105,7 +105,7 @@ class Role extends EntityAbstract implements RoleContract
                     'extends'=>[':default:create'],
                 ]
             ],
-            'superAdmin'=>[
+            'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true

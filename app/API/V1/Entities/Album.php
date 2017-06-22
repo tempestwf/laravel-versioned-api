@@ -158,8 +158,8 @@ class Album extends EntityAbstract
         return [
             'default'=>[
                 'create'=>[
-                    'allowed'=>false,
-                    'validator'=>[
+                    'allowed'=>false, // by default this is not allowed
+                    'validator'=>[ // Add a validator that will be inherited by all other configs
                         'fields'=>[
                             'name',
                             'releaseDate'
@@ -172,53 +172,53 @@ class Album extends EntityAbstract
                         'customAttributes'=>NULL,
                     ],
                 ],
-                'update'=>[
-                    'extends'=>':default:create'
+                'update'=>[ // Same as default create
+                    'extends'=>[':default:create']
                 ],
-                'delete'=>[
-                    'extends'=>':default:create'
+                'delete'=>[ // Same as default create
+                    'extends'=>[':default:create']
                 ]
             ],
             'user'=>[
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true,
-                    'permissive'=>false,
+                    'allowed'=>false, // users can't allowed to create
+                    'permissive'=>false, // the following rules are defined here in order to be inherited further down
                     'fields'=>[
-                        'users'=>[
+                        'users'=>[ // when this is inherited a user will be able to add them selves to an album
                             'permissive'=>false,
                             'enforce'=>[
-                                'id'=>':userEntity:id'
+                                'id'=>':userEntity:id' // When adding them selves to an album we enforce that the user is assigning their own user entity to the album
                             ],
-                            'assign'=>[
+                            'assign'=>[ // the can only add and remove them selves from an album
                                 'add'=>true,
                                 'remove'=>true,
                             ],
                             'chain'=>[
-                                'read'=>true
+                                'read'=>true // Then can only add existing users, they can not create update or delete users in the process
                             ]
                         ]
                     ],
                 ],
                 'update'=>[
-                    'extends'=>':user:create'
+                    'extends'=>[':user:create'], // The same as create but it's allowed this time
+                    'allowed'=>true,
                 ],
                 'delete'=>[
-                    'extends'=>':user:create',
-                    'allowed'=>false
+                    'extends'=>[':user:create']
                 ],
             ],
-            'superAdmin'=>[
+            'superAdmin'=>[ // Extends default because default has no additional rules on it, so super admins can do anything
                 'create'=>[
-                    'extends'=>':default:create',
+                    'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
                 'update'=>[
-                    'extends'=>':default:create',
+                    'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
                 'delete'=>[
-                    'extends'=>':default:create',
+                    'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
             ]

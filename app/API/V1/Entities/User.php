@@ -279,7 +279,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
-                    'validator'=>[
+                    'validator'=>[ // Validates name and email and inherited by the rest of the config
                         'fields'=>[
                             'name',
                             'email'
@@ -292,7 +292,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                         'customAttributes'=>NULL,
                     ],
                     'fields'=>[
-                        'password'=>[
+                        'password'=>[ // the password field should always be hashed when set, this is inherited by the set of the config
                             'permissive'=>true,
                             'mutate'=>function (){
                                 /** @noinspection NullPointerExceptionInspection */
@@ -311,12 +311,12 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
             'user'=>[
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true,
+                    'allowed'=>false,
                     'permissive'=>false,
                     'enforce'=>[
-                        'id'=>':userEntity:id'
+                        'id'=>':userEntity:id' // If you are a user, then you should only be able to alter your self
                     ],
-                    'fields'=>[
+                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
                         'albums'=>[
                             'permissive'=>false,
                             'assign'=>[
@@ -326,33 +326,39 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                             'chain'=>[
                                 'read'=>true
                             ]
+                        ],
+                        'name'=>[ // Users can update their name
+                            'permissive'=>true,
+                        ],
+                        'job'=>[ // Users can update their job
+                            'permissive'=>true,
+                        ],
+                        'address'=>[ // Users can update their address
+                            'permissive'=>true,
                         ]
                     ],
                 ],
                 'update'=>[
-                    'extends'=>[':user:create'],
+                    'extends'=>[':user:create'], // inherits all of user create, but turns on the allowed flag so now a user can update them selves
+                    'allowed'=>true
                 ],
                 'delete'=>[
-                    'extends'=>[':user:create'],
+                    'extends'=>[':user:create'], // users can not delete them selves
                     'allowed'=>false
                 ]
             ],
-            'superAdmin'=>[
+            'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
-                    'extends'=>[':user:create'],
-                    'permissive'=>true,
-                    'enforce'=>[],
-                    'fields'=>[
-                        'albums'=>[
-                            'permissive'=>true
-                        ]
-                    ],
+                    'extends'=>[':default:create'],
+                    'allowed'=>true,
                 ],
                 'update'=>[
-                    'extends'=>[':user:create'],
+                    'extends'=>[':default:create'],
+                    'allowed'=>true,
                 ],
                 'delete'=>[
-                    'extends'=>[':user:create']
+                    'extends'=>[':default:create'],
+                    'allowed'=>true,
                 ]
             ]
         ];

@@ -59,7 +59,7 @@ class Organisation extends EntityAbstract implements OrganisationContract
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
-                    'validator'=>[
+                    'validator'=>[ // the only thing we enforce on artists is the validator
                         'fields'=>[
                             'name'
                         ],
@@ -77,7 +77,7 @@ class Organisation extends EntityAbstract implements OrganisationContract
                     'extends'=>[':default:create'],
                 ]
             ],
-            'superAdmin'=>[
+            'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true
