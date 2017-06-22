@@ -2,6 +2,6 @@
 
 return [
 
-    'hashSecret'=>'golden browns'
+    'hashSecret'=>'golden brown'
 
 ];
