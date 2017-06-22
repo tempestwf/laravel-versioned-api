@@ -149,4 +149,52 @@ class Album extends EntityAbstract
         return $this->users;
     }
 
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[
+                'allowed'=>false,
+                'validator'=>[
+                    'fields'=>[
+                        'name',
+                        'releaseDate'
+                    ],
+                    'rules'=>[
+                        'name'=>'required|min:2',
+                        'releaseDate'=>'required|date'
+                    ],
+                    'messages'=>NULL,
+                    'customAttributes'=>NULL,
+                ],
+            ],
+            'user'=>[
+                'extends'=>[':default'],
+                'allowed'=>true,
+                'fields'=>[
+                    'users'=>[
+                        'permissive'=>false,
+                        'enforce'=>[
+                            'id'=>':userEntity:id'
+                        ],
+                        'assign'=>[
+                            'add'=>true,
+                            'remove'=>true,
+                        ],
+                        'chain'=>[
+                            'read'=>true
+                        ]
+                    ]
+                ],
+            ],
+            'superAdmin'=>[
+                'extends'=>[':default'],
+                'allowed'=>true
+            ]
+        ];
+    }
+
 }

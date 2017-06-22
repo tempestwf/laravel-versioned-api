@@ -8,12 +8,13 @@ use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use LaravelDoctrine\ACL\Permissions\HasPermissions;
 use LaravelDoctrine\ACL\Mappings as ACL;
+use TempestTools\Crud\Laravel\EntityAbstract;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\RoleRepository")
  * @ORM\Table(name="roles")
  */
-class Role implements RoleContract
+class Role extends EntityAbstract implements RoleContract
 {
     use HasPermissions;
     /**
@@ -75,5 +76,31 @@ class Role implements RoleContract
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[
+                'allowed'=>false,
+                'validator'=>[
+                    'fields'=>[
+                        'name'
+                    ],
+                    'rules'=>[
+                        'name'=>'required|min:2',
+                    ],
+                    'messages'=>NULL,
+                    'customAttributes'=>NULL,
+                ],
+            ],
+            'superAdmin'=>[
+                'extends'=>[':default'],
+                'allowed'=>true
+            ]
+        ];
     }
 }

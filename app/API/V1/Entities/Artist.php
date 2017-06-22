@@ -94,4 +94,30 @@ class Artist extends EntityAbstract
     {
         $this->albums->removeElement($album);
     }
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[
+                'allowed'=>false,
+                'validator'=>[
+                    'fields'=>[
+                        'name'
+                    ],
+                    'rules'=>[
+                        'name'=>'required|min:2',
+                    ],
+                    'messages'=>NULL,
+                    'customAttributes'=>NULL,
+                ],
+            ],
+            'superAdmin'=>[
+                'extends'=>[':default'],
+                'allowed'=>true
+            ]
+        ];
+    }
 }

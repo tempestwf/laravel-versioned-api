@@ -6,6 +6,7 @@ use App\Entities\Traits\Deletable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\ORM\PersistentCollection;
+use Hash;
 use LaravelDoctrine\ACL\Contracts\Permission;
 use LaravelDoctrine\ACL\Roles\HasRoles;
 use LaravelDoctrine\ACL\Mappings as ACL;
@@ -16,6 +17,7 @@ use LaravelDoctrine\ACL\Organisations\BelongsToOrganisation;
 use TempestTools\AclMiddleware\Contracts\HasId;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Contracts\Extractable;
+use TempestTools\Common\Laravel\Utility\Extractor;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use App\Entities\Traits\Authenticatable;
@@ -265,5 +267,66 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
         }
 
         $this->albums->removeElement($album);
+    }
+
+    /**
+     * @return array
+     * @throws \RuntimeException
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[
+                'allowed'=>false,
+                'validator'=>[
+                    'fields'=>[
+                        'name',
+                        'email'
+                    ],
+                    'rules'=>[
+                        'name'=>'required|min:2',
+                        'email'=>'required|email'
+                    ],
+                    'messages'=>NULL,
+                    'customAttributes'=>NULL,
+                ],
+            ],
+            'user'=>[
+                'extends'=>[':default'],
+                'allowed'=>true,
+                'permissive'=>false,
+                'enforce'=>[
+                    'id'=>':userEntity:id'
+                ],
+                'fields'=>[
+                    'email'=>[
+                        'mutate'=>function (){
+                            /** @noinspection NullPointerExceptionInspection */
+                            return Hash::make($this->getArrayHelper()->parseArrayPath([Extractor::EXTRACTOR_KEY_NAME, 'config', 'hashSecret']));
+                        }
+                    ],
+                    'albums'=>[
+                        'permissive'=>false,
+                        'assign'=>[
+                            'add'=>true,
+                            'remove'=>true,
+                        ],
+                        'chain'=>[
+                            'read'=>true
+                        ]
+                    ]
+                ],
+            ],
+            'superAdmin'=>[
+                'extends'=>[':user'],
+                'permissive'=>true,
+                'enforce'=>[],
+                'fields'=>[
+                    'albums'=>[
+                        'permissive'=>true
+                    ]
+                ],
+            ]
+        ];
     }
 }
