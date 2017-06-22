@@ -174,6 +174,7 @@ class Album extends EntityAbstract
             'user'=>[
                 'extends'=>[':default'],
                 'allowed'=>true,
+                'permissive'=>false,
                 'fields'=>[
                     'users'=>[
                         'permissive'=>false,
