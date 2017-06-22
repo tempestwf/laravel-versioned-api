@@ -85,21 +85,39 @@ class Role extends EntityAbstract implements RoleContract
     {
         return [
             'default'=>[
-                'allowed'=>false,
-                'validator'=>[
-                    'fields'=>[
-                        'name'
+                'create'=>[
+                    'allowed'=>false,
+                    'validator'=>[
+                        'fields'=>[
+                            'name'
+                        ],
+                        'rules'=>[
+                            'name'=>'required|min:2',
+                        ],
+                        'messages'=>NULL,
+                        'customAttributes'=>NULL,
                     ],
-                    'rules'=>[
-                        'name'=>'required|min:2',
-                    ],
-                    'messages'=>NULL,
-                    'customAttributes'=>NULL,
                 ],
+                'update'=>[
+                    'extends'=>[':default:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':default:create'],
+                ]
             ],
             'superAdmin'=>[
-                'extends'=>[':default'],
-                'allowed'=>true
+                'create'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
+                'update'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
+                'delete'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
             ]
         ];
     }

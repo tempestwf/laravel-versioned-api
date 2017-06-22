@@ -277,58 +277,83 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
     {
         return [
             'default'=>[
-                'allowed'=>false,
-                'validator'=>[
+                'create'=>[
+                    'allowed'=>false,
+                    'validator'=>[
+                        'fields'=>[
+                            'name',
+                            'email'
+                        ],
+                        'rules'=>[
+                            'name'=>'required|min:2',
+                            'email'=>'required|email'
+                        ],
+                        'messages'=>NULL,
+                        'customAttributes'=>NULL,
+                    ],
                     'fields'=>[
-                        'name',
-                        'email'
-                    ],
-                    'rules'=>[
-                        'name'=>'required|min:2',
-                        'email'=>'required|email'
-                    ],
-                    'messages'=>NULL,
-                    'customAttributes'=>NULL,
+                        'password'=>[
+                            'permissive'=>true,
+                            'mutate'=>function (){
+                                /** @noinspection NullPointerExceptionInspection */
+                                return Hash::make($this->getArrayHelper()->parseArrayPath([Extractor::EXTRACTOR_KEY_NAME, 'config', 'hashSecret']));
+                            }
+                        ],
+                    ]
                 ],
-                'fields'=>[
-                    'password'=>[
-                        'permissive'=>true,
-                        'mutate'=>function (){
-                            /** @noinspection NullPointerExceptionInspection */
-                            return Hash::make($this->getArrayHelper()->parseArrayPath([Extractor::EXTRACTOR_KEY_NAME, 'config', 'hashSecret']));
-                        }
-                    ],
+                'update'=>[
+                    'extends'=>[':default:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':default:create'],
                 ]
             ],
             'user'=>[
-                'extends'=>[':default'],
-                'allowed'=>true,
-                'permissive'=>false,
-                'enforce'=>[
-                    'id'=>':userEntity:id'
-                ],
-                'fields'=>[
-                    'albums'=>[
-                        'permissive'=>false,
-                        'assign'=>[
-                            'add'=>true,
-                            'remove'=>true,
-                        ],
-                        'chain'=>[
-                            'read'=>true
+                'create'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true,
+                    'permissive'=>false,
+                    'enforce'=>[
+                        'id'=>':userEntity:id'
+                    ],
+                    'fields'=>[
+                        'albums'=>[
+                            'permissive'=>false,
+                            'assign'=>[
+                                'add'=>true,
+                                'remove'=>true,
+                            ],
+                            'chain'=>[
+                                'read'=>true
+                            ]
                         ]
-                    ]
+                    ],
                 ],
+                'update'=>[
+                    'extends'=>[':user:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':user:create'],
+                    'allowed'=>false
+                ]
             ],
             'superAdmin'=>[
-                'extends'=>[':user'],
-                'permissive'=>true,
-                'enforce'=>[],
-                'fields'=>[
-                    'albums'=>[
-                        'permissive'=>true
-                    ]
+                'create'=>[
+                    'extends'=>[':user:create'],
+                    'permissive'=>true,
+                    'enforce'=>[],
+                    'fields'=>[
+                        'albums'=>[
+                            'permissive'=>true
+                        ]
+                    ],
                 ],
+                'update'=>[
+                    'extends'=>[':user:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':user:create']
+                ]
             ]
         ];
     }

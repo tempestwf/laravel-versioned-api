@@ -157,43 +157,70 @@ class Album extends EntityAbstract
     {
         return [
             'default'=>[
-                'allowed'=>false,
-                'validator'=>[
-                    'fields'=>[
-                        'name',
-                        'releaseDate'
+                'create'=>[
+                    'allowed'=>false,
+                    'validator'=>[
+                        'fields'=>[
+                            'name',
+                            'releaseDate'
+                        ],
+                        'rules'=>[
+                            'name'=>'required|min:2',
+                            'releaseDate'=>'required|date'
+                        ],
+                        'messages'=>NULL,
+                        'customAttributes'=>NULL,
                     ],
-                    'rules'=>[
-                        'name'=>'required|min:2',
-                        'releaseDate'=>'required|date'
-                    ],
-                    'messages'=>NULL,
-                    'customAttributes'=>NULL,
                 ],
+                'update'=>[
+                    'extends'=>':default:create'
+                ],
+                'delete'=>[
+                    'extends'=>':default:create'
+                ]
             ],
             'user'=>[
-                'extends'=>[':default'],
-                'allowed'=>true,
-                'permissive'=>false,
-                'fields'=>[
-                    'users'=>[
-                        'permissive'=>false,
-                        'enforce'=>[
-                            'id'=>':userEntity:id'
-                        ],
-                        'assign'=>[
-                            'add'=>true,
-                            'remove'=>true,
-                        ],
-                        'chain'=>[
-                            'read'=>true
+                'create'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true,
+                    'permissive'=>false,
+                    'fields'=>[
+                        'users'=>[
+                            'permissive'=>false,
+                            'enforce'=>[
+                                'id'=>':userEntity:id'
+                            ],
+                            'assign'=>[
+                                'add'=>true,
+                                'remove'=>true,
+                            ],
+                            'chain'=>[
+                                'read'=>true
+                            ]
                         ]
-                    ]
+                    ],
+                ],
+                'update'=>[
+                    'extends'=>':user:create'
+                ],
+                'delete'=>[
+                    'extends'=>':user:create',
+                    'allowed'=>false
                 ],
             ],
             'superAdmin'=>[
-                'extends'=>[':default'],
-                'allowed'=>true
+                'create'=>[
+                    'extends'=>':default:create',
+                    'allowed'=>true
+                ],
+                'update'=>[
+                    'extends'=>':default:create',
+                    'allowed'=>true
+                ],
+                'delete'=>[
+                    'extends'=>':default:create',
+                    'allowed'=>true
+                ],
             ]
         ];
     }
