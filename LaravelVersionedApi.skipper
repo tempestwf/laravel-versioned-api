@@ -62,21 +62,6 @@
         <attribute name="export-file-name">Artist.php</attribute>
       </orm-attributes>
     </entity>
-    <entity name="\App\API\V1\Entities\Organisation" local-name="Organisation" namespace="\App\API\V1\Entities" uuid="f88f2b4e-b0b1-4397-8d10-a8a44689e3f3">
-      <field name="id" type="integer" required="true" primary="true" uuid="44772234-a53c-4155-be3a-deebb1a73533">
-        <orm-attributes>
-          <attribute name="generator">
-            <attribute name="strategy">AUTO</attribute>
-          </attribute>
-        </orm-attributes>
-      </field>
-      <field name="name" type="string" uuid="ad10bc7f-bb99-4977-b58e-515c2a7b0919"/>
-      <orm-attributes>
-        <attribute name="repository-class">App\API\V1\Repositories\OrganisationRepository</attribute>
-        <attribute name="table">organisations</attribute>
-        <attribute name="export-file-name">Organisation.php</attribute>
-      </orm-attributes>
-    </entity>
     <entity name="\App\API\V1\Entities\Role" local-name="Role" namespace="\App\API\V1\Entities" uuid="335198c7-ad63-4f38-91df-2f98357bd35d">
       <field name="id" type="integer" required="true" primary="true" uuid="d2f41a26-a88d-45bc-a1ea-b1b684bfbc4a">
         <orm-attributes>
@@ -149,6 +134,92 @@
         </orm-attributes>
       </many-to-many-entity>
     </many-to-many>
+    <entity name="\App\API\V1\Entities\Permission" local-name="Permission" namespace="\App\API\V1\Entities" uuid="8333811e-e382-46eb-b749-e731798c6cd6">
+      <field name="id" type="integer" required="true" primary="true" uuid="4356a4a1-274c-4234-a524-35d17858c5a9">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" type="string" uuid="8821953d-99de-4e8b-98a1-a96e59104252"/>
+      <orm-attributes>
+        <attribute name="repository-class">App\API\V1\Repositories\PermissionRepository</attribute>
+        <attribute name="export-file-name">Permission.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\App\API\V1\Entities\UserToPermission" local-name="UserToPermission" namespace="\App\API\V1\Entities" uuid="c046246c-1deb-470d-9f24-9ee56d3bf230">
+      <field name="user_id" type="integer" required="true" primary="true" uuid="d0aaf39e-9de5-44cc-a40d-70462d4ef2e1"/>
+      <field name="permission_id" type="integer" required="true" primary="true" uuid="c3267317-a833-4f93-b08f-e70cac304387"/>
+    </entity>
+    <many-to-many mn-entity="\App\API\V1\Entities\UserToPermission" caption="User to Permission" uuid="ab22b10f-f5cc-4010-b9ff-ea9312392709">
+      <many-to-many-entity name="\App\API\V1\Entities\Permission" owning-side="true" alias="permissions" uuid="37d80ead-e8fb-40b8-b83a-6d628e3f4a36">
+        <many-to-many-field from="permission_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+      <many-to-many-entity name="\App\API\V1\Entities\User" owning-side="false" alias="users" uuid="cdd07bc3-ee06-4a58-8ff1-e6e9d748aa6f">
+        <many-to-many-field from="user_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="\App\API\V1\Entities\RoleToPermission" local-name="RoleToPermission" namespace="\App\API\V1\Entities" uuid="61be2e28-2dae-4445-966c-ab0ffca3e528">
+      <field name="role_id" type="integer" required="true" primary="true" uuid="3f96d078-f205-47b2-b9b9-ddd9400bfb7b"/>
+      <field name="permission_id" type="integer" required="true" primary="true" uuid="15d4d795-2970-4f04-a3ea-eefaf0c860a8"/>
+    </entity>
+    <many-to-many mn-entity="\App\API\V1\Entities\RoleToPermission" caption="Role to Permission" uuid="8f650c2b-4004-4f29-a2f1-e8d31a51a5e1">
+      <many-to-many-entity name="\App\API\V1\Entities\Permission" owning-side="true" alias="permissions" uuid="c58dcfa8-d4db-4757-a836-b3b537dc9a29">
+        <many-to-many-field from="permission_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+      <many-to-many-entity name="\App\API\V1\Entities\Role" owning-side="false" alias="roles" uuid="4e1ad03d-2372-4e7c-927b-694dfc6b4577">
+        <many-to-many-field from="role_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="\App\API\V1\Entities\UserToRole" local-name="UserToRole" namespace="\App\API\V1\Entities" uuid="7a4718b3-9f8a-477c-a8bd-4811dfe1947b">
+      <field name="user_id" type="integer" required="true" primary="true" uuid="fe66c0c0-3d2a-4c8c-81b6-8ca15cab1322"/>
+      <field name="role_id" type="integer" required="true" primary="true" uuid="895e4d9b-34b3-4bde-b1ca-bbbcd8fd27bf"/>
+    </entity>
+    <many-to-many mn-entity="\App\API\V1\Entities\UserToRole" caption="User to Role" uuid="f92ec8a8-db82-4ed7-a684-12ba3de7d690">
+      <many-to-many-entity name="\App\API\V1\Entities\Role" owning-side="true" alias="roles" uuid="a106a810-9e53-413d-b5d3-a05c7955590e">
+        <many-to-many-field from="role_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+      <many-to-many-entity name="\App\API\V1\Entities\User" owning-side="false" alias="users" uuid="32ca44af-4f4c-4f57-bb06-3f65fe445e5a">
+        <many-to-many-field from="user_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+    </many-to-many>
     <orm-attributes>
       <attribute name="filename-format">entity-name-only</attribute>
     </orm-attributes>
@@ -188,19 +259,26 @@
   </module>
   <visual-data>
     <association uuid="be507a13-0322-4f96-ae12-fe155f33bdc0" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <entity uuid="335198c7-ad63-4f38-91df-2f98357bd35d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="155" position-y="40" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
+    <entity uuid="335198c7-ad63-4f38-91df-2f98357bd35d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="418" position-y="196" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
     <entity uuid="446dec21-7212-4de8-82aa-2f0d10cd4295" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="20" position-y="40" size-x="0" size-x2="99" size-y="0" size-y2="87"/>
     <entity uuid="51bd6952-a6b4-40e9-b522-d277e14bcd14" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="20" position-y="40" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
-    <entity uuid="b9413c05-f48a-45b6-9cdb-af25b6b72f2d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="378" position-y="169" size-x="0" size-x2="120" size-y="0" size-y2="59"/>
-    <entity uuid="cccb5181-893d-4c1f-bded-7e0df65e3697" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="20" position-y="153" size-x="0" size-x2="90" size-y="0" size-y2="73"/>
-    <entity uuid="e33edf88-b81b-4067-b273-3bb63155408e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="398" position-y="59" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
-    <entity uuid="e4e321d9-dffd-4af4-8f8b-998d9f990d98" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="194" position-y="170" size-x="0" size-x2="99" size-y="0" size-y2="60"/>
-    <entity uuid="f88f2b4e-b0b1-4397-8d10-a8a44689e3f3" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="25" position-y="40" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
+    <entity uuid="61be2e28-2dae-4445-966c-ab0ffca3e528" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="227" position-y="106" size-x="0" size-x2="119" size-y="0" size-y2="60"/>
+    <entity uuid="7a4718b3-9f8a-477c-a8bd-4811dfe1947b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="184" position-y="196" size-x="0" size-x2="92" size-y="0" size-y2="60"/>
+    <entity uuid="8333811e-e382-46eb-b749-e731798c6cd6" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="242" position-y="19" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
+    <entity uuid="b9413c05-f48a-45b6-9cdb-af25b6b72f2d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="401" position-y="278" size-x="0" size-x2="120" size-y="0" size-y2="73"/>
+    <entity uuid="c046246c-1deb-470d-9f24-9ee56d3bf230" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="15" position-y="11" size-x="0" size-x2="119" size-y="0" size-y2="60"/>
+    <entity uuid="cccb5181-893d-4c1f-bded-7e0df65e3697" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="15" position-y="291" size-x="0" size-x2="90" size-y="0" size-y2="87"/>
+    <entity uuid="e33edf88-b81b-4067-b273-3bb63155408e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="648" position-y="281" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
+    <entity uuid="e4e321d9-dffd-4af4-8f8b-998d9f990d98" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="202" position-y="302" size-x="0" size-x2="99" size-y="0" size-y2="74"/>
+    <many-to-many-association uuid="8f650c2b-4004-4f29-a2f1-e8d31a51a5e1" color="#969696"/>
+    <many-to-many-association uuid="ab22b10f-f5cc-4010-b9ff-ea9312392709" color="#969696"/>
     <many-to-many-association uuid="bf0e11b6-da69-4d0d-b7ae-4ccbd347718b" color="#969696"/>
+    <many-to-many-association uuid="f92ec8a8-db82-4ed7-a684-12ba3de7d690" color="#969696"/>
+    <many-to-many-association-entity uuid="4e1ad03d-2372-4e7c-927b-694dfc6b4577" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <many-to-many-association-entity uuid="f770372a-3366-4658-9a7d-02893a3b9a46" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
-    <module uuid="4c2bc012-cb72-4b02-93df-d1bf00d5807b" bg-color="#E7F5FD" position-x="49" position-y="49" size-x="0" size-x2="554" size-y="0" size-y2="246"/>
-    <module uuid="96f428b0-b3df-44b2-86b1-1278a68b1641" bg-color="#E7F3E7" position-x="289" position-y="396" size-x="0" size-x2="134" size-y="0" size-y2="105"/>
-    <module uuid="a1654012-b666-4b51-b1d4-2a040835badb" bg-color="#FEFCE8" position-x="50" position-y="396" size-x="0" size-x2="139" size-y="0" size-y2="147"/>
-    <project uuid="3f0a34a9-0654-4157-838f-c2267ab6d16a" size-x="0" size-x2="654" size-y="0" size-y2="593"/>
+    <module uuid="4c2bc012-cb72-4b02-93df-d1bf00d5807b" bg-color="#E7F5FD" position-x="49" position-y="49" size-x="0" size-x2="902" size-y="21" size-y2="528"/>
+    <module uuid="96f428b0-b3df-44b2-86b1-1278a68b1641" bg-color="#E7F3E7" position-x="216" position-y="634" size-x="0" size-x2="134" size-y="0" size-y2="105"/>
+    <module uuid="a1654012-b666-4b51-b1d4-2a040835badb" bg-color="#FEFCE8" position-x="22" position-y="597" size-x="0" size-x2="139" size-y="0" size-y2="147"/>
+    <project uuid="3f0a34a9-0654-4157-838f-c2267ab6d16a" size-x="0" size-x2="1070" size-y="0" size-y2="794"/>
   </visual-data>
 </skipper>

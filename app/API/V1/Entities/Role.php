@@ -4,10 +4,9 @@ namespace App\API\V1\Entities;
 
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\ORM\PersistentCollection;
-use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
+use TempestTools\AclMiddleware\Contracts\Role as RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
-use LaravelDoctrine\ACL\Permissions\HasPermissions;
-use LaravelDoctrine\ACL\Mappings as ACL;
+use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Crud\Laravel\EntityAbstract;
 
 /**
@@ -16,7 +15,7 @@ use TempestTools\Crud\Laravel\EntityAbstract;
  */
 class Role extends EntityAbstract implements RoleContract
 {
-    use HasPermissions;
+    use HasPermissionsOptimizedTrait;
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -30,9 +29,20 @@ class Role extends EntityAbstract implements RoleContract
     protected $name;
 
     /**
-     * @ACL\HasPermissions
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="UserToRole",
+     *     joinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")}
+     * )
      */
-    public $permissions;
+    private $users;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="roles", cascade={"persist"})
+     */
+    private $permissions;
+
 
     /**
      * @return int
@@ -120,5 +130,21 @@ class Role extends EntityAbstract implements RoleContract
                 ],
             ]
         ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param mixed $users
+     */
+    public function setUsers($users)
+    {
+        $this->users = $users;
     }
 }

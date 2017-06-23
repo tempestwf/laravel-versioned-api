@@ -7,13 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\ORM\PersistentCollection;
 use Hash;
-use LaravelDoctrine\ACL\Contracts\Permission;
-use LaravelDoctrine\ACL\Roles\HasRoles;
-use LaravelDoctrine\ACL\Mappings as ACL;
-use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
-use LaravelDoctrine\ACL\Contracts\HasPermissions as HasPermissionContract;
-use LaravelDoctrine\ACL\Contracts\BelongsToOrganisations as BelongsToOrganisationsContract;
-use LaravelDoctrine\ACL\Organisations\BelongsToOrganisation;
+use TempestTools\AclMiddleware\Contracts\HasRoles as HasRolesContract;
+use TempestTools\AclMiddleware\Contracts\HasPermissions as HasPermissionContract;
 use TempestTools\AclMiddleware\Contracts\HasId;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Contracts\Extractable;
@@ -29,9 +24,9 @@ use TempestTools\Crud\Laravel\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\UserRepository")
  * @ORM\Table(name="users")
  */
-class User extends EntityAbstract implements HasRolesContract, HasPermissionContract, BelongsToOrganisationsContract, HasId, Extractable, AuthenticatableContract
+class User extends EntityAbstract implements HasRolesContract, HasPermissionContract, HasId, Extractable, AuthenticatableContract
 {
-    use Authenticatable, HasPermissionsOptimizedTrait, HasRoles, BelongsToOrganisation, Deletable, ExtractorOptionsTrait;
+    use Authenticatable, HasPermissionsOptimizedTrait, Deletable, ExtractorOptionsTrait;
 	
 	/**
 	 * @ORM\Column(type="string", nullable=true, name="name")
@@ -62,22 +57,16 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
 	 */
 	protected $albums;
 
-    /**
-     * @ACL\HasRoles()
-     * @var ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
-     */
-    protected $roles;
+	/**
+	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="users", cascade={"persist"})
+	 */
+	private $permissions;
 
-    /**
-     * @ACL\HasPermissions
-     */
-    protected $permissions;
+	/**
+	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Role", mappedBy="users", cascade={"persist"})
+	 */
+	private $roles;
 
-    /**
-     * @ACL\BelongsToOrganisations
-     * @var Organisation[]
-     */
-    protected $organisations;
 
     /**
      * @ORM\Id
@@ -95,7 +84,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
         $this->albums = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->permissions = new ArrayCollection();
-        $this->organisations = new ArrayCollection();
         parent::__construct();
     }
 
@@ -174,9 +162,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
 	}
 
     /**
-     * @return PersistentCollection|\LaravelDoctrine\ACL\Contracts\Role[]
+     * @return ArrayCollection|PersistentCollection|\TempestTools\AclMiddleware\Contracts\Role[]
      */
-    public function getRoles(): ?PersistentCollection
+    public function getRoles()
     {
         return $this->roles;
     }
@@ -200,15 +188,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
     }
 
     /**
-     * @return ArrayCollection|PersistentCollection|Organisation[]
-     */
-    public function getOrganisations()
-    {
-        return $this->organisations;
-    }
-
-    /**
-     * @param ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[] $roles
+     * @param ArrayCollection|\TempestTools\AclMiddleware\Contracts\Role[] $roles
      * @return User
      */
     public function setRoles(ArrayCollection $roles):User
@@ -377,5 +357,21 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                 ]
             ]
         ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
     }
 }
