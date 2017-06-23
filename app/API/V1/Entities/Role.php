@@ -70,16 +70,6 @@ class Role extends EntityAbstract implements RoleContract
     }
 
     /**
-     * @param ArrayCollection $permissions
-     * @return Role
-     */
-    public function setPermissions(ArrayCollection $permissions):Role
-    {
-        $this->permissions = $permissions;
-        return $this;
-    }
-
-    /**
      * @return PersistentCollection|ArrayCollection
      */
     public function getPermissions():PersistentCollection
@@ -103,14 +93,6 @@ class Role extends EntityAbstract implements RoleContract
     public function getUsers()
     {
         return $this->users;
-    }
-
-    /**
-     * @param ArrayCollection $users
-     */
-    public function setUsers(ArrayCollection $users)
-    {
-        $this->users = $users;
     }
 
 

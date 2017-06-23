@@ -168,16 +168,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
     }
 
     /**
-     * @param mixed $permissions
-     * @return User
-     */
-    public function setPermissions(Permission $permissions):User
-    {
-        $this->permissions = $permissions;
-        return $this;
-    }
-
-    /**
      * @return ArrayCollection|PersistentCollection|Permission[]
      */
     public function getPermissions()
@@ -185,15 +175,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
         return $this->permissions;
     }
 
-    /**
-     * @param ArrayCollection|\TempestTools\AclMiddleware\Contracts\Role[] $roles
-     * @return User
-     */
-    public function setRoles(ArrayCollection $roles):User
-    {
-        $this->roles = $roles;
-        return $this;
-    }
 
     /**
      * @param string $address

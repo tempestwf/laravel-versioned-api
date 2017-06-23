@@ -1,7 +1,6 @@
 <?php
 
 use App\API\V1\Entities\Role;
-use Doctrine\Common\Collections\ArrayCollection;
 use Faker\Factory;
 use App\API\V1\Entities\User;
 use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
@@ -39,11 +38,12 @@ class AclMiddlewareTest extends TestCase
         $conn->beginTransaction();
         try {
             $repo = $this->em->getRepository(Role::class);
+            /** @var Role $userRole */
             $userRole = $repo->findOneBy(['name' => 'user']);
 
             $user = $this->makeUser();
 
-            $user->setRoles(new ArrayCollection([$userRole]));
+            $user->addRole($userRole);
 
             $em->persist($user);
 
