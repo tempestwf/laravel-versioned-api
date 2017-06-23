@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
 		$generator = Factory::create();
 		
 		$user = new User();
-		
 		$user
 			->setEmail($generator->safeEmail)
 			->setPassword('password')

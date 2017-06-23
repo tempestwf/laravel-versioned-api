@@ -55,26 +55,30 @@ class Album extends EntityAbstract
     /**
      * @param User $user
      * @param bool $preventLoop
+     * @return Album
      */
-    public function addUser(User $user, bool $preventLoop = false)
+    public function addUser(User $user, bool $preventLoop = false): Album
     {
         if ($preventLoop === false) {
             $user->addAlbum($this, true);
         }
 
         $this->users[] = $user;
+        return $this;
     }
 
     /**
      * @param User $user
      * @param bool $preventLoop
+     * @return Album
      */
-    public function removeUser(User $user, bool $preventLoop = false)
+    public function removeUser(User $user, bool $preventLoop = false): Album
     {
         if ($preventLoop === false) {
             $user->removeAlbum($this, true);
         }
         $this->users->removeElement($user);
+        return $this;
     }
 
     /**
@@ -87,10 +91,12 @@ class Album extends EntityAbstract
 
     /**
      * @param Artist $artist
+     * @return Album
      */
-    public function setArtist(Artist $artist)
+    public function setArtist(Artist $artist): Album
     {
         $this->artist = $artist;
+        return $this;
     }
 
     /**
@@ -103,10 +109,12 @@ class Album extends EntityAbstract
 
     /**
      * @param string $releaseDate
+     * @return Album
      */
-    public function setReleaseDate(string $releaseDate)
+    public function setReleaseDate(string $releaseDate): Album
     {
         $this->releaseDate = $releaseDate;
+        return $this;
     }
 
     /**
@@ -119,10 +127,12 @@ class Album extends EntityAbstract
 
     /**
      * @param mixed $name
+     * @return Album
      */
-    public function setName(string $name)
+    public function setName(string $name): Album
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -135,10 +145,12 @@ class Album extends EntityAbstract
 
     /**
      * @param mixed $id
+     * @return Album
      */
-    public function setId(int $id)
+    public function setId(int $id): Album
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -160,10 +172,6 @@ class Album extends EntityAbstract
                 'create'=>[
                     'allowed'=>false, // by default this is not allowed
                     'validator'=>[ // Add a validator that will be inherited by all other configs
-                        'fields'=>[
-                            'name',
-                            'releaseDate'
-                        ],
                         'rules'=>[
                             'name'=>'required|min:2',
                             'releaseDate'=>'required|date'

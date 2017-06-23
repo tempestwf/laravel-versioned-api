@@ -40,35 +40,39 @@ class Artist extends EntityAbstract
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
+     * @return Artist
      */
-    public function setId($id)
+    public function setId(int $id): Artist
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|NULL
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
+     * @return Artist
      */
-    public function setName($name)
+    public function setName(string $name): Artist
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -81,18 +85,22 @@ class Artist extends EntityAbstract
 
     /**
      * @param Album $album
+     * @return Artist
      */
-    public function addAlbum(Album $album)
+    public function addAlbum(Album $album): Artist
     {
         $this->albums[] = $album;
+        return $this;
     }
 
     /**
      * @param Album $album
+     * @return Artist
      */
-    public function removeAlbum(Album $album)
+    public function removeAlbum(Album $album): Artist
     {
         $this->albums->removeElement($album);
+        return $this;
     }
 
     /**
@@ -105,9 +113,6 @@ class Artist extends EntityAbstract
                 'create'=>[
                     'allowed'=>false,
                     'validator'=>[ // the only thing we enforce on artists is the validator
-                        'fields'=>[
-                            'name'
-                        ],
                         'rules'=>[
                             'name'=>'required|min:2',
                         ],

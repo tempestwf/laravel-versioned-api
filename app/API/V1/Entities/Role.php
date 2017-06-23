@@ -43,6 +43,15 @@ class Role extends EntityAbstract implements RoleContract
      */
     private $permissions;
 
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
+        parent::__construct();
+    }
 
     /**
      * @return int
@@ -71,7 +80,7 @@ class Role extends EntityAbstract implements RoleContract
     }
 
     /**
-     * @return PersistentCollection
+     * @return PersistentCollection|ArrayCollection
      */
     public function getPermissions():PersistentCollection
     {
@@ -89,6 +98,82 @@ class Role extends EntityAbstract implements RoleContract
     }
 
     /**
+     * @return mixed
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param mixed $users
+     */
+    public function setUsers($users)
+    {
+        $this->users = $users;
+    }
+
+
+    /**
+     * @param User $user
+     * @param bool $preventLoop
+     * @return Role
+     */
+    public function addUser(User $user, bool $preventLoop = false): Role
+    {
+        if ($preventLoop === false) {
+            $user->addRole($this, true);
+        }
+
+        $this->users[] = $user;
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @param bool $preventLoop
+     * @return Role
+     */
+    public function removeUser(User $user, bool $preventLoop = false): Role
+    {
+        if ($preventLoop === false) {
+            $user->removeRole($this, true);
+        }
+        $this->users->removeElement($user);
+        return $this;
+    }
+
+    /**
+     * @param Permission $permission
+     * @param bool $preventLoop
+     * @return Role
+     */
+    public function addPermission(Permission $permission, bool $preventLoop = false): Role
+    {
+        if ($preventLoop === false) {
+            $permission->addRole($this, true);
+        }
+
+        $this->permissions[] = $permission;
+        return $this;
+    }
+
+    /**
+     * @param Permission $permission
+     * @param bool $preventLoop
+     * @return Role
+     * @internal param User $user
+     */
+    public function removePermission(Permission $permission, bool $preventLoop = false): Role
+    {
+        if ($preventLoop === false) {
+            $permission->removeRole($this, true);
+        }
+        $this->permissions->removeElement($permission);
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getTTConfig(): array
@@ -98,9 +183,6 @@ class Role extends EntityAbstract implements RoleContract
                 'create'=>[ // the only thing we enforce on artists is the validator
                     'allowed'=>false,
                     'validator'=>[
-                        'fields'=>[
-                            'name'
-                        ],
                         'rules'=>[
                             'name'=>'required|min:2',
                         ],
@@ -132,19 +214,5 @@ class Role extends EntityAbstract implements RoleContract
         ];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
 
-    /**
-     * @param mixed $users
-     */
-    public function setUsers($users)
-    {
-        $this->users = $users;
-    }
 }

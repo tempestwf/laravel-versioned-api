@@ -6,13 +6,11 @@ use App\Entities\Traits\Deletable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\ORM\PersistentCollection;
-use Hash;
 use TempestTools\AclMiddleware\Contracts\HasRoles as HasRolesContract;
 use TempestTools\AclMiddleware\Contracts\HasPermissions as HasPermissionContract;
 use TempestTools\AclMiddleware\Contracts\HasId;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Contracts\Extractable;
-use TempestTools\Common\Laravel\Utility\Extractor;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use App\Entities\Traits\Authenticatable;
@@ -226,28 +224,92 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
     /**
      * @param Album $album
      * @param bool $preventLoop
+     * @return User
      */
-    public function addAlbum(Album $album, bool $preventLoop = false)
+    public function addAlbum(Album $album, bool $preventLoop = false): User
     {
         if ($preventLoop === false) {
             $album->addUser($this, true);
         }
 
         $this->albums[] = $album;
+        return $this;
     }
 
     /**
      * @param Album $album
      * @param bool $preventLoop
+     * @return User
      */
-    public function removeAlbum(Album $album, bool $preventLoop = false)
+    public function removeAlbum(Album $album, bool $preventLoop = false): User
     {
         if ($preventLoop === false) {
             $album->removeUser($this, true);
         }
 
         $this->albums->removeElement($album);
+        return $this;
     }
+
+    /**
+     * @param Role $role
+     * @param bool $preventLoop
+     * @return User
+     */
+    public function addRole(Role $role, bool $preventLoop = false): User
+    {
+        if ($preventLoop === false) {
+            $role->addUser($this, true);
+        }
+
+        $this->roles[] = $role;
+        return $this;
+    }
+
+    /**
+     * @param Role $role
+     * @param bool $preventLoop
+     * @return User
+     */
+    public function removeRole(Role $role, bool $preventLoop = false): User
+    {
+        if ($preventLoop === false) {
+            $role->removeUser($this, true);
+        }
+        $this->roles->removeElement($role);
+        return $this;
+    }
+
+
+    /**
+     * @param Permission $permission
+     * @param bool $preventLoop
+     * @return User
+     */
+    public function addPermission(Permission $permission, bool $preventLoop = false): User
+    {
+        if ($preventLoop === false) {
+            $permission->addUser($this, true);
+        }
+
+        $this->permissions[] = $permission;
+        return $this;
+    }
+
+    /**
+     * @param Permission $permission
+     * @param bool $preventLoop
+     * @return User
+     */
+    public function removePermission(Permission $permission, bool $preventLoop = false): User
+    {
+        if ($preventLoop === false) {
+            $permission->removeUser($this, true);
+        }
+        $this->permissions->removeElement($permission);
+        return $this;
+    }
+
 
     /**
      * @return array
@@ -260,10 +322,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                 'create'=>[
                     'allowed'=>false,
                     'validator'=>[ // Validates name and email and inherited by the rest of the config
-                        'fields'=>[
-                            'name',
-                            'email'
-                        ],
                         'rules'=>[
                             'name'=>'required|min:2',
                             'email'=>'required|email'
@@ -271,15 +329,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                         'messages'=>NULL,
                         'customAttributes'=>NULL,
                     ],
-                    'fields'=>[
-                        'password'=>[ // the password field should always be hashed when set, this is inherited by the set of the config
-                            'permissive'=>true,
-                            'mutate'=>function (){
-                                /** @noinspection NullPointerExceptionInspection */
-                                return Hash::make($this->getArrayHelper()->parseArrayPath([Extractor::EXTRACTOR_KEY_NAME, 'config', 'hashSecret']));
-                            }
-                        ],
-                    ]
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],
@@ -359,19 +408,5 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
         ];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
 
-    /**
-     * @param mixed $email
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
 }
