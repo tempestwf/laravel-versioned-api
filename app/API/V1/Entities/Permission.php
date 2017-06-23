@@ -90,10 +90,10 @@ class Permission extends EntityAbstract implements PermissionContract
     }
 
     /**
-     * @param mixed $users
+     * @param ArrayCollection $users
      * @return Permission
      */
-    public function setUsers($users): Permission
+    public function setUsers(ArrayCollection $users): Permission
     {
         $this->users = $users;
         return $this;
@@ -108,10 +108,10 @@ class Permission extends EntityAbstract implements PermissionContract
     }
 
     /**
-     * @param mixed $roles
+     * @param ArrayCollection $roles
      * @return Permission
      */
-    public function setRoles($roles): Permission
+    public function setRoles(ArrayCollection $roles): Permission
     {
         $this->roles = $roles;
         return $this;

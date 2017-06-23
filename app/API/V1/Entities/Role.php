@@ -106,9 +106,9 @@ class Role extends EntityAbstract implements RoleContract
     }
 
     /**
-     * @param mixed $users
+     * @param ArrayCollection $users
      */
-    public function setUsers($users)
+    public function setUsers(ArrayCollection $users)
     {
         $this->users = $users;
     }
