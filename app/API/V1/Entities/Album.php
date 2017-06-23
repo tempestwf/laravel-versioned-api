@@ -208,7 +208,7 @@ class Album extends EntityAbstract
                     'extends'=>[':user:create']
                 ],
             ],
-            'superAdmin'=>[ // Extends default because default has no additional rules on it, so super admins can do anything
+            'admin'=>[ // Extends default because default has no additional rules on it, so super admins can do anything
                 'create'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true
