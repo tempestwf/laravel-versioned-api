@@ -18,4 +18,14 @@ class ArtistRepository extends Repository
 {
     protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
         $entity = Artist::class;
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[]
+        ];
+    }
 }

@@ -14,4 +14,14 @@ class UserRepository extends Repository implements RepoHasPermissions
 
 	protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
         $entity = User::class;
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[]
+        ];
+    }
 }

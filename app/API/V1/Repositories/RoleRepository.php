@@ -10,4 +10,14 @@ class RoleRepository extends Repository
 {
 	protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
         $entity = Role::class;
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[]
+        ];
+    }
 }

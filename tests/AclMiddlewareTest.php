@@ -27,7 +27,7 @@ class AclMiddlewareTest extends TestCase
 
     /**
      * Test that acl middle ware works in allowing some one to access an end point
-     *
+     * @group aclMiddleware
      * @return void
      * @throws Exception
      */
@@ -75,7 +75,7 @@ class AclMiddlewareTest extends TestCase
 
     /**
      * Test that acl middle ware works in allowing some one to access an end point
-     *
+     * @group aclMiddleware
      * @return void
      * @throws Exception
      */

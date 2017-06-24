@@ -23,7 +23,7 @@ class CrudCreateTest extends TestCase
     }
     /**
      * A basic test example.
-     *
+     * @group crud
      * @return void
      * @throws Exception
      */

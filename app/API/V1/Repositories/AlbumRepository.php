@@ -1,8 +1,8 @@
 <?php
 
 namespace App\API\V1\Repositories;
-
 use App\Repositories\Repository;
+use App\API\V1\Entities\Album;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -15,5 +15,15 @@ use App\Repositories\Repository;
 class AlbumRepository extends Repository
 {
     protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
-        $entity = AlbumRepository::class;
+        $entity = Album::class;
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[]
+        ];
+    }
 }

@@ -10,4 +10,14 @@ class PermissionRepository extends Repository
 {
 	protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
         $entity = Permission::class;
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[]
+        ];
+    }
 }

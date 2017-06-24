@@ -7,6 +7,7 @@ class ArrayHelperTest extends TestCase
 {
 
     /**
+     * @group arrayHelper
      * Tests that auto parsing is working
      */
     public function testAutoParse()
@@ -27,6 +28,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
+     * @group arrayHelper
      * Test extraction works
      */
     public function testExtraction() {
