@@ -3,6 +3,7 @@
 namespace App\API\V1\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use TempestTools\AclMiddleware\Contracts\Permission as PermissionContract;
 use TempestTools\Crud\Laravel\EntityAbstract;
@@ -82,18 +83,18 @@ class Permission extends EntityAbstract implements PermissionContract
 
 
     /**
-     * @return mixed
+     * @return Collection|NULL
      */
-    public function getUsers()
+    public function getUsers(): ?Collection
     {
         return $this->users;
     }
 
 
     /**
-     * @return mixed
+     * @return Collection|NULL
      */
-    public function getRoles()
+    public function getRoles(): ?Collection
     {
         return $this->roles;
     }

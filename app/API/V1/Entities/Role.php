@@ -2,8 +2,8 @@
 
 namespace App\API\V1\Entities;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping AS ORM;
-use Doctrine\ORM\PersistentCollection;
 use TempestTools\AclMiddleware\Contracts\Role as RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
@@ -70,9 +70,9 @@ class Role extends EntityAbstract implements RoleContract
     }
 
     /**
-     * @return PersistentCollection|ArrayCollection
+     * @return Collection|NULL
      */
-    public function getPermissions():PersistentCollection
+    public function getPermissions(): ?Collection
     {
         return $this->permissions;
     }
@@ -88,9 +88,9 @@ class Role extends EntityAbstract implements RoleContract
     }
 
     /**
-     * @return mixed
+     * @return Collection|NULL
      */
-    public function getUsers()
+    public function getUsers(): ?Collection
     {
         return $this->users;
     }

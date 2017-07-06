@@ -1,8 +1,8 @@
 <?php
 namespace App\API\V1\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use TempestTools\Crud\Laravel\EntityAbstract;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -154,9 +154,9 @@ class Album extends EntityAbstract
     }
 
     /**
-     * @return ArrayCollection|PersistentCollection
+     * @return Collection|null
      */
-    public function getUsers()
+    public function getUsers(): ?Collection
     {
         return $this->users;
     }

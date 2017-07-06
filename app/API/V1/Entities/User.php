@@ -4,8 +4,8 @@ namespace App\API\V1\Entities;
 
 use App\Entities\Traits\Deletable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping AS ORM;
-use Doctrine\ORM\PersistentCollection;
 use TempestTools\AclMiddleware\Contracts\HasRoles as HasRolesContract;
 use TempestTools\AclMiddleware\Contracts\HasPermissions as HasPermissionContract;
 use TempestTools\AclMiddleware\Contracts\HasId;
@@ -160,17 +160,17 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
 	}
 
     /**
-     * @return ArrayCollection|PersistentCollection|\TempestTools\AclMiddleware\Contracts\Role[]
+     * @return Collection|NULL
      */
-    public function getRoles()
+    public function getRoles():?Collection
     {
         return $this->roles;
     }
 
     /**
-     * @return ArrayCollection|PersistentCollection|Permission[]
+     * @return Collection|NULL
      */
-    public function getPermissions()
+    public function getPermissions():?Collection
     {
         return $this->permissions;
     }
@@ -195,9 +195,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
     }
 
     /**
-     * @return ArrayCollection|Album[]
+     * @return Collection|NULL
      */
-    public function getAlbums()
+    public function getAlbums(): ?Collection
     {
         return $this->albums;
     }
