@@ -360,7 +360,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
             'admin'=>[ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
                 'create'=>[
                     'extends'=>[':user:create'],
-                    'enforce'=>[],
+                    'enforce'=>NULL,
                     'allowed'=>true,
                 ],
                 'update'=>[
