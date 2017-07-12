@@ -1,5 +1,6 @@
 <?php
 namespace App\API\V1\Entities;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -108,10 +109,10 @@ class Album extends EntityAbstract
     }
 
     /**
-     * @param string $releaseDate
+     * @param DateTime $releaseDate
      * @return Album
      */
-    public function setReleaseDate(string $releaseDate): Album
+    public function setReleaseDate(DateTime $releaseDate): Album
     {
         $this->releaseDate = $releaseDate;
         return $this;

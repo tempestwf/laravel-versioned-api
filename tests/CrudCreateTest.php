@@ -50,12 +50,10 @@ class CrudCreateTest extends TestCase
                             ]
                         ]
                     ],
-                    'user'=>[
+                    'users'=>[
                         'read'=>[
-                            [
-                                '1'=>[
-                                    'assignType'=>'add'
-                                ]
+                            '1'=>[
+                                'assignType'=>'addSingle'
                             ]
                         ]
                     ]
