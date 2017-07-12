@@ -38,6 +38,7 @@ class CrudCreateTest extends TestCase
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
             $albumRepo->init($arrayHelper, ['superAdmin'], ['default']);
+            /** @var Album[] $result */
             $result = $albumRepo->create([
                 [
                     'name'=>'BEETHOVEN: THE COMPLETE PIANO SONATAS',
@@ -59,6 +60,14 @@ class CrudCreateTest extends TestCase
                     ]
                 ]
             ]);
+            $album = $result[0];
+            $artist = $album->getArtist();
+            $users = $album->getUsers();
+            $user = $users[0];
+            $this->assertEquals($album->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            $this->assertEquals($artist->getName(), 'BEETHOVEN');
+            $this->assertEquals($user->getId(), 1);
+
             $em->flush();
             $conn->rollBack();
             //$conn->commit();
