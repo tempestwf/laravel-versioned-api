@@ -281,7 +281,7 @@ class Album extends EntityAbstract
                     'setTo'=>[
                         'name'=>'foo',
                     ],
-                    'mutate'=>function ($target, $extra) {
+                    'mutate'=>function ($extra) {
                         /** @var Album $self */
                         $self = $extra['self'];
                         $currentName = $self->getName();
@@ -299,7 +299,7 @@ class Album extends EntityAbstract
             ],
             'testTopLevelClosure'=>[
                 'create'=>[
-                    'closure'=>function ($target, $extra) {
+                    'closure'=>function () {
                         return false;
                     }
                 ]
@@ -328,7 +328,7 @@ class Album extends EntityAbstract
                 'create'=>[
                     'fields'=>[
                         'name'=>[
-                            'closure'=>function ($target, $extra) {
+                            'closure'=>function () {
                                 return false;
                             }
                         ]
@@ -339,7 +339,7 @@ class Album extends EntityAbstract
                 'create'=>[
                     'fields'=>[
                         'name'=>[
-                            'mutate'=>function ($target, $extra) {
+                            'mutate'=>function () {
                                 return 'foobar';
                             }
                         ]
