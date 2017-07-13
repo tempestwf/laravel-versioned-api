@@ -22,6 +22,242 @@ class CrudCreateTest extends TestCase
         return $arrayHelper;
     }
 
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testLowLevelMutate()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testLowLevelMutate'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            $result = $albumRepo->create($this->createData());
+            $album = $result[0];
+            $this->assertEquals($album->getName(), 'foobar');
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testLowLevelClosure()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testLowLevelClosure'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            try {
+                $createData = $this->createData();
+                $albumRepo->create($createData);
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testLowLevelEnforceOnRelation()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testLowLevelEnforceOnRelation'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            try {
+                $createData = $this->createData();
+                $albumRepo->create($createData);
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testLowLevelEnforce()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testLowLevelEnforce'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            try {
+                $createData = $this->createData();
+                $albumRepo->create($createData);
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testTopLevelClosure()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testTopLevelClosure'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            try {
+                $createData = $this->createData();
+                $albumRepo->create($createData);
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testEnforceTopLevelWorks()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testEnforceTopLevelWorks'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            try {
+                $createData = $this->createData();
+                $albumRepo->create($createData);
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testTopLevelSetToAndMutate()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testTopLevelSetToAndMutate'], ['default']);
+            /** @var Album[] $result */
+            $result = $albumRepo->create($this->createData());
+            $album = $result[0];
+            $this->assertEquals($album->getName(), 'foobar');
+            $em->flush();
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
 
     /**
      * A basic test example.

@@ -276,7 +276,79 @@ class Album extends EntityAbstract
                     ]
                 ]
             ],
+            'testTopLevelSetToAndMutate'=>[
+                'create'=>[
+                    'setTo'=>[
+                        'name'=>'foo',
+                    ],
+                    'mutate'=>function ($target, $extra) {
+                        /** @var Album $self */
+                        $self = $extra['self'];
+                        $currentName = $self->getName();
+                        $newName = $currentName . 'bar';
+                        $self->setName($newName);
+                    }
+                ]
+            ],
+            'testEnforceTopLevelWorks'=>[
+                'create'=>[
+                    'enforce'=>[
+                        'name'=>'NOT BEETHOVEN'
+                    ]
+                ]
+            ],
+            'testTopLevelClosure'=>[
+                'create'=>[
+                    'closure'=>function ($target, $extra) {
+                        return false;
+                    }
+                ]
+            ],
+            'testLowLevelEnforce'=>[
+                'create'=>[
+                    'fields'=>[
+                        'name'=>[
+                            'enforce'=>'foo'
+                        ]
+                    ]
+                ]
+            ],
+            'testLowLevelEnforceOnRelation'=>[
+                'create'=>[
+                    'fields'=>[
+                        'artist'=>[
+                            'enforce'=>[
+                                'name'=>'Bob the artist'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'testLowLevelClosure'=>[
+                'create'=>[
+                    'fields'=>[
+                        'name'=>[
+                            'closure'=>function ($target, $extra) {
+                                return false;
+                            }
+                        ]
+                    ]
+                ]
+            ],
+            'testLowLevelMutate'=>[
+                'create'=>[
+                    'fields'=>[
+                        'name'=>[
+                            'mutate'=>function ($target, $extra) {
+                                return 'foobar';
+                            }
+                        ]
+                    ]
+                ]
+            ],
         ];
+
+
     }
 
 }
