@@ -11,6 +11,7 @@ use TempestTools\Crud\Laravel\EntityAbstract;
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\AlbumRepository")
  * @ORM\Table(indexes={@ORM\Index(name="name_idx", columns={"name"}),@ORM\Index(name="releaseDate_idx", columns={"release_date"})})
+ * @ORM\HasLifecycleCallbacks
  */
 class Album extends EntityAbstract
 {
@@ -101,9 +102,9 @@ class Album extends EntityAbstract
     }
 
     /**
-     * @return string
+     * @return DateTime
      */
-    public function getReleaseDate():string
+    public function getReleaseDate():DateTime
     {
         return $this->releaseDate;
     }
@@ -172,7 +173,7 @@ class Album extends EntityAbstract
             'default'=>[
                 'create'=>[
                     'allowed'=>false, // by default this is not allowed
-                    'validator'=>[ // Add a validator that will be inherited by all other configs
+                    'validate'=>[ // Add a validator that will be inherited by all other configs
                         'rules'=>[
                             'name'=>'required|min:2',
                             'releaseDate'=>'required|date'
@@ -230,7 +231,51 @@ class Album extends EntityAbstract
                     'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
-            ]
+            ],
+            'testPermissive1'=>[
+                'create'=>[
+                    'permissive'=>true, // the following rules are defined here in order to be inherited further down
+                    'fields'=>[
+                        'name'=>[
+                            'permissive'=>false,
+                        ]
+                    ]
+                ]
+            ],
+            'testPermissive2'=>[
+                'create'=>[
+                    'permissive'=>true, // the following rules are defined here in order to be inherited further down
+                    'fields'=>[
+                        'name'=>[
+                            'permissive'=>false,
+                            'assign'=>[ // the can only add and remove them selves from an album
+                                'set'=>true
+                            ],
+                        ]
+                    ]
+                ]
+            ],
+            'testFastMode1'=>[
+                'create'=>[
+                    'fastMode'=>true, // the following rules are defined here in order to be inherited further down
+                    'fields'=>[
+                        'name'=>[
+                            'setTo'=>'foo'
+                        ]
+                    ]
+                ]
+            ],
+            'testFastMode2'=>[
+                'create'=>[
+                    'fastMode'=>true, // the following rules are defined here in order to be inherited further down
+                    'fields'=>[
+                        'name'=>[
+                            'fastMode'=>false,
+                            'setTo'=>'foo'
+                        ]
+                    ]
+                ]
+            ],
         ];
     }
 

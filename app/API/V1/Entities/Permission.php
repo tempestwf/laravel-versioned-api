@@ -10,6 +10,7 @@ use TempestTools\Crud\Laravel\EntityAbstract;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\PermissionRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Permission extends EntityAbstract implements PermissionContract
 {
@@ -166,7 +167,7 @@ class Permission extends EntityAbstract implements PermissionContract
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
-                    'validator'=>[ // the only thing we enforce on artists is the validator
+                    'validate'=>[ // the only thing we enforce on artists is the validator
                         'rules'=>[
                             'name'=>'required|min:2',
                         ],

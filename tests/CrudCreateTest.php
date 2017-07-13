@@ -21,6 +21,102 @@ class CrudCreateTest extends TestCase
         $arrayHelper->extract([$user]);
         return $arrayHelper;
     }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testValidatorWorks()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['admin'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            try {
+                $createData = $this->createData();
+                $createData[0]['name'] = 'f';
+                $albumRepo->create($createData);
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testFastMode1()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testFastMode1'], ['default']);
+            /** @var Album[] $result */
+            $result = $albumRepo->create($this->createData());
+            $album = $result[0];
+            $this->assertEquals($album->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            $em->flush();
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testFastMode2AndLowLevelSetTo()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testFastMode2'], ['default']);
+            /** @var Album[] $result */
+            $result = $albumRepo->create($this->createData());
+            $album = $result[0];
+            $this->assertEquals($album->getName(), 'foo');
+            $em->flush();
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
     /**
      * A basic test example.
      * @group crud
@@ -39,27 +135,7 @@ class CrudCreateTest extends TestCase
             //Test as super admin level permissions to be able to create everything in one fell swoop
             $albumRepo->init($arrayHelper, ['superAdmin'], ['default']);
             /** @var Album[] $result */
-            $result = $albumRepo->create([
-                [
-                    'name'=>'BEETHOVEN: THE COMPLETE PIANO SONATAS',
-                    'releaseDate'=>new \DateTime('now'),
-                    'artist'=>[
-                        'create'=>[
-                            [
-                                'name'=>'BEETHOVEN',
-                                'assignType'=>'set'
-                            ]
-                        ]
-                    ],
-                    'users'=>[
-                        'read'=>[
-                            '1'=>[
-                                'assignType'=>'addSingle'
-                            ]
-                        ]
-                    ]
-                ]
-            ]);
+            $result = $albumRepo->create($this->createData());
             $album = $result[0];
             $artist = $album->getArtist();
             $users = $album->getUsers();
@@ -70,10 +146,138 @@ class CrudCreateTest extends TestCase
 
             $em->flush();
             $conn->rollBack();
-            //$conn->commit();
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
         }
+    }
+
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testAllowedWorks()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['default'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            try {
+                $albumRepo->create($this->createData());
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testPermissiveWorks1()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testPermissive1'], ['default']);
+            $e = NULL;
+            /** @var Album[] $result */
+            try {
+                $albumRepo->create($this->createData());
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testPermissiveWorks2()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testPermissive2'], ['default']);
+            /** @var Album[] $result */
+            $result = $albumRepo->create($this->createData());
+            $album = $result[0];
+            $this->assertEquals($album->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            $em->flush();
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+
+
+
+    /**
+     * @return array
+     */
+    protected function createData (): array
+    {
+        return [
+            [
+                'name'=>'BEETHOVEN: THE COMPLETE PIANO SONATAS',
+                'releaseDate'=>new \DateTime('now'),
+                'artist'=>[
+                    'create'=>[
+                        [
+                            'name'=>'BEETHOVEN',
+                            'assignType'=>'set'
+                        ]
+                    ]
+                ],
+                'users'=>[
+                    'read'=>[
+                        '1'=>[
+                            'assignType'=>'addSingle'
+                        ]
+                    ]
+                ]
+            ]
+        ];
     }
 }

@@ -10,6 +10,7 @@ use TempestTools\Crud\Laravel\EntityAbstract;
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\ArtistRepository")
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="name_unq", columns={"name"})})
+ * @ORM\HasLifecycleCallbacks
  */
 class Artist extends EntityAbstract
 {
@@ -112,7 +113,7 @@ class Artist extends EntityAbstract
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
-                    'validator'=>[ // the only thing we enforce on artists is the validator
+                    'validate'=>[ // the only thing we enforce on artists is the validator
                         'rules'=>[
                             'name'=>'required|min:2',
                         ],

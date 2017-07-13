@@ -12,6 +12,7 @@ use TempestTools\Crud\Laravel\EntityAbstract;
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\RoleRepository")
  * @ORM\Table(name="roles")
+ * @ORM\HasLifecycleCallbacks
  */
 class Role extends EntityAbstract implements RoleContract
 {
@@ -164,7 +165,7 @@ class Role extends EntityAbstract implements RoleContract
             'default'=>[
                 'create'=>[ // the only thing we enforce on artists is the validator
                     'allowed'=>false,
-                    'validator'=>[
+                    'validate'=>[
                         'rules'=>[
                             'name'=>'required|min:2',
                         ],

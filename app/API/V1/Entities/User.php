@@ -21,6 +21,7 @@ use TempestTools\Crud\Laravel\EntityAbstract;
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\UserRepository")
  * @ORM\Table(name="users")
+ * @ORM\HasLifecycleCallbacks
  */
 class User extends EntityAbstract implements HasRolesContract, HasPermissionContract, HasId, Extractable, AuthenticatableContract
 {
@@ -302,7 +303,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
-                    'validator'=>[ // Validates name and email and inherited by the rest of the config
+                    'validate'=>[ // Validates name and email and inherited by the rest of the config
                         'rules'=>[
                             'name'=>'required|min:2',
                             'email'=>'required|email'
