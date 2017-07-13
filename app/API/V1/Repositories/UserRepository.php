@@ -21,7 +21,8 @@ class UserRepository extends Repository implements RepoHasPermissions
     public function getTTConfig(): array
     {
         return [
-            'default'=>[]
+            'default'=>[],
+            'testing'=>[]
         ];
     }
 }

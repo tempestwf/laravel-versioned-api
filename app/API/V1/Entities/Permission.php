@@ -195,7 +195,19 @@ class Permission extends EntityAbstract implements PermissionContract
                     'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
-            ]
+            ],
+            'testing'=>[
+                'create'=>[
+                    'allowed'=>true,
+                    'extends'=>[':default:create'],
+                ],
+                'update'=>[
+                    'extends'=>[':default:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':default:create'],
+                ]
+            ],
         ];
     }
 }

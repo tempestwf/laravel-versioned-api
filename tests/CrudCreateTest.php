@@ -38,7 +38,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testLowLevelMutate'], ['default']);
+            $albumRepo->init($arrayHelper, ['testLowLevelMutate'], ['testing']);
             $e = NULL;
             /** @var Album[] $result */
             $result = $albumRepo->create($this->createData());
@@ -68,7 +68,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testLowLevelClosure'], ['default']);
+            $albumRepo->init($arrayHelper, ['testLowLevelClosure'], ['testing']);
             $e = NULL;
             /** @var Album[] $result */
             try {
@@ -103,7 +103,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testLowLevelEnforceOnRelation'], ['default']);
+            $albumRepo->init($arrayHelper, ['testLowLevelEnforceOnRelation'], ['testing']);
             $e = NULL;
             /** @var Album[] $result */
             try {
@@ -138,7 +138,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testLowLevelEnforce'], ['default']);
+            $albumRepo->init($arrayHelper, ['testLowLevelEnforce'], ['testing']);
             $e = NULL;
             /** @var Album[] $result */
             try {
@@ -173,7 +173,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testTopLevelClosure'], ['default']);
+            $albumRepo->init($arrayHelper, ['testTopLevelClosure'], ['testing']);
             $e = NULL;
             /** @var Album[] $result */
             try {
@@ -208,7 +208,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testEnforceTopLevelWorks'], ['default']);
+            $albumRepo->init($arrayHelper, ['testEnforceTopLevelWorks'], ['testing']);
             $e = NULL;
             /** @var Album[] $result */
             try {
@@ -244,7 +244,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testTopLevelSetToAndMutate'], ['default']);
+            $albumRepo->init($arrayHelper, ['testTopLevelSetToAndMutate'], ['testing']);
             /** @var Album[] $result */
             $result = $albumRepo->create($this->createData());
             $album = $result[0];
@@ -275,7 +275,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['admin'], ['default']);
+            $albumRepo->init($arrayHelper, ['admin'], ['testing']);
             $e = NULL;
             /** @var Album[] $result */
             try {
@@ -310,7 +310,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testFastMode1'], ['default']);
+            $albumRepo->init($arrayHelper, ['testFastMode1'], ['testing']);
             /** @var Album[] $result */
             $result = $albumRepo->create($this->createData());
             $album = $result[0];
@@ -340,7 +340,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testFastMode2'], ['default']);
+            $albumRepo->init($arrayHelper, ['testFastMode2'], ['testing']);
             /** @var Album[] $result */
             $result = $albumRepo->create($this->createData());
             $album = $result[0];
@@ -369,7 +369,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['superAdmin'], ['default']);
+            $albumRepo->init($arrayHelper, ['superAdmin'], ['testing']);
             /** @var Album[] $result */
             $result = $albumRepo->create($this->createData());
             $album = $result[0];
@@ -439,7 +439,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testPermissive1'], ['default']);
+            $albumRepo->init($arrayHelper, ['testPermissive1'], ['testing']);
             $e = NULL;
             /** @var Album[] $result */
             try {
@@ -472,7 +472,7 @@ class CrudCreateTest extends TestCase
             $albumRepo = $this->em->getRepository(Album::class);
             $arrayHelper = $this->makeArrayHelper();
             //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testPermissive2'], ['default']);
+            $albumRepo->init($arrayHelper, ['testPermissive2'], ['testing']);
             /** @var Album[] $result */
             $result = $albumRepo->create($this->createData());
             $album = $result[0];

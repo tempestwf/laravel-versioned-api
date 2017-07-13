@@ -17,7 +17,8 @@ class PermissionRepository extends Repository
     public function getTTConfig(): array
     {
         return [
-            'default'=>[]
+            'default'=>[],
+            'testing'=>[]
         ];
     }
 }
