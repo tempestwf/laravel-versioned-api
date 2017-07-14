@@ -49,8 +49,8 @@ class ArrayHelperTest extends TestCase
         return new ArrayObject([
            'base'=> [
                'extends'=>[],
-               'closure'=>function (ArrayHelper $arrayHelper) {
-                    return ($arrayHelper instanceof ArrayHelper);
+               'closure'=>function ($extra, ArrayHelper $arrayHelper) {
+                    return ($arrayHelper instanceof ArrayHelper && is_array($extra));
                },
                'goGetIt'=>'?:one:retrieve',
                'templateIt'=>'?im {{:one:retrieve2}} {{:one:retrieve3}}!'
