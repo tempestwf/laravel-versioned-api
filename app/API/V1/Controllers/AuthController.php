@@ -3,7 +3,6 @@
 namespace App\API\V1\Controllers;
 
 use Dingo\Api\Http\Request;
-use TempestTools\Common\Exceptions\RuntimeExceptionAnnotated;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\JWTAuth;
 
