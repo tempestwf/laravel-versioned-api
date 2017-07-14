@@ -393,9 +393,11 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionCont
                     'extends'=>[':default:create'],
                 ],
                 'update'=>[
+                    'allowed'=>true,
                     'extends'=>[':default:create'],
                 ],
                 'delete'=>[
+                    'allowed'=>true,
                     'extends'=>[':default:create'],
                 ]
             ],

@@ -352,9 +352,11 @@ class Album extends EntityAbstract
                     'extends'=>[':default:create'],
                 ],
                 'update'=>[
+                    'allowed'=>true,
                     'extends'=>[':default:create'],
                 ],
                 'delete'=>[
+                    'allowed'=>true,
                     'extends'=>[':default:create'],
                 ]
             ],
