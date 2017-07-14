@@ -3,6 +3,7 @@
 namespace App\API\V1\Controllers;
 
 use Dingo\Api\Http\Request;
+use TempestTools\Common\Exceptions\RuntimeExceptionAnnotated;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\JWTAuth;
 
@@ -12,14 +13,14 @@ class AuthController extends APIController
 {
 	/** @var JWTAuth $auth */
 	protected $auth;
-	
+
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		$this->auth = App::make(JWTAuth::class);
 	}
-	
+
 	public function authenticate(Request $request)
 	{
 		$credentials = $request->only('email', 'password');
