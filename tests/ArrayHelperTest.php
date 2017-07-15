@@ -10,6 +10,44 @@ class ArrayHelperTest extends TestCase
      * @group arrayHelper
      * Tests that auto parsing is working
      */
+    public function testEnforceValues()
+    {
+        $arrayHelper = new ArrayHelper(new ArrayObject());
+        $result = $arrayHelper->testEnforceValues([['foo'=>'bar']], [['foo'=>'bar']]);
+        $this->assertTrue($result);
+        $result = $arrayHelper->testEnforceValues([['foo'=>'bar']], [['foo'=>'baz']]);
+        $this->assertFalse($result);
+
+    }
+
+    /**
+     * @group arrayHelper
+     * Tests that auto parsing is working
+     */
+    public function testWrapArrayAndNumeric()
+    {
+        $arrayHelper = new ArrayHelper(new ArrayObject());
+        $result = $arrayHelper->wrapArray(['foo'=>'bar']);
+        $this->assertTrue($arrayHelper->isNumeric($result));
+
+    }
+
+    /**
+     * @group arrayHelper
+     * Tests that auto parsing is working
+     */
+    public function testFindSetting()
+    {
+        $arrayHelper = new ArrayHelper(new ArrayObject());
+        $result = $arrayHelper->findSetting([['foo'=>'bar'], NULL], 'foo');
+        $this->assertSame($result, 'bar');
+
+    }
+
+    /**
+     * @group arrayHelper
+     * Tests that auto parsing is working
+     */
     public function testAutoParse()
     {
         $testArray = $this->getTestArray();
