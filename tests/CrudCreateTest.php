@@ -1,10 +1,15 @@
 <?php
 
 use App\API\V1\Entities\Album;
+use App\API\V1\Entities\Artist;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\AlbumRepository;
+use App\API\V1\Repositories\ArtistRepository;
+use App\API\V1\Repositories\UserRepository;
 use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
 use TempestTools\Common\Helper\ArrayHelper;
+use TempestTools\Crud\Constants\EntityEvents;
+use TempestTools\Crud\Constants\RepositoryEvents;
 
 class CrudCreateTest extends TestCase
 {
@@ -21,6 +26,293 @@ class CrudCreateTest extends TestCase
         $arrayHelper->extract([$user]);
         return $arrayHelper;
     }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testEventsFire()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testTopLevelSetToAndMutate'], ['testing']);
+            $albumRepo->create($this->createData());
+
+            /** @noinspection NullPointerExceptionInspection */
+            $array = $albumRepo->getArrayHelper()->getArray()->getArrayCopy();
+
+            $this->assertArrayHasKey('params', $array['repoEvents']['preStart']);
+            $this->assertArrayHasKey('arrayHelper', $array['repoEvents']['preStart']);
+            $this->assertArrayHasKey('results', $array['repoEvents']['preStart']);
+            $this->assertArrayHasKey('self', $array['repoEvents']['preStart']);
+            $this->assertArrayHasKey('optionOverrides', $array['repoEvents']['preStart']);
+            $this->assertArrayHasKey('entitiesShareConfigs', $array['repoEvents']['preStart']);
+            $this->assertArrayHasKey('frontEndOptions', $array['repoEvents']['preStart']);
+            $this->assertArrayHasKey('action', $array['repoEvents']['preStart']);
+
+            foreach ([
+                 RepositoryEvents::PRE_START,
+                 RepositoryEvents::PRE_STOP,
+                 RepositoryEvents::PRE_CREATE_BATCH,
+                 RepositoryEvents::PRE_CREATE,
+                 RepositoryEvents::VALIDATE_CREATE,
+                 RepositoryEvents::VERIFY_CREATE,
+                 RepositoryEvents::PROCESS_RESULTS_CREATE,
+                 RepositoryEvents::POST_CREATE,
+                 RepositoryEvents::POST_COMMIT_CREATE,
+                 RepositoryEvents::POST_CREATE_BATCH
+             ] as $event) {
+                $this->assertArrayHasKey($event, $array['repoEvents']);
+            }
+
+            foreach ([
+                 EntityEvents::PRE_SET_FIELD,
+                 EntityEvents::PRE_PROCESS_ASSOCIATION_PARAMS,
+                 EntityEvents::PRE_PERSIST,
+                 EntityEvents::POST_PERSIST,
+             ] as $event) {
+                $this->assertArrayHasKey($event, $array['entityEvents']);
+            }
+
+            $em->flush();
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testMaxBatch()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testing'], ['testing']);
+
+            $e = NULL;
+            try {
+                $artistRepo->create([
+                    [
+                        'name'=>'BEETHOVEN',
+                    ],
+                    [
+                        'name'=>'BACH',
+                    ]
+                ], ['batchMax'=>1]);
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testAssignById()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $albumRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var Artist[] $artists */
+            $artists = $artistRepo->create([
+                [
+                    'name'=>'BEETHOVEN',
+                ],
+            ]);
+            $albums = $albumRepo->create([
+                [
+                    'name'=>'BEETHOVEN: THE COMPLETE PIANO SONATAS',
+                    'artist'=>$artists[0]->getId(),
+                    'releaseDate'=>new \DateTime('now')
+                ]
+            ]);
+            $this->assertEquals($albums[0]->getArtist()->getId(), $artists[0]->getId());
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
+    public function testMultiAddAndChain()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['admin'], ['testing']);
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var User[] $users */
+            $users = $userRepo->create([
+                [
+                    'name'=>'bob',
+                    'email'=>'bob@bob.com',
+                    'password'=>'bobsyouruncle'
+                ],
+                [
+                    'name'=>'rob',
+                    'email'=>'rob@rob.com',
+                    'password'=>'norobsyouruncle'
+                ],
+            ]);
+
+            $userIds = [];
+            /** @var User $user */
+            foreach ($users as $user) {
+                $userIds[] = $user->getId();
+            }
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            /** @var Artist[] $result */
+            $result = $artistRepo->create([
+                [
+                    'name'=>'BEETHOVEN',
+                    'albums'=>[
+                        'create'=> [
+                            [
+                                'name'=> 'BEETHOVEN: THE COMPLETE PIANO SONATAS',
+                                'assignType'=>'addSingle',
+                                'releaseDate'=>new \DateTime('now'),
+                                'users'=>[
+                                    'read'=> [
+                                        $userIds[0]=>[
+                                            'assignType'=>'addSingle',
+                                        ],
+                                        $userIds[1]=>[
+                                            'assignType'=>'addSingle',
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            [
+                                'name'=> 'BEETHOVEN: THE COMPLETE STRING QUARTETS',
+                                'assignType'=>'addSingle',
+                                'releaseDate'=>new \DateTime('now'),
+                                'users'=>[
+                                    'read'=> [
+                                        $userIds[0]=>[
+                                            'assignType'=>'addSingle',
+                                        ],
+                                        $userIds[1]=>[
+                                            'assignType'=>'addSingle',
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                [
+                    'name'=>'BACH',
+                    'albums'=>[
+                        'create'=> [
+                            [
+                                'name'=> 'Amsterdam Baroque Orchestra',
+                                'assignType'=>'addSingle',
+                                'releaseDate'=>new \DateTime('now'),
+                                'users'=>[
+                                    'read'=> [
+                                        $userIds[0]=>[
+                                            'assignType'=>'addSingle',
+                                        ],
+                                        $userIds[1]=>[
+                                            'assignType'=>'addSingle',
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            [
+                                'name'=> 'The English Suites',
+                                'assignType'=>'addSingle',
+                                'releaseDate'=>new \DateTime('now'),
+                                'users'=>[
+                                    'read'=> [
+                                        $userIds[0]=>[
+                                            'assignType'=>'addSingle',
+                                        ],
+                                        $userIds[1]=>[
+                                            'assignType'=>'addSingle',
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+            $this->assertEquals($result[0]->getName(), 'BEETHOVEN');
+            $this->assertEquals($result[0]->getAlbums()[0]->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            $this->assertEquals($result[0]->getAlbums()[1]->getName(), 'BEETHOVEN: THE COMPLETE STRING QUARTETS');
+            $this->assertEquals($result[0]->getAlbums()[0]->getUsers()[0]->getName(), 'bob');
+            $this->assertEquals($result[0]->getAlbums()[0]->getUsers()[1]->getName(), 'rob');
+            $this->assertEquals($result[0]->getAlbums()[1]->getUsers()[0]->getName(), 'bob');
+            $this->assertEquals($result[0]->getAlbums()[1]->getUsers()[1]->getName(), 'rob');
+            $this->assertEquals($result[1]->getName(), 'BACH');
+            $this->assertEquals($result[1]->getAlbums()[0]->getName(), 'Amsterdam Baroque Orchestra');
+            $this->assertEquals($result[1]->getAlbums()[1]->getName(), 'The English Suites');
+            $this->assertEquals($result[1]->getAlbums()[0]->getUsers()[0]->getName(), 'bob');
+            $this->assertEquals($result[1]->getAlbums()[0]->getUsers()[1]->getName(), 'rob');
+            $this->assertEquals($result[1]->getAlbums()[1]->getUsers()[0]->getName(), 'bob');
+            $this->assertEquals($result[1]->getAlbums()[1]->getUsers()[1]->getName(), 'rob');
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
 
     /**
      * A basic test example.
@@ -502,18 +794,18 @@ class CrudCreateTest extends TestCase
                     'create'=>[
                         [
                             'name'=>'BEETHOVEN',
-                            'assignType'=>'set'
-                        ]
-                    ]
+                            'assignType'=>'set',
+                        ],
+                    ],
                 ],
                 'users'=>[
                     'read'=>[
                         '1'=>[
-                            'assignType'=>'addSingle'
-                        ]
-                    ]
-                ]
-            ]
+                            'assignType'=>'addSingle',
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 }

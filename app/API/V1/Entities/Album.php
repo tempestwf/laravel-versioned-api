@@ -4,6 +4,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 use TempestTools\Crud\Laravel\EntityAbstract;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -161,6 +162,30 @@ class Album extends EntityAbstract
     public function getUsers(): ?Collection
     {
         return $this->users;
+    }
+
+    public function preSetField(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $array = $this->getArrayHelper()->getArray();
+        if (!isset($array['entityEvents'])) {
+            $array['entityEvents'] = [];
+        }
+        $array['entityEvents']['preSetField'] = $e->getArgs()->getArrayCopy();
+    }
+
+    public function preProcessAssociationParams(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['entityEvents']['preProcessAssociationParams']=$e;
+    }
+
+    public function prePersist(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['entityEvents']['prePersist']=$e;
+    }
+
+    public function postPersist(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['entityEvents']['postPersist']=$e;
     }
 
 
