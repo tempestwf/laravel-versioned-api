@@ -164,7 +164,6 @@ class CrudCreateTest extends TestCase
             ]);
             $this->assertEquals($albums[0]->getArtist()->getId(), $artists[0]->getId());
 
-
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
