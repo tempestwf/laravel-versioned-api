@@ -62,11 +62,6 @@ class AlbumRepository extends Repository
         $this->getArrayHelper()->getArray()['repoEvents']['postCreate']=$e;
     }
 
-    public function postCommitCreate(GenericEventArgs $e) {
-        /** @noinspection NullPointerExceptionInspection */
-        $this->getArrayHelper()->getArray()['repoEvents']['postCommitCreate']=$e;
-    }
-
     public function postCreateBatch(GenericEventArgs $e) {
         /** @noinspection NullPointerExceptionInspection */
         $this->getArrayHelper()->getArray()['repoEvents']['postCreateBatch']=$e;

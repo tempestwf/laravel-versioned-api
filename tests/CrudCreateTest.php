@@ -68,7 +68,6 @@ class CrudCreateTest extends TestCase
                  RepositoryEvents::VERIFY_CREATE,
                  RepositoryEvents::PROCESS_RESULTS_CREATE,
                  RepositoryEvents::POST_CREATE,
-                 RepositoryEvents::POST_COMMIT_CREATE,
                  RepositoryEvents::POST_CREATE_BATCH
              ] as $event) {
                 $this->assertArrayHasKey($event, $array['repoEvents']);
