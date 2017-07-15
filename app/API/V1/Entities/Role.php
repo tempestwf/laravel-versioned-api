@@ -57,7 +57,7 @@ class Role extends EntityAbstract implements RoleContract
     /**
      * @return int
      */
-    public function getId():Integer
+    public function getId():?int
     {
         return $this->id;
     }
@@ -65,7 +65,7 @@ class Role extends EntityAbstract implements RoleContract
     /**
      * @return string
      */
-    public function getName():String
+    public function getName():string
     {
         return $this->name;
     }

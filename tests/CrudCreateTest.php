@@ -34,6 +34,37 @@ class CrudCreateTest extends TestCase
      * @return void
      * @throws Exception
      */
+    public function testNoFlush()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $arrayHelper = $this->makeArrayHelper();
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            $albumRepo->init($arrayHelper, ['testTopLevelSetToAndMutate'], ['testing']);
+            /** @var Album[] $result */
+            $result = $albumRepo->create($this->createData(), ['flush'=>false]);
+
+            $this->assertEquals($result[0]->getId(), NULL);
+
+            $em->flush();
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * A basic test example.
+     * @group crud
+     * @return void
+     * @throws Exception
+     */
     public function testEventsFire()
     {
         $em = $this->em();
