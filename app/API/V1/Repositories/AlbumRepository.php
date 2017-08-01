@@ -67,6 +67,83 @@ class AlbumRepository extends Repository
         $this->getArrayHelper()->getArray()['repoEvents']['postCreateBatch']=$e;
     }
 
+
+    public function preUpdateBatch(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['preUpdateBatch']=$e;
+    }
+
+    public function preUpdate(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['preUpdate']=$e;
+    }
+
+    public function validateUpdate(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['validateUpdate']=$e;
+    }
+
+    public function verifyUpdate(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['verifyUpdate']=$e;
+    }
+
+    public function processResultsUpdate(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['processResultsUpdate']=$e;
+    }
+
+    public function postUpdate(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['postUpdate']=$e;
+    }
+
+    public function postUpdateBatch(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['postUpdateBatch']=$e;
+    }
+
+
+    public function preDeleteBatch(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['preDeleteBatch']=$e;
+    }
+
+    public function preDelete(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['preDelete']=$e;
+    }
+
+    public function validateDelete(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['validateDelete']=$e;
+    }
+
+    public function verifyDelete(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['verifyDelete']=$e;
+    }
+
+    public function processResultsDelete(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['processResultsDelete']=$e;
+    }
+
+    public function postDelete(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['postDelete']=$e;
+    }
+
+    public function postDeleteBatch(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['postDeleteBatch']=$e;
+    }
+
+
+
+
+
+
     /**
      * @return array
      */

@@ -87,7 +87,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
      * @group cud
      * @throws Exception
      */
-    public function testUpdateWithChain () {
+    public function testUpdateWithChainAndEvents () {
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -128,6 +128,23 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
             $this->assertEquals($result2[0]->getName(), 'The artist formerly known as BEETHOVEN');
             $this->assertEquals($result2[0]->getAlbums()[0]->getName(), 'Kick Ass Piano Solos!');
 
+            /** @noinspection NullPointerExceptionInspection */
+            $array = $artistRepo->getArrayHelper()->getArray()->getArrayCopy();
+
+            foreach ([
+                 RepositoryEvents::PRE_START,
+                 RepositoryEvents::PRE_STOP,
+                 RepositoryEvents::PRE_UPDATE_BATCH,
+                 RepositoryEvents::PRE_UPDATE,
+                 RepositoryEvents::VALIDATE_UPDATE,
+                 RepositoryEvents::VERIFY_UPDATE,
+                 RepositoryEvents::PROCESS_RESULTS_UPDATE,
+                 RepositoryEvents::POST_UPDATE,
+                 RepositoryEvents::POST_UPDATE_BATCH
+             ] as $event) {
+                $this->assertArrayHasKey($event, $array['repoEvents']);
+            }
+
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
@@ -139,7 +156,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
      * @group cud
      * @throws Exception
      */
-    public function testMultiDelete () {
+    public function testMultiDeleteAndEvents () {
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -175,6 +192,25 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
             $this->assertNull($result2[0]->getId());
             $this->assertNull($result2[1]->getId());
+
+            /** @noinspection NullPointerExceptionInspection */
+            $array = $artistRepo->getArrayHelper()->getArray()->getArrayCopy();
+
+            foreach ([
+                 RepositoryEvents::PRE_START,
+                 RepositoryEvents::PRE_STOP,
+                 RepositoryEvents::PRE_DELETE_BATCH,
+                 RepositoryEvents::PRE_DELETE,
+                 RepositoryEvents::VALIDATE_DELETE,
+                 RepositoryEvents::VERIFY_DELETE,
+                 RepositoryEvents::PROCESS_RESULTS_DELETE,
+                 RepositoryEvents::POST_DELETE,
+                 RepositoryEvents::POST_DELETE_BATCH
+             ] as $event) {
+                $this->assertArrayHasKey($event, $array['repoEvents']);
+            }
+
+
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
