@@ -11,7 +11,7 @@ use TempestTools\Common\Helper\ArrayHelper;
 use TempestTools\Crud\Constants\EntityEvents;
 use TempestTools\Crud\Constants\RepositoryEvents;
 
-class CrudCreateTest extends TestCase
+class CrudCreateUpdateAndDeleteTest extends TestCase
 {
     use MakeEmTrait;
 
@@ -27,6 +27,61 @@ class CrudCreateTest extends TestCase
         return $arrayHelper;
     }
 
+    /**
+     * @group cud
+     * @throws Exception
+     */
+    public function testNullAssignType () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testNullAssignType'], ['testing']);
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var User[] $users */
+            $users = $userRepo->create($this->createRobAndBobData());
+
+            $userIds = [];
+            /** @var User $user */
+            foreach ($users as $user) {
+                $userIds[] = $user->getId();
+            }
+
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            /** @var Artist[] $result */
+            $result = $artistRepo->create($this->createArtistChainData($userIds));
+            $e = null;
+            try {
+                /** @var Artist[] $result2 */
+                $artistRepo->update([
+                    $result[0]->getId() => [
+                        'name'=>'The artist formerly known as BEETHOVEN',
+                        'albums'=>[
+                            'update'=>[
+                                $result[0]->getAlbums()[0]->getId() => [
+                                    'name'=>'Kick Ass Piano Solos!'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]);
+            } catch (Exception $e){
+                // The future tests for some reason hang if there isn't a rollback right here.......
+                $conn->rollBack();
+            }
+
+            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
 
     /**
      * @group cud

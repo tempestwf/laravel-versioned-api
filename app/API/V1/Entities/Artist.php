@@ -155,6 +155,27 @@ class Artist extends EntityAbstract
                     'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
+            ],
+            'testNullAssignType'=>[ // can do everything in default, and is allowed to do it when a super admin
+                'create'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
+                'update'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true,
+                    'fields'=>[
+                        'albums'=>[
+                            'assign'=>[
+                                'null'=>false
+                            ]
+                        ]
+                    ]
+                ],
+                'delete'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
             ]
         ];
     }
