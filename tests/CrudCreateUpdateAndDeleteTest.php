@@ -71,8 +71,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
                     ]
                 ]);
             } catch (Exception $e){
-                // The future tests for some reason hang if there isn't a rollback right here.......
-                $conn->rollBack();
+
             }
 
             $this->assertEquals(get_class($e), \RuntimeException::class);
