@@ -11,24 +11,36 @@ use TempestTools\Common\Helper\ArrayHelper;
 use TempestTools\Crud\Constants\EntityEvents;
 use TempestTools\Crud\Constants\RepositoryEvents;
 
-class CrudCreateUpdateAndDeleteTest extends TestCase
+class CrudTest extends TestCase
 {
     use MakeEmTrait;
 
     /**
-     * @return ArrayHelper
+     * @group CrudReadOnly
+     * @throws Exception
      */
-    public function makeArrayHelper ():ArrayHelper {
-        /** @var User $repo */
-        $userRepo = $this->em->getRepository(User::class);
-        $user = $userRepo->findOneBy(['id'=>1]);
-        $arrayHelper = new ArrayHelper();
-        $arrayHelper->extract([$user]);
-        return $arrayHelper;
+    public function testBasicRead () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['user'], ['testing']);
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
     }
 
+    
     /**
-     * @group cud
+     * @group CrudCudOnly
      * @throws Exception
      */
     public function testNullAssignType () {
@@ -83,7 +95,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
     }
 
     /**
-     * @group cud
+     * @group CrudCudOnly
      * @throws Exception
      */
     public function testUpdateWithChainAndEvents () {
@@ -152,7 +164,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
     }
 
     /**
-     * @group cud
+     * @group CrudCudOnly
      * @throws Exception
      */
     public function testMultiDeleteAndEvents () {
@@ -219,7 +231,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
 
     /**
-     * @group cud
+     * @group CrudCudOnly
      * @throws Exception
      */
     public function testChainRemove () {
@@ -272,7 +284,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
 
     /**
-     * @group cud
+     * @group CrudCudOnly
      * @throws Exception
      */
     public function testChainDelete () {
@@ -326,11 +338,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testNoFlush()
+    public function testNoFlush():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -357,11 +369,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testEventsFire()
+    public function testEventsFire():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -419,11 +431,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testMaxBatch()
+    public function testMaxBatch():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -458,11 +470,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testAssignById()
+    public function testAssignById():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -499,11 +511,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testMultiAddAndChain()
+    public function testMultiAddAndChain():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -554,11 +566,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testLowLevelMutate()
+    public function testLowLevelMutate():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -584,11 +596,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testLowLevelClosure()
+    public function testLowLevelClosure():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -619,11 +631,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testLowLevelEnforceOnRelation()
+    public function testLowLevelEnforceOnRelation():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -654,11 +666,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testLowLevelEnforce()
+    public function testLowLevelEnforce():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -689,11 +701,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testTopLevelClosure()
+    public function testTopLevelClosure():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -724,11 +736,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testEnforceTopLevelWorks()
+    public function testEnforceTopLevelWorks():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -760,11 +772,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testTopLevelSetToAndMutate()
+    public function testTopLevelSetToAndMutate():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -791,11 +803,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testValidatorWorks()
+    public function testValidatorWorks():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -826,11 +838,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testFastMode1()
+    public function testFastMode1():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -856,11 +868,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testFastMode2AndLowLevelSetTo()
+    public function testFastMode2AndLowLevelSetTo():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -885,11 +897,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testCreateAlbumAndArtistAndAddUserToAlbum()
+    public function testCreateAlbumAndArtistAndAddUserToAlbum():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -922,11 +934,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testAllowedWorks()
+    public function testAllowedWorks():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -955,11 +967,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testPermissiveWorks1()
+    public function testPermissiveWorks1():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -988,11 +1000,11 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
 
     /**
      * A basic test example.
-     * @group cud
+     * @group CrudCudOnly
      * @return void
      * @throws Exception
      */
-    public function testPermissiveWorks2()
+    public function testPermissiveWorks2():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -1016,7 +1028,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
     }
 
 
-    protected function createRobAndBobData():array
+    public function createRobAndBobData():array
     {
         return [
             [
@@ -1036,7 +1048,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
     /**
      * @return array
      */
-    protected function createData (): array
+    public function createData (): array
     {
         return [
             [
@@ -1065,7 +1077,7 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
      * @param array $userIds
      * @return array
      */
-    protected function createArtistChainData (array $userIds):array {
+    public function createArtistChainData (array $userIds):array {
         return [
             [
                 'name'=>'BEETHOVEN',
@@ -1143,4 +1155,17 @@ class CrudCreateUpdateAndDeleteTest extends TestCase
             ]
         ];
     }
+
+    /**
+     * @return ArrayHelper
+     */
+    public function makeArrayHelper ():ArrayHelper {
+        /** @var User $repo */
+        $userRepo = $this->em->getRepository(User::class);
+        $user = $userRepo->findOneBy(['id'=>1]);
+        $arrayHelper = new ArrayHelper();
+        $arrayHelper->extract([$user]);
+        return $arrayHelper;
+    }
+
 }
