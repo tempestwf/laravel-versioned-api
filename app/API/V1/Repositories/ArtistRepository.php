@@ -148,6 +148,23 @@ class ArtistRepository extends Repository
     {
         return [
             'default'=>[],
+            'user'=>[
+                'extends'=>[':default']
+            ],
+            'userArtistWithAlbums'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'select'=>[
+                        'artistsAndAlbums'=>'a, a2'
+                    ],
+                    'innerJoin'=>[
+                        'justCurrentUsersAlbums'=>[
+                            'join'=>'a.albums',
+                            'alias'=>'a2',
+                        ]
+                    ]
+                ]
+            ],
             'testing'=>[]
         ];
     }

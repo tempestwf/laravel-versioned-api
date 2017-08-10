@@ -3,6 +3,7 @@
 namespace App\API\V1\Repositories;
 use App\Repositories\Repository;
 use App\API\V1\Entities\Album;
+use Doctrine\ORM\Query\Expr;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -149,8 +150,26 @@ class AlbumRepository extends Repository
      */
     public function getTTConfig(): array
     {
+        $expr = new Expr();
+        /** @noinspection NullPointerExceptionInspection */
         return [
             'default'=>[],
+            'user'=>[
+                'extends'=>[':default']
+            ],
+            'userMyAlbums'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'innerJoin'=>[
+                        'justCurrentUsersAlbums'=>[
+                            'join'=>'a.users',
+                            'alias'=>'u',
+                            'conditionType'=>Expr\Join::WITH,
+                            'condition'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id'])),
+                        ]
+                    ]
+                ]
+            ],
             'testing'=>[]
         ];
     }

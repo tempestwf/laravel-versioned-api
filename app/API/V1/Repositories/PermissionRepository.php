@@ -17,7 +17,17 @@ class PermissionRepository extends Repository
     public function getTTConfig(): array
     {
         return [
-            'default'=>[],
+            'default'=>[
+                'permissions'=>[
+                    'allowed'=>false
+                ]
+            ],
+            'superAdmin'=>[
+                'extends'=>[':default'],
+                'permissions'=>[
+                    'allowed'=>true
+                ]
+            ],
             'testing'=>[]
         ];
     }
