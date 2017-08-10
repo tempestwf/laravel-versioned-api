@@ -29,7 +29,8 @@ class CrudTest extends TestCase
             /** @var UserRepository $userRepo */
             $userRepo = $this->em->getRepository(User::class);
             $userRepo->init($arrayHelper, ['user'], ['testing']);
-
+            $result = $userRepo->read();
+            $this->assertEquals($result['result'][0]['id'], 1);
 
             $conn->rollBack();
         } catch (Exception $e) {

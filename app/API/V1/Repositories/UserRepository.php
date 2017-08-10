@@ -32,7 +32,7 @@ class UserRepository extends Repository implements RepoHasPermissions
                     'where'=>[
                         'onlyCurrentUser'=>[
                             'type'=>'and',
-                            'value'=>$expr->eq('id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id']))
+                            'value'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id']))
                         ]
                     ]
                 ],
@@ -47,10 +47,10 @@ class UserRepository extends Repository implements RepoHasPermissions
                 ]
             ],
             'user'=>[
-                'extends'=>':default'
+                'extends'=>[':default']
             ],
             'admin'=>[
-                'extends'=>':default',
+                'extends'=>[':default'],
                 'read'=>[
                     'where'=>[
                         'onlyCurrentUser'=>null
