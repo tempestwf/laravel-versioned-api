@@ -272,18 +272,18 @@ class ArtistRepository extends Repository
                         'innerJoinTest'=>[
                             'join'=>'t.albums',
                             'alias'=>'a',
-                            /*'conditionType'=>Expr\Join::WITH,
+                            'conditionType'=>Expr\Join::WITH,
                             'condition'=>$expr->eq(1, 1),
-                            'indexBy'=>null,*/
+                            'indexBy'=>null,
                         ]
                     ],
                     'leftJoin'=>[
                         'leftJoinTest'=>[
                             'join'=>'t.albums',
                             'alias'=>'a2',
-                            /*'conditionType'=>Expr\Join::WITH,
+                            'conditionType'=>Expr\Join::WITH,
                             'condition'=>$expr->eq(1, 1),
-                            'indexBy'=>null,*/
+                            'indexBy'=>null,
                         ]
                     ],
                     'orderBy'=>[
