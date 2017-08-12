@@ -5,6 +5,7 @@ namespace App\API\V1\Repositories;
 use App\API\V1\Entities\Artist;
 use App\Repositories\Repository;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
+use Doctrine\ORM\Query\Expr;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -146,6 +147,7 @@ class ArtistRepository extends Repository
      */
     public function getTTConfig(): array
     {
+        $expr = new Expr();
         return [
             'default'=>[],
             'user'=>[
@@ -163,6 +165,152 @@ class ArtistRepository extends Repository
                             'alias'=>'a2',
                         ]
                     ]
+                ]
+            ],
+            'testQuery'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'select'=>[
+                        'artistsWithCustomAlias'=>'t',
+                        'innerJoinTest'=>'a',
+                    ],
+                    'from'=>[
+                        'fromTest'=>[
+                            'className'=>Artist::class,
+                            'alias'=>'t',
+                            'indexBy'=>null,
+                        ]
+                    ],
+                    'where'=>[
+                        'exprArrayTest1'=>[
+                            'value'=>[
+                                'expr'=>'orX',
+                                'arguments'=>[
+                                    [
+                                        'expr'=>'eq',
+                                        'arguments'=>[1,1]
+                                    ],
+                                    [
+                                        'expr'=>'neq',
+                                        'arguments'=>[0,1]
+                                    ],
+                                    [
+                                        'expr'=>'lt',
+                                        'arguments'=>[0,1]
+                                    ],
+                                    [
+                                        'expr'=>'lte',
+                                        'arguments'=>[0,1]
+                                    ],
+                                    [
+                                        'expr'=>'gt',
+                                        'arguments'=>[1,0]
+                                    ],
+                                    [
+                                        'expr'=>'gte',
+                                        'arguments'=>[1,0]
+                                    ],
+                                    [
+                                        'expr'=>'in',
+                                        'arguments'=>['t.id',[1,0]]
+                                    ],
+                                    [
+                                        'expr'=>'notIn',
+                                        'arguments'=>['t.id',[1,0]]
+                                    ],
+                                    [
+                                        'expr'=>'isNull',
+                                        'arguments'=>['t.id']
+                                    ],
+                                    [
+                                        'expr'=>'isNotNull',
+                                        'arguments'=>['t.id']
+                                    ],
+                                    [
+                                        'expr'=>'like',
+                                        'arguments'=>['t.name', $expr->literal('%BEE%')]
+                                    ],
+                                    [
+                                        'expr'=>'notLike',
+                                        'arguments'=>['t.name', $expr->literal('%VAN%')]
+                                    ],
+                                    [
+                                        'expr'=>'between',
+                                        'arguments'=>['t.id',0,2]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'exprArrayTest2'=>[
+                            'type'=>'or',
+                            'value'=>[
+                                'expr'=>'orX',
+                                'arguments'=>[
+                                    $expr->eq(1, 1)
+                                ]
+                            ]
+                        ],
+                        'exprArrayTest3'=>[
+                            'type'=>'and',
+                            'value'=>$expr->eq(1, 1)
+                        ],
+                    ],
+                    'having'=>[
+                        'havingTest1'=>[
+                            'value'=>$expr->eq(1, 1)
+                        ],
+                        'havingTest2'=>[
+                            'type'=>'and',
+                            'value'=>$expr->eq(1, 1)
+                        ],
+                        'havingTest3'=>[
+                            'type'=>'or',
+                            'value'=>$expr->eq(1, 1)
+                        ]
+                    ],
+                    'innerJoin'=>[
+                        'innerJoinTest'=>[
+                            'join'=>'t.albums',
+                            'alias'=>'a',
+                            /*'conditionType'=>Expr\Join::WITH,
+                            'condition'=>$expr->eq(1, 1),
+                            'indexBy'=>null,*/
+                        ]
+                    ],
+                    'leftJoin'=>[
+                        'leftJoinTest'=>[
+                            'join'=>'t.albums',
+                            'alias'=>'a2',
+                            /*'conditionType'=>Expr\Join::WITH,
+                            'condition'=>$expr->eq(1, 1),
+                            'indexBy'=>null,*/
+                        ]
+                    ],
+                    'orderBy'=>[
+                        'testOrderBy'=>[
+                            'sort'=>'t.id',
+                            'order'=>'DESC'
+                        ]
+                    ],
+                    //TODO: Test else where
+                    /*'groupBy'=>[
+                        'groupByTest'=>'t.name'
+                    ],*/
+                ],
+                'settings'=>[
+                    'cache'=>[
+                        'useQueryCache'=>false,
+                        'useResultCache'=>true,
+                        'timeToLive'=>777,
+                        'cacheId'=>'test_cache_id',
+                    ],
+                    'placeholders'=>[
+                        'placeholderTest'=>[
+                            'value'=>'some stuff',
+
+                        ]
+                    ],
+                    'fetchJoin'=>true
                 ]
             ],
             'testing'=>[]

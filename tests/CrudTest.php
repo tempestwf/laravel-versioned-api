@@ -16,6 +16,55 @@ class CrudTest extends TestCase
     use MakeEmTrait;
 
     /**
+     * @group CrudReadOnly2
+     * @throws Exception
+     */
+    public function testGeneralQueryBuilding () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var User[] $users */
+            $users = $userRepo->create($this->createRobAndBobData());
+
+            $userIds = [];
+            /** @var User $user */
+            foreach ($users as $user) {
+                $userIds[] = $user->getId();
+            }
+
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            /** @var Artist[] $result */
+            $artistRepo->create($this->createArtistChainData($userIds));
+            $artistRepo->init($arrayHelper, ['testQuery'], ['testing']);
+
+            $frontEndQuery = $this->makeTestFrontEndQueryArtist();
+            $frontEndOptions = $this->makeFrontEndQueryOptions();
+            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, ['hydrate'=>true]);
+            $this->assertEquals($result['count'], 2);
+            $this->assertEquals($result['result'][0]['name'], 'BEETHOVEN');
+            $this->assertEquals($result['result'][0]['albums'][0]['name'], 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            /** @var \Doctrine\ORM\QueryBuilder $qb */
+            /*$qb = $result['qb'];
+            $sql = $qb->getQuery()->getSQL();
+            $dql = $qb->getQuery()->getDQL();*/
+            //$conn->rollBack();
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
      * @group CrudReadOnly
      * @throws Exception
      */
@@ -1167,6 +1216,160 @@ class CrudTest extends TestCase
         $arrayHelper = new ArrayHelper();
         $arrayHelper->extract([$user]);
         return $arrayHelper;
+    }
+
+    /**
+     * @return array
+     */
+    protected function makeFrontEndQueryOptions():array
+    {
+        return [
+            'returnCount'=>true,
+            'limit'=>1,
+            'offset'=>1,
+        ];
+    }
+    /**
+     * @return array
+     */
+    protected function makeTestFrontEndQueryArtist(): array
+    {
+        return [
+            'where'=>[
+                [
+                    'type'=>'andX',
+                    'conditions'=>[
+                        'field'=>'t.name',
+                        'operator'=>'eq',
+                        'arguments'=>['BEETHOVEN']
+                    ]
+                ],
+                [
+                    'type'=>'orX',
+                    'conditions'=>[
+                        'field'=>'t.name',
+                        'operator'=>'eq',
+                        'arguments'=>['BEETHOVEN']
+                    ]
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'and',
+                    'operator'=>'eq',
+                    'arguments'=>['BEETHOVEN']
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'eq',
+                    'arguments'=>['BEETHOVEN']
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'neq',
+                    'arguments'=>['Blink 182']
+                ],
+                [
+                    'field'=>'t.id',
+                    'type'=>'or',
+                    'operator'=>'lt',
+                    'arguments'=>[9999999]
+                ],
+                [
+                    'field'=>'t.id',
+                    'type'=>'or',
+                    'operator'=>'lte',
+                    'arguments'=>[9999999]
+                ],
+                [
+                    'field'=>'t.id',
+                    'type'=>'or',
+                    'operator'=>'gt',
+                    'arguments'=>[0]
+                ],
+                [
+                    'field'=>'t.id',
+                    'type'=>'or',
+                    'operator'=>'gte',
+                    'arguments'=>[0]
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'in',
+                    'arguments'=>[['BEETHOVEN']]
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'notIn',
+                    'arguments'=>[['Vanilla Ice']]
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'isNull',
+                    'arguments'=>[]
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'isNotNull',
+                    'arguments'=>[]
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'like',
+                    'arguments'=>['%BEETHOV%']
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'notLike',
+                    'arguments'=>['%The Ruttles%']
+                ],
+                [
+                    'field'=>'t.id',
+                    'type'=>'or',
+                    'operator'=>'between',
+                    'arguments'=>[0,9999999]
+                ],
+            ],
+            'having'=>[
+                [
+                    'field'=>'t.name',
+                    'type'=>'or',
+                    'operator'=>'eq',
+                    'arguments'=>['BEETHOVEN']
+                ],
+                [
+                    'field'=>'t.name',
+                    'type'=>'and',
+                    'operator'=>'eq',
+                    'arguments'=>['BEETHOVEN']
+                ],
+            ],
+            'orderBy'=>[
+                't.name'=>'ASC',
+                't.id'=>'DESC'
+            ],
+            'groupBy'=>[
+                't.name',
+                't.id'
+            ],
+            'placeholders'=>[
+                'frontEndTestPlaceholder'=>[
+                    'value'=>1,
+                    'type'=>'integer'
+                ],
+                'frontEndTestPlaceholder2'=>[
+                    'value'=>'stuff',
+                    'type'=>'string'
+                ]
+            ]
+        ];
     }
 
 }

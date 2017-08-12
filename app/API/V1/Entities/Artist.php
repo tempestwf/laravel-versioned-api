@@ -91,6 +91,7 @@ class Artist extends EntityAbstract
     public function addAlbum(Album $album): Artist
     {
         $this->albums[] = $album;
+        $album->setArtist($this);
         return $this;
     }
 
