@@ -8,8 +8,8 @@ use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
 use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
 use TempestTools\Common\Helper\ArrayHelper;
-use TempestTools\Crud\Constants\EntityEvents;
-use TempestTools\Crud\Constants\RepositoryEvents;
+use TempestTools\Crud\Constants\EntityEventsConstants;
+use TempestTools\Crud\Constants\RepositoryEventsConstants;
 
 class CrudTest extends TestCase
 {
@@ -193,15 +193,15 @@ class CrudTest extends TestCase
             $array = $artistRepo->getArrayHelper()->getArray()->getArrayCopy();
 
             foreach ([
-                 RepositoryEvents::PRE_START,
-                 RepositoryEvents::PRE_STOP,
-                 RepositoryEvents::PRE_UPDATE_BATCH,
-                 RepositoryEvents::PRE_UPDATE,
-                 RepositoryEvents::VALIDATE_UPDATE,
-                 RepositoryEvents::VERIFY_UPDATE,
-                 RepositoryEvents::PROCESS_RESULTS_UPDATE,
-                 RepositoryEvents::POST_UPDATE,
-                 RepositoryEvents::POST_UPDATE_BATCH
+                 RepositoryEventsConstants::PRE_START,
+                 RepositoryEventsConstants::PRE_STOP,
+                 RepositoryEventsConstants::PRE_UPDATE_BATCH,
+                 RepositoryEventsConstants::PRE_UPDATE,
+                 RepositoryEventsConstants::VALIDATE_UPDATE,
+                 RepositoryEventsConstants::VERIFY_UPDATE,
+                 RepositoryEventsConstants::PROCESS_RESULTS_UPDATE,
+                 RepositoryEventsConstants::POST_UPDATE,
+                 RepositoryEventsConstants::POST_UPDATE_BATCH
              ] as $event) {
                 $this->assertArrayHasKey($event, $array['repoEvents']);
             }
@@ -258,15 +258,15 @@ class CrudTest extends TestCase
             $array = $artistRepo->getArrayHelper()->getArray()->getArrayCopy();
 
             foreach ([
-                 RepositoryEvents::PRE_START,
-                 RepositoryEvents::PRE_STOP,
-                 RepositoryEvents::PRE_DELETE_BATCH,
-                 RepositoryEvents::PRE_DELETE,
-                 RepositoryEvents::VALIDATE_DELETE,
-                 RepositoryEvents::VERIFY_DELETE,
-                 RepositoryEvents::PROCESS_RESULTS_DELETE,
-                 RepositoryEvents::POST_DELETE,
-                 RepositoryEvents::POST_DELETE_BATCH
+                 RepositoryEventsConstants::PRE_START,
+                 RepositoryEventsConstants::PRE_STOP,
+                 RepositoryEventsConstants::PRE_DELETE_BATCH,
+                 RepositoryEventsConstants::PRE_DELETE,
+                 RepositoryEventsConstants::VALIDATE_DELETE,
+                 RepositoryEventsConstants::VERIFY_DELETE,
+                 RepositoryEventsConstants::PROCESS_RESULTS_DELETE,
+                 RepositoryEventsConstants::POST_DELETE,
+                 RepositoryEventsConstants::POST_DELETE_BATCH
              ] as $event) {
                 $this->assertArrayHasKey($event, $array['repoEvents']);
             }
@@ -449,24 +449,24 @@ class CrudTest extends TestCase
             $this->assertArrayHasKey('action', $array['repoEvents']['preStart']);
 
             foreach ([
-                 RepositoryEvents::PRE_START,
-                 RepositoryEvents::PRE_STOP,
-                 RepositoryEvents::PRE_CREATE_BATCH,
-                 RepositoryEvents::PRE_CREATE,
-                 RepositoryEvents::VALIDATE_CREATE,
-                 RepositoryEvents::VERIFY_CREATE,
-                 RepositoryEvents::PROCESS_RESULTS_CREATE,
-                 RepositoryEvents::POST_CREATE,
-                 RepositoryEvents::POST_CREATE_BATCH
+                 RepositoryEventsConstants::PRE_START,
+                 RepositoryEventsConstants::PRE_STOP,
+                 RepositoryEventsConstants::PRE_CREATE_BATCH,
+                 RepositoryEventsConstants::PRE_CREATE,
+                 RepositoryEventsConstants::VALIDATE_CREATE,
+                 RepositoryEventsConstants::VERIFY_CREATE,
+                 RepositoryEventsConstants::PROCESS_RESULTS_CREATE,
+                 RepositoryEventsConstants::POST_CREATE,
+                 RepositoryEventsConstants::POST_CREATE_BATCH
              ] as $event) {
                 $this->assertArrayHasKey($event, $array['repoEvents']);
             }
 
             foreach ([
-                 EntityEvents::PRE_SET_FIELD,
-                 EntityEvents::PRE_PROCESS_ASSOCIATION_PARAMS,
-                 EntityEvents::PRE_PERSIST,
-                 EntityEvents::POST_PERSIST,
+                 EntityEventsConstants::PRE_SET_FIELD,
+                 EntityEventsConstants::PRE_PROCESS_ASSOCIATION_PARAMS,
+                 EntityEventsConstants::PRE_PERSIST,
+                 EntityEventsConstants::POST_PERSIST,
              ] as $event) {
                 $this->assertArrayHasKey($event, $array['entityEvents']);
             }
