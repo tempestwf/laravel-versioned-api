@@ -10,7 +10,7 @@ use TempestTools\AclMiddleware\Contracts\HasRoles as HasRolesContract;
 use TempestTools\AclMiddleware\Contracts\HasPermissions as HasPermissionContract;
 use TempestTools\AclMiddleware\Contracts\HasId;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
-use TempestTools\Common\Contracts\Extractable;
+use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use App\Entities\Traits\Authenticatable;
@@ -23,7 +23,7 @@ use TempestTools\Crud\Laravel\EntityAbstract;
  * @ORM\Table(name="users")
  * @ORM\HasLifecycleCallbacks
  */
-class User extends EntityAbstract implements HasRolesContract, HasPermissionContract, HasId, Extractable, AuthenticatableContract
+class User extends EntityAbstract implements HasRolesContract, HasPermissionContract, HasId, ExtractableContract, AuthenticatableContract
 {
     use Authenticatable, HasPermissionsOptimizedTrait, Deletable, ExtractorOptionsTrait;
 	
