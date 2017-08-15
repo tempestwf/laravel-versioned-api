@@ -12,7 +12,7 @@
 */
 
 /** @var Dingo\Api\Routing\Router $api */
-use TempestTools\AclMiddleware\Constants\PermissionsTemplates;
+use TempestTools\AclMiddleware\Constants\PermissionsTemplatesConstants;
 
 $api = app('Dingo\Api\Routing\Router');
 
@@ -35,7 +35,7 @@ $api->version(
 	[
 		'middleware' => ['api.auth', 'acl'],
 		'provider'   => 'V1',
-        'permissions' => [PermissionsTemplates::URI_AND_REQUEST_METHOD]
+        'permissions' => [PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD]
 	],
 	function () use ($api)
 	{

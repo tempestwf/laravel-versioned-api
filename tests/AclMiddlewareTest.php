@@ -79,7 +79,7 @@ class AclMiddlewareTest extends TestCase
      * @return void
      * @throws Exception
      */
-    public function testAclMiddlewareDenies()
+    public function testAclMiddlewareDenies():void
     {
         $em = $this->em();
         $conn = $em->getConnection();

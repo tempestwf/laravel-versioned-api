@@ -5,11 +5,11 @@ namespace App\API\V1\Repositories;
 use App\API\V1\Entities\User;
 use App\Repositories\Repository;
 use Doctrine\ORM\Query\Expr;
-use TempestTools\AclMiddleware\Contracts\RepoHasPermissions;
+use TempestTools\AclMiddleware\Contracts\RepoHasPermissionsContract;
 use TempestTools\AclMiddleware\Repository\HasPermissionsQueryTrait;
 
 /** @noinspection LongInheritanceChainInspection */
-class UserRepository extends Repository implements RepoHasPermissions
+class UserRepository extends Repository implements RepoHasPermissionsContract
 {
     use HasPermissionsQueryTrait;
 
