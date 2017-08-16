@@ -8,7 +8,7 @@ use Tymon\JWTAuth\JWTAuth;
 
 use App;
 
-class AuthController extends APIController
+class AuthController extends APIControllerAbstract
 {
 	/** @var JWTAuth $auth */
 	protected $auth;

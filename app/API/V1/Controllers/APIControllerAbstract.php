@@ -7,12 +7,12 @@ use App\API\V1\Entities\User;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use TempestTools\Common\Laravel\Controller\BaseController;
+use TempestTools\Common\Laravel\Controller\BaseControllerAbstract;
 
 use App;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class APIController extends BaseController
+class APIControllerAbstract extends BaseControllerAbstract
 {
 	use Helpers, ValidatesRequests;
 
