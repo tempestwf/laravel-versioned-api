@@ -594,26 +594,28 @@ class CrudTest extends TestCase
             //Test as super admin level permissions to be able to create everything in one fell swoop
             /** @var Artist[] $result */
             $result = $artistRepo->create($this->createArtistChainData($userIds));
-            /** @var User $user1 */
-            $user1 = $result[0]->getAlbums()[0]->getUsers()[0];
-            /** @var User $user2 */
-            /** @noinspection MultiAssignmentUsageInspection */
-            $user2 = $result[0]->getAlbums()[0]->getUsers()[1];
             $this->assertEquals($result[0]->getName(), 'BEETHOVEN');
             $this->assertEquals($result[0]->getAlbums()[0]->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
             $this->assertEquals($result[0]->getAlbums()[1]->getName(), 'BEETHOVEN: THE COMPLETE STRING QUARTETS');
-            $this->assertEquals($user1->getName(), 'bob');
-            $this->assertEquals($user2->getName(), 'rob');
-            $this->assertEquals($user1->getName(), 'bob');
-            $this->assertEquals($user2->getName(), 'rob');
+            $user = $result[0]->getAlbums()[0]->getUsers()[0];
+            $this->assertEquals($user->getName(), 'bob');
+            $user = $result[0]->getAlbums()[0]->getUsers()[1];
+            $this->assertEquals($user->getName(), 'rob');
+            $user = $result[0]->getAlbums()[1]->getUsers()[0];
+            $this->assertEquals($user->getName(), 'bob');
+            $user = $result[0]->getAlbums()[1]->getUsers()[1];
+            $this->assertEquals($user->getName(), 'rob');
             $this->assertEquals($result[1]->getName(), 'BACH');
             $this->assertEquals($result[1]->getAlbums()[0]->getName(), 'Amsterdam Baroque Orchestra');
             $this->assertEquals($result[1]->getAlbums()[1]->getName(), 'The English Suites');
-            $this->assertEquals($user1->getName(), 'bob');
-            $this->assertEquals($user2->getName(), 'rob');
-            $this->assertEquals($user1, 'bob');
-            $this->assertEquals($user2->getName(), 'rob');
-
+            $user = $result[1]->getAlbums()[0]->getUsers()[0];
+            $this->assertEquals($user->getName(), 'bob');
+            $user = $result[1]->getAlbums()[0]->getUsers()[1];
+            $this->assertEquals($user->getName(), 'rob');
+            $user = $result[1]->getAlbums()[1]->getUsers()[0];
+            $this->assertEquals($user->getName(), 'bob');
+            $user = $result[1]->getAlbums()[1]->getUsers()[1];
+            $this->assertEquals($user->getName(), 'rob');
 
             $conn->rollBack();
         } catch (Exception $e) {
