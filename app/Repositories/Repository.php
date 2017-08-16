@@ -37,4 +37,9 @@ class Repository extends RepositoryAbstract
 		
 		return $this;
 	}
+
+	public function getTTConfig(): array
+    {
+        throw new \RuntimeException('Error: Must be implemented in extended repo');
+    }
 }
