@@ -13,7 +13,7 @@ use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use App\Entities\Traits\Authenticatable;
-use TempestTools\Crud\Laravel\EntityAbstract;
+use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
 use TempestTools\AclMiddleware\Contracts\HasPermissionsContract;
 
 /** @noinspection LongInheritanceChainInspection */

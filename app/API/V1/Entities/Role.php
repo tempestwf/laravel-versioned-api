@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping AS ORM;
 use TempestTools\AclMiddleware\Contracts\RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
-use TempestTools\Crud\Laravel\EntityAbstract;
+use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\RoleRepository")
