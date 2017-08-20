@@ -13,6 +13,7 @@
 
 /** @var Dingo\Api\Routing\Router $api */
 use TempestTools\AclMiddleware\Constants\PermissionsTemplatesConstants;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 
 $api = app('Dingo\Api\Routing\Router');
 
@@ -35,7 +36,7 @@ $api->version(
 	[
 		'middleware' => ['api.auth', 'acl'],
 		'provider'   => 'V1',
-        'permissions' => [PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD]
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)]
 	],
 	function () use ($api)
 	{

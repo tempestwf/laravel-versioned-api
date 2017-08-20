@@ -299,6 +299,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      */
     public function getTTConfig(): array
     {
+        /** @noinspection NullPointerExceptionInspection */
         return [
             'default'=>[
                 'create'=>[
@@ -325,7 +326,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'allowed'=>false,
                     'permissive'=>false,
                     'enforce'=>[
-                        'id'=>':userEntity:id' // If you are a user, then you should only be able to alter your self
+                        'id'=>$this->getArrayHelper()->parseArrayPath(['userEntity', 'id']) // If you are a user, then you should only be able to alter your self
                     ],
                     'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
                         'albums'=>[

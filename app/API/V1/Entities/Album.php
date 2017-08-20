@@ -194,6 +194,7 @@ class Album extends EntityAbstract
      */
     public function getTTConfig(): array
     {
+        /** @noinspection NullPointerExceptionInspection */
         return [
             'default'=>[
                 'create'=>[
@@ -223,7 +224,7 @@ class Album extends EntityAbstract
                         'users'=>[ // when this is inherited a user will be able to add them selves to an album
                             'permissive'=>false,
                             'enforce'=>[
-                                'id'=>':userEntity:id' // When adding them selves to an album we enforce that the user is assigning their own user entity to the album
+                                'id'=>$this->getArrayHelper()->parseArrayPath(['userEntity', 'id']) // When adding them selves to an album we enforce that the user is assigning their own user entity to the album
                             ],
                             'assign'=>[ // the can only add and remove them selves from an album
                                 'add'=>true,

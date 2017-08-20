@@ -1,6 +1,7 @@
 <?php
 
 use App\API\V1\Entities\User;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Common\Helper\ArrayHelper;
 
 class ArrayHelperTest extends TestCase
@@ -56,13 +57,20 @@ class ArrayHelperTest extends TestCase
         $result2 = $arrayHelper->parse($testArray['base']['templateIt']);
         $result3 = $arrayHelper->parse($testArray['base']['closure']);
         $result4 = $arrayHelper->parse($testArray['three']);
+        $result5 = $arrayHelper->parse($testArray['closureObject']);
+        $result6 = $arrayHelper->parse($testArray['inheritsObject']);
+        $result7 = $arrayHelper->parse($testArray['arrayPathObject']);
 
         $this->assertSame($result1, 'foo');
         $this->assertSame($result2, 'im mary poppins yall!');
         $this->assertTrue($result3);
-        $this->assertSame($result4['goGetIt'], '?:one:retrieve');
+        $this->assertSame($result4['gotIt'], 'fooBar');
         $this->assertSame($result4['retrieve'], 'foo');
         $this->assertSame($result4['extended'], [':two', ':one', ':base', ':four']);
+        $this->assertTrue($result5);
+        $this->assertSame($result6['gotIt'], 'fooBar');
+        $this->assertSame($result6['retrieve'], 'foo');
+        $this->assertSame($result7, 'foo');
     }
 
     /**
@@ -90,8 +98,13 @@ class ArrayHelperTest extends TestCase
                'closure'=>function ($extra, ArrayHelper $arrayHelper) {
                     return ($arrayHelper instanceof ArrayHelper && is_array($extra));
                },
-               'goGetIt'=>'?:one:retrieve',
-               'templateIt'=>'?im {{:one:retrieve2}} {{:one:retrieve3}}!'
+               'closureObject'=>ArrayExpressionBuilder::closure(function ($extra, ArrayHelper $arrayHelper) {
+                   return ($arrayHelper instanceof ArrayHelper && is_array($extra));
+               }),
+               'arrayPathObject'=>ArrayExpressionBuilder::arrayPath(['one', 'retrieve']),
+               'goGetIt'=> ArrayExpressionBuilder::stringPath(':one:retrieve'),
+               'templateIt'=>ArrayExpressionBuilder::template('im {{:one:retrieve2}} {{:one:retrieve3}}!'),
+               'gotIt'=>'fooBar'
            ],
            'one'=> [
                'extends'=>[':base'],
@@ -107,7 +120,12 @@ class ArrayHelperTest extends TestCase
            ],
            'four'=> [
                'extends'=>[]
-           ]
+           ],
+            'inheritsObject'=>ArrayExpressionBuilder::arrayInheritance(
+                [
+                    'extends'=>[':base'],
+                ]
+            )
          ]);
     }
 }
