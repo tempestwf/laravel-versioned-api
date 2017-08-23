@@ -223,8 +223,10 @@ class Album extends EntityAbstract
                     'fields'=>[
                         'users'=>[ // when this is inherited a user will be able to add them selves to an album
                             'permissive'=>false,
-                            'enforce'=>[
-                                'id'=>$this->getArrayHelper()->parseArrayPath(['userEntity', 'id']) // When adding them selves to an album we enforce that the user is assigning their own user entity to the album
+                            'settings'=>[
+                                'enforce'=>[
+                                    'id'=>$this->getArrayHelper()->parseArrayPath(['userEntity', 'id']) // When adding them selves to an album we enforce that the user is assigning their own user entity to the album
+                                ],
                             ],
                             'assign'=>[ // the can only add and remove them selves from an album
                                 'add'=>true,
@@ -286,7 +288,9 @@ class Album extends EntityAbstract
                     'fastMode'=>true, // the following rules are defined here in order to be inherited further down
                     'fields'=>[
                         'name'=>[
-                            'setTo'=>'foo'
+                            'settings'=>[
+                                'setTo'=>'foo'
+                            ],
                         ]
                     ]
                 ]
@@ -296,45 +300,54 @@ class Album extends EntityAbstract
                     'fastMode'=>true, // the following rules are defined here in order to be inherited further down
                     'fields'=>[
                         'name'=>[
-                            'fastMode'=>false,
-                            'setTo'=>'foo'
+                            'settings'=>[
+                                'setTo'=>'foo'
+                            ]
                         ]
                     ]
                 ]
             ],
             'testTopLevelSetToAndMutate'=>[
                 'create'=>[
-                    'setTo'=>[
-                        'name'=>'foo',
-                    ],
-                    'mutate'=>function ($extra) {
-                        /** @var Album $self */
-                        $self = $extra['self'];
-                        $currentName = $self->getName();
-                        $newName = $currentName . 'bar';
-                        $self->setName($newName);
-                    }
+                    'settings'=>[
+                        'setTo'=>[
+                            'name'=>'foo',
+                        ],
+                        'mutate'=>function ($extra) {
+                            /** @var Album $self */
+                            $self = $extra['self'];
+                            $currentName = $self->getName();
+                            $newName = $currentName . 'bar';
+                            $self->setName($newName);
+                        }
+                    ]
                 ]
             ],
             'testEnforceTopLevelWorks'=>[
                 'create'=>[
-                    'enforce'=>[
-                        'name'=>'NOT BEETHOVEN'
+                    'settings'=>[
+                        'enforce'=>[
+                            'name'=>'NOT BEETHOVEN'
+                        ]
                     ]
                 ]
             ],
             'testTopLevelClosure'=>[
                 'create'=>[
-                    'closure'=>function () {
-                        return false;
-                    }
+                    'settings'=>[
+                        'closure'=>function () {
+                            return false;
+                        }
+                    ]
                 ]
             ],
             'testLowLevelEnforce'=>[
                 'create'=>[
                     'fields'=>[
                         'name'=>[
-                            'enforce'=>'foo'
+                            'settings'=>[
+                                'enforce'=>'foo'
+                            ]
                         ]
                     ]
                 ]
@@ -343,8 +356,10 @@ class Album extends EntityAbstract
                 'create'=>[
                     'fields'=>[
                         'artist'=>[
-                            'enforce'=>[
-                                'name'=>'Bob the artist'
+                            'settings'=>[
+                                'enforce'=>[
+                                    'name'=>'Bob the artist'
+                                ]
                             ]
                         ]
                     ]
@@ -354,9 +369,11 @@ class Album extends EntityAbstract
                 'create'=>[
                     'fields'=>[
                         'name'=>[
-                            'closure'=>function () {
-                                return false;
-                            }
+                            'settings'=>[
+                                'closure'=>function () {
+                                    return false;
+                                }
+                            ]
                         ]
                     ]
                 ]
@@ -365,9 +382,11 @@ class Album extends EntityAbstract
                 'create'=>[
                     'fields'=>[
                         'name'=>[
-                            'mutate'=>function () {
-                                return 'foobar';
-                            }
+                            'settings'=>[
+                                'mutate'=>function () {
+                                    return 'foobar';
+                                }
+                            ]
                         ]
                     ]
                 ]

@@ -325,8 +325,10 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'extends'=>[':default:create'],
                     'allowed'=>false,
                     'permissive'=>false,
-                    'enforce'=>[
-                        'id'=>$this->getArrayHelper()->parseArrayPath(['userEntity', 'id']) // If you are a user, then you should only be able to alter your self
+                    'settings'=>[
+                        'enforce'=>[
+                            'id'=>$this->getArrayHelper()->parseArrayPath(['userEntity', 'id']) // If you are a user, then you should only be able to alter your self
+                        ],
                     ],
                     'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
                         'albums'=>[
