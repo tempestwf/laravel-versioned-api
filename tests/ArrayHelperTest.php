@@ -57,9 +57,9 @@ class ArrayHelperTest extends TestCase
         $result2 = $arrayHelper->parse($testArray['base']['templateIt']);
         $result3 = $arrayHelper->parse($testArray['base']['closure']);
         $result4 = $arrayHelper->parse($testArray['three']);
-        $result5 = $arrayHelper->parse($testArray['closureObject']);
+        $result5 = $arrayHelper->parse($testArray['base']['closureObject']);
         $result6 = $arrayHelper->parse($testArray['inheritsObject']);
-        $result7 = $arrayHelper->parse($testArray['arrayPathObject']);
+        $result7 = $arrayHelper->parse($testArray['base']['arrayPathObject']);
 
         $this->assertSame($result1, 'foo');
         $this->assertSame($result2, 'im mary poppins yall!');
@@ -123,7 +123,7 @@ class ArrayHelperTest extends TestCase
            ],
             'inheritsObject'=>ArrayExpressionBuilder::arrayInheritance(
                 [
-                    'extends'=>[':base'],
+                    'extends'=>[':one'],
                 ]
             )
          ]);
