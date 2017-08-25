@@ -10,6 +10,7 @@ use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
 use TempestTools\Common\Helper\ArrayHelper;
 use TempestTools\Crud\Constants\EntityEventsConstants;
 use TempestTools\Crud\Constants\RepositoryEventsConstants;
+use TempestTools\Crud\Exceptions\Orm\Helper\EntityArrayHelperException;
 
 class CrudTest extends TestCase
 {
@@ -136,7 +137,7 @@ class CrudTest extends TestCase
 
             }
 
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityArrayHelperException::class);
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
