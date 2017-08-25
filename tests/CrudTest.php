@@ -50,15 +50,28 @@ class CrudTest extends TestCase
 
             $frontEndQuery = $this->makeTestFrontEndQueryArtist();
             $frontEndOptions = $this->makeFrontEndQueryOptions();
-            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, ['hydrate'=>true]);
-            $this->assertEquals($result['count'], 2);
-            $this->assertEquals($result['result'][0]['name'], 'BEETHOVEN');
-            $this->assertEquals($result['result'][0]['albums'][0]['name'], 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
-            /** @var \Doctrine\ORM\QueryBuilder $qb */
-            /*$qb = $result['qb'];
+            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, [
+                'hydrate'=>false,
+                'placeholders'=>[
+                    'placeholderTest3'=>[
+                        'value'=>'some stuff',
+                    ]
+                ]
+            ]);
+            /** @var  \Doctrine\ORM\QueryBuilder $qb */
+            $qb = $result['qb']->getQueryBuilder();
+            $placeholders = $qb->getParameters();
+            $dql = $qb->getQuery()->getDQL();
+
             $sql = $qb->getQuery()->getSQL();
-            $dql = $qb->getQuery()->getDQL();*/
-            //$conn->rollBack();
+
+
+
+            /*$this->assertEquals($result['count'], 2);
+            $this->assertEquals($result['result'][0]['name'], 'BEETHOVEN');
+            $this->assertEquals($result['result'][0]['albums'][0]['name'], 'BEETHOVEN: THE COMPLETE PIANO SONATAS');*/
+            /** @var \Doctrine\ORM\QueryBuilder $qb */
+
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -1190,139 +1203,141 @@ class CrudTest extends TestCase
     protected function makeTestFrontEndQueryArtist(): array
     {
         return [
-            'where'=>[
-                [
-                    'type'=>'andX',
-                    'conditions'=>[
+            'query'=>[
+                'where'=>[
+                    [
+                        'operator'=>'andX',
+                        'conditions'=>[
+                            'field'=>'t.name',
+                            'operator'=>'eq',
+                            'arguments'=>['BEETHOVEN']
+                        ]
+                    ],
+                    [
+                        'operator'=>'orX',
+                        'conditions'=>[
+                            'field'=>'t.name',
+                            'operator'=>'eq',
+                            'arguments'=>['BEETHOVEN']
+                        ]
+                    ],
+                    [
                         'field'=>'t.name',
+                        'type'=>'and',
                         'operator'=>'eq',
                         'arguments'=>['BEETHOVEN']
-                    ]
-                ],
-                [
-                    'type'=>'orX',
-                    'conditions'=>[
+                    ],
+                    [
                         'field'=>'t.name',
+                        'type'=>'or',
                         'operator'=>'eq',
                         'arguments'=>['BEETHOVEN']
-                    ]
+                    ],
+                    [
+                        'field'=>'t.name',
+                        'type'=>'or',
+                        'operator'=>'neq',
+                        'arguments'=>['Blink 182']
+                    ],
+                    [
+                        'field'=>'t.id',
+                        'type'=>'or',
+                        'operator'=>'lt',
+                        'arguments'=>[9999999]
+                    ],
+                    [
+                        'field'=>'t.id',
+                        'type'=>'or',
+                        'operator'=>'lte',
+                        'arguments'=>[9999999]
+                    ],
+                    [
+                        'field'=>'t.id',
+                        'type'=>'or',
+                        'operator'=>'gt',
+                        'arguments'=>[0]
+                    ],
+                    [
+                        'field'=>'t.id',
+                        'type'=>'or',
+                        'operator'=>'gte',
+                        'arguments'=>[0]
+                    ],
+                    [
+                        'field'=>'t.name',
+                        'type'=>'or',
+                        'operator'=>'in',
+                        'arguments'=>[['BEETHOVEN']]
+                    ],
+                    [
+                        'field'=>'t.name',
+                        'type'=>'or',
+                        'operator'=>'notIn',
+                        'arguments'=>[['Vanilla Ice']]
+                    ],
+                    [
+                        'field'=>'t.name',
+                        'type'=>'or',
+                        'operator'=>'isNull',
+                        'arguments'=>[]
+                    ],
+                    [
+                        'field'=>'t.name',
+                        'type'=>'or',
+                        'operator'=>'isNotNull',
+                        'arguments'=>[]
+                    ],
+                    [
+                        'field'=>'t.name',
+                        'type'=>'or',
+                        'operator'=>'like',
+                        'arguments'=>['%BEETHOV%']
+                    ],
+                    [
+                        'field'=>'t.name',
+                        'type'=>'or',
+                        'operator'=>'notLike',
+                        'arguments'=>['%The Ruttles%']
+                    ],
+                    [
+                        'field'=>'t.id',
+                        'type'=>'or',
+                        'operator'=>'between',
+                        'arguments'=>[0,9999999]
+                    ],
                 ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'and',
-                    'operator'=>'eq',
-                    'arguments'=>['BEETHOVEN']
+                'having'=>[
+                    [
+                        'field'=>'t.name',
+                        'type'=>'or',
+                        'operator'=>'eq',
+                        'arguments'=>['BEETHOVEN']
+                    ],
+                    [
+                        'field'=>'t.name',
+                        'type'=>'and',
+                        'operator'=>'eq',
+                        'arguments'=>['BEETHOVEN']
+                    ],
                 ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'eq',
-                    'arguments'=>['BEETHOVEN']
+                'orderBy'=>[
+                    't.name'=>'ASC',
+                    't.id'=>'DESC'
                 ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'neq',
-                    'arguments'=>['Blink 182']
-                ],
-                [
-                    'field'=>'t.id',
-                    'type'=>'or',
-                    'operator'=>'lt',
-                    'arguments'=>[9999999]
-                ],
-                [
-                    'field'=>'t.id',
-                    'type'=>'or',
-                    'operator'=>'lte',
-                    'arguments'=>[9999999]
-                ],
-                [
-                    'field'=>'t.id',
-                    'type'=>'or',
-                    'operator'=>'gt',
-                    'arguments'=>[0]
-                ],
-                [
-                    'field'=>'t.id',
-                    'type'=>'or',
-                    'operator'=>'gte',
-                    'arguments'=>[0]
-                ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'in',
-                    'arguments'=>[['BEETHOVEN']]
-                ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'notIn',
-                    'arguments'=>[['Vanilla Ice']]
-                ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'isNull',
-                    'arguments'=>[]
-                ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'isNotNull',
-                    'arguments'=>[]
-                ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'like',
-                    'arguments'=>['%BEETHOV%']
-                ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'notLike',
-                    'arguments'=>['%The Ruttles%']
-                ],
-                [
-                    'field'=>'t.id',
-                    'type'=>'or',
-                    'operator'=>'between',
-                    'arguments'=>[0,9999999]
-                ],
-            ],
-            'having'=>[
-                [
-                    'field'=>'t.name',
-                    'type'=>'or',
-                    'operator'=>'eq',
-                    'arguments'=>['BEETHOVEN']
-                ],
-                [
-                    'field'=>'t.name',
-                    'type'=>'and',
-                    'operator'=>'eq',
-                    'arguments'=>['BEETHOVEN']
-                ],
-            ],
-            'orderBy'=>[
-                't.name'=>'ASC',
-                't.id'=>'DESC'
-            ],
-            'groupBy'=>[
-                't.name',
-                't.id'
-            ],
-            'placeholders'=>[
-                'frontEndTestPlaceholder'=>[
-                    'value'=>1,
-                    'type'=>'integer'
-                ],
-                'frontEndTestPlaceholder2'=>[
-                    'value'=>'stuff',
-                    'type'=>'string'
-                ]
+                'groupBy'=>[
+                     't.name',
+                     't.id'
+                 ],
+                 'placeholders'=>[
+                     'frontEndTestPlaceholder'=>[
+                         'value'=>1,
+                         'type'=>'integer'
+                     ],
+                     'frontEndTestPlaceholder2'=>[
+                         'value'=>'stuff',
+                         'type'=>'string'
+                     ]
+                 ]
             ]
         ];
     }

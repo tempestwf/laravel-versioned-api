@@ -4,6 +4,7 @@ namespace App\API\V1\Repositories;
 
 use App\API\V1\Entities\Artist;
 use App\Repositories\Repository;
+use Doctrine\ORM\Query;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 use Doctrine\ORM\Query\Expr;
 
@@ -20,6 +21,24 @@ class ArtistRepository extends Repository
 {
     protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
         $entity = Artist::class;
+
+
+    /**
+     * @var array|NULL $options;
+     */
+    protected $options = [
+        'paginate'=>true,
+        'hydrate'=>true,
+        'hydrationType'=>Query::HYDRATE_ARRAY,
+        'transaction'=>true,
+        'entitiesShareConfigs'=>true,
+        'flush'=>true,
+        'placeholders'=>[
+            'placeholderTest2'=>[
+                'value'=>'some stuff',
+            ]
+        ]
+    ];
 
 
     public function preStart(GenericEventArgs $e) {
@@ -292,10 +311,9 @@ class ArtistRepository extends Repository
                             'order'=>'DESC'
                         ]
                     ],
-                    //TODO: Test else where
-                    /*'groupBy'=>[
+                    'groupBy'=>[
                         'groupByTest'=>'t.name'
-                    ],*/
+                    ],
                 ],
                 'settings'=>[
                     'cache'=>[
