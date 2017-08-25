@@ -165,13 +165,15 @@ class Role extends EntityAbstract implements RoleContract
             'default'=>[
                 'create'=>[ // the only thing we enforce on artists is the validator
                     'allowed'=>false,
-                    'validate'=>[
-                        'rules'=>[
-                            'name'=>'required|min:2',
+                    'settings'=>[
+                        'validate'=>[
+                            'rules'=>[
+                                'name'=>'required|min:2',
+                            ],
+                            'messages'=>NULL,
+                            'customAttributes'=>NULL,
                         ],
-                        'messages'=>NULL,
-                        'customAttributes'=>NULL,
-                    ],
+                    ]
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],

@@ -167,13 +167,15 @@ class Permission extends EntityAbstract implements PermissionContract
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
-                    'validate'=>[ // the only thing we enforce on artists is the validator
-                        'rules'=>[
-                            'name'=>'required|min:2',
+                    'settings'=>[
+                        'validate'=>[ // the only thing we enforce on artists is the validator
+                            'rules'=>[
+                                'name'=>'required|min:2',
+                            ],
+                            'messages'=>NULL,
+                            'customAttributes'=>NULL,
                         ],
-                        'messages'=>NULL,
-                        'customAttributes'=>NULL,
-                    ],
+                    ]
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],

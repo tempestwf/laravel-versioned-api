@@ -304,14 +304,16 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
-                    'validate'=>[ // Validates name and email and inherited by the rest of the config
-                        'rules'=>[
-                            'name'=>'required|min:2',
-                            'email'=>'required|email'
+                    'settings'=>[
+                        'validate'=>[ // Validates name and email and inherited by the rest of the config
+                            'rules'=>[
+                                'name'=>'required|min:2',
+                                'email'=>'required|email'
+                            ],
+                            'messages'=>NULL,
+                            'customAttributes'=>NULL,
                         ],
-                        'messages'=>NULL,
-                        'customAttributes'=>NULL,
-                    ],
+                    ]
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],

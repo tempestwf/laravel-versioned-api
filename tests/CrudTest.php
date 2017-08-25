@@ -10,6 +10,8 @@ use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
 use TempestTools\Common\Helper\ArrayHelper;
 use TempestTools\Crud\Constants\EntityEventsConstants;
 use TempestTools\Crud\Constants\RepositoryEventsConstants;
+use TempestTools\Crud\Exceptions\Orm\EntityException;
+use TempestTools\Crud\Exceptions\Orm\Helper\DataBindHelperException;
 use TempestTools\Crud\Exceptions\Orm\Helper\EntityArrayHelperException;
 
 class CrudTest extends TestCase
@@ -510,7 +512,7 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), DataBindHelperException::class);
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -681,7 +683,7 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityArrayHelperException::class);
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -716,7 +718,7 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityArrayHelperException::class);
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -751,7 +753,7 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityArrayHelperException::class);
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -786,7 +788,7 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityArrayHelperException::class);
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -821,7 +823,7 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityArrayHelperException::class);
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -889,67 +891,8 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityException::class);
 
-            $conn->rollBack();
-        } catch (Exception $e) {
-            $conn->rollBack();
-            throw $e;
-        }
-    }
-
-    /**
-     * A basic test example.
-     * @group CrudCudOnly
-     * @return void
-     * @throws Exception
-     */
-    public function testFastMode1():void
-    {
-        $em = $this->em();
-        $conn = $em->getConnection();
-        $conn->beginTransaction();
-        try {
-            /** @var AlbumRepository $albumRepo */
-            $albumRepo = $this->em->getRepository(Album::class);
-            $arrayHelper = $this->makeArrayHelper();
-            //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testFastMode1'], ['testing']);
-            /** @var Album[] $result */
-            $result = $albumRepo->create($this->createData());
-            $album = $result[0];
-            $this->assertEquals($album->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
-            $em->flush();
-            $conn->rollBack();
-        } catch (Exception $e) {
-            $conn->rollBack();
-            throw $e;
-        }
-    }
-
-
-    /**
-     * A basic test example.
-     * @group CrudCudOnly
-     * @return void
-     * @throws Exception
-     */
-    public function testFastMode2AndLowLevelSetTo():void
-    {
-        $em = $this->em();
-        $conn = $em->getConnection();
-        $conn->beginTransaction();
-        try {
-            /** @var AlbumRepository $albumRepo */
-            $albumRepo = $this->em->getRepository(Album::class);
-            $arrayHelper = $this->makeArrayHelper();
-            //Test as super admin level permissions to be able to create everything in one fell swoop
-            $albumRepo->init($arrayHelper, ['testFastMode2'], ['testing']);
-            /** @var Album[] $result */
-            $result = $albumRepo->create($this->createData());
-            $album = $result[0];
-            $this->assertEquals($album->getName(), 'foo');
-            $em->flush();
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
@@ -1018,7 +961,7 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityArrayHelperException::class);
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
@@ -1051,7 +994,7 @@ class CrudTest extends TestCase
             } catch (Exception $e) {
 
             }
-            $this->assertEquals(get_class($e), \RuntimeException::class);
+            $this->assertEquals(get_class($e), EntityArrayHelperException::class);
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();

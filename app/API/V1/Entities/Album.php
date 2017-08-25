@@ -199,14 +199,16 @@ class Album extends EntityAbstract
             'default'=>[
                 'create'=>[
                     'allowed'=>false, // by default this is not allowed
-                    'validate'=>[ // Add a validator that will be inherited by all other configs
-                        'rules'=>[
-                            'name'=>'required|min:2',
-                            'releaseDate'=>'required|date'
+                    'settings'=>[
+                        'validate'=>[ // Add a validator that will be inherited by all other configs
+                            'rules'=>[
+                                'name'=>'required|min:2',
+                                'releaseDate'=>'required|date'
+                            ],
+                            'messages'=>NULL,
+                            'customAttributes'=>NULL,
                         ],
-                        'messages'=>NULL,
-                        'customAttributes'=>NULL,
-                    ],
+                    ]
                 ],
                 'update'=>[ // Same as default create
                     'extends'=>[':default:create']
@@ -279,30 +281,6 @@ class Album extends EntityAbstract
                             'assign'=>[ // the can only add and remove them selves from an album
                                 'set'=>true
                             ],
-                        ]
-                    ]
-                ]
-            ],
-            'testFastMode1'=>[
-                'create'=>[
-                    'fastMode'=>true, // the following rules are defined here in order to be inherited further down
-                    'fields'=>[
-                        'name'=>[
-                            'settings'=>[
-                                'setTo'=>'foo'
-                            ],
-                        ]
-                    ]
-                ]
-            ],
-            'testFastMode2'=>[
-                'create'=>[
-                    'fastMode'=>true, // the following rules are defined here in order to be inherited further down
-                    'fields'=>[
-                        'name'=>[
-                            'settings'=>[
-                                'setTo'=>'foo'
-                            ]
                         ]
                     ]
                 ]
