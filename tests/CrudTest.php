@@ -62,7 +62,6 @@ class CrudTest extends TestCase
             $qb = $result['qb']->getQueryBuilder();
             $placeholders = $qb->getParameters();
             $dql = $qb->getQuery()->getDQL();
-
             $sql = $qb->getQuery()->getSQL();
 
 

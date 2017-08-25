@@ -30,9 +30,8 @@ class CoreSpeedTest extends TestCase
     /**
      * Creates the application.
      * @group coreSpeedTests
-     * @return \Illuminate\Foundation\Application
      */
-    public function testCoreSpeed()
+    public function testCoreSpeed():void
     {
         $testObject = new TestClass();
         $start = microtime(true);
