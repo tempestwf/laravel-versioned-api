@@ -4,6 +4,7 @@ namespace App\API\V1\Repositories;
 
 use App\API\V1\Entities\Artist;
 use App\Repositories\Repository;
+use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\ORM\Query;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 use Doctrine\ORM\Query\Expr;
@@ -167,6 +168,9 @@ class ArtistRepository extends Repository
     public function getTTConfig(): array
     {
         $expr = new Expr();
+        $arrayCache = new ArrayCache();
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['arrayCache'] = $arrayCache;
         return [
             'default'=>[],
             'user'=>[
@@ -321,6 +325,8 @@ class ArtistRepository extends Repository
                         'useResultCache'=>true,
                         'timeToLive'=>777,
                         'cacheId'=>'test_cache_id',
+                        'queryCacheDrive' => $arrayCache,
+                        'resultCacheDriver' => $arrayCache
                     ],
                     'placeholders'=>[
                         'placeholderTest'=>[
@@ -330,6 +336,20 @@ class ArtistRepository extends Repository
                     ],
                     'fetchJoin'=>true
                 ]
+            ],
+            'testQuery2'=>[
+                'extends'=>[':testQuery'],
+                'read'=>[
+                    'where'=>[
+                        'exprArrayTest1'=>null,
+                        'exprArrayTest2'=>null,
+                        'exprArrayTest3'=>null
+                    ],
+                    'having'=>[
+                        'havingTest1'=>null,
+                        'havingTest2'=>null
+                    ],
+                ],
             ],
             'testing'=>[]
         ];

@@ -43,7 +43,6 @@ class CrudTest extends TestCase
                 $userIds[] = $user->getId();
             }
 
-            //Test as super admin level permissions to be able to create everything in one fell swoop
             /** @var Artist[] $result */
             $artistRepo->create($this->createArtistChainData($userIds));
             $artistRepo->init($arrayHelper, ['testQuery'], ['testing']);
@@ -62,8 +61,25 @@ class CrudTest extends TestCase
             $qb = $result['qb']->getQueryBuilder();
             /** @var Doctrine\ORM\Query\Parameter[] $placeholders */
             $placeholders = $qb->getParameters();
-            $dql = $qb->getQuery()->getDQL();
-            //$sql = $qb->getQuery()->getSQL();
+            $query = $qb->getQuery();
+            $dql = $query->getDQL();
+            //$lifeTime = $qb->getQuery()->getResultCacheLifetime();
+
+            //$this->assertEquals($lifeTime, 777);
+
+            //$cacheId = $qb->getQuery()->getResultCacheId();
+
+            //$this->assertEquals($cacheId, 'test_cache_id');
+
+            //$queryCacheDrive = $query->getQueryCacheDriver();
+            //$resultCacheDrive = $query->getResultCacheDriver();
+
+            /** @noinspection NullPointerExceptionInspection */
+            //$arrayCache = $artistRepo->getArrayHelper()->getArray()['arrayCache'];
+
+            //$this->assertSame($arrayCache, $queryCacheDrive);
+            //$this->assertSame($arrayCache, $resultCacheDrive);
+
 
             $this->assertEquals($dql,'SELECT t, a FROM App\API\V1\Entities\Artist t INNER JOIN t.albums a WITH 1 = 1 LEFT JOIN t.albums a2 WITH 1 = 1 WHERE (((((1 = 1 OR 0 <> 1 OR 0 < 1 OR 0 <= 1 OR 1 > 0 OR 1 >= 0 OR t.id IN(1, 0) OR t.id NOT IN(1, 0) OR t.id IS NULL OR t.id IS NOT NULL OR t.name LIKE \'%BEE%\' OR t.name NOT LIKE \'%VAN%\' OR (t.id BETWEEN 0 AND 2)) OR 1 = 1) AND 1 = 1) OR (t.name = :placeholderad553ad84c1ba11a AND t.name <> :placeholdere7646f6929cc4da1) OR (t.name = :placeholder9124f75f1451ed7e OR t.name <> :placeholder13d2d6a6067273d1)) AND t.name = :placeholder5585b8340ac2182b) OR t.name = :placeholder250cc8f7b77a15af OR t.name <> :placeholder50ae8bca45384643 OR t.id < :placeholderf30f7d1907f12e32 OR t.id <= :placeholdere9e3789bfb59e910 OR t.id > :placeholder6bb61e3b7bce0931 OR t.id >= :placeholder5d7b9adcbe1c629e OR t.name IN(:placeholder3b9b9e6a2b055833) OR t.name NOT IN(:placeholder1cf3b2433d6e6986) OR t.name IS NULL OR t.name IS NOT NULL OR t.name LIKE :placeholder52bb4eb0974ded8c OR t.name NOT LIKE :placeholderfa7b4ec623968f9a OR (t.id BETWEEN :placeholdercfcd208495d565ef AND :placeholder37ebc6efcc49ae93) GROUP BY t.name, t.name, t.id HAVING ((1 = 1 AND 1 = 1) OR 1 = 1 OR t.name = :placeholderf6b05f37a61192d6) AND t.name = :placeholder5cde382208614d76 ORDER BY t.id DESC, t.name ASC, t.id DESC');
             $placeholderKeysToTest = ['placeholderTest2', 'placeholderTest', 'frontEndTestPlaceholder', 'frontEndTestPlaceholder2', 'placeholderTest3'];
@@ -96,12 +112,12 @@ class CrudTest extends TestCase
 
             $existingKeys = [];
             $existingValues = [];
-            $simplePlaceholderReference = [];
+            //$simplePlaceholderReference = [];
 
             foreach ($placeholders as $placeholder) {
                 $existingKeys[] = $placeholder->getName();
                 $existingValues[] = $placeholder->getValue();
-                $simplePlaceholderReference[$placeholder->getName()] = $placeholder->getValue();
+                //$simplePlaceholderReference[$placeholder->getName()] = $placeholder->getValue();
             }
 
             foreach ($placeholderKeysToTest as $key) {
