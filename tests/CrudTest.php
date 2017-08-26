@@ -54,17 +54,63 @@ class CrudTest extends TestCase
                 'hydrate'=>false,
                 'placeholders'=>[
                     'placeholderTest3'=>[
-                        'value'=>'some stuff',
+                        'value'=>'some stuff3',
                     ]
                 ]
             ]);
             /** @var  \Doctrine\ORM\QueryBuilder $qb */
             $qb = $result['qb']->getQueryBuilder();
+            /** @var Doctrine\ORM\Query\Parameter[] $placeholders */
             $placeholders = $qb->getParameters();
             $dql = $qb->getQuery()->getDQL();
-            $sql = $qb->getQuery()->getSQL();
+            //$sql = $qb->getQuery()->getSQL();
 
+            $this->assertEquals($dql,'SELECT t, a FROM App\API\V1\Entities\Artist t INNER JOIN t.albums a WITH 1 = 1 LEFT JOIN t.albums a2 WITH 1 = 1 WHERE (((((1 = 1 OR 0 <> 1 OR 0 < 1 OR 0 <= 1 OR 1 > 0 OR 1 >= 0 OR t.id IN(1, 0) OR t.id NOT IN(1, 0) OR t.id IS NULL OR t.id IS NOT NULL OR t.name LIKE \'%BEE%\' OR t.name NOT LIKE \'%VAN%\' OR (t.id BETWEEN 0 AND 2)) OR 1 = 1) AND 1 = 1) OR (t.name = :placeholderad553ad84c1ba11a AND t.name <> :placeholdere7646f6929cc4da1) OR (t.name = :placeholder9124f75f1451ed7e OR t.name <> :placeholder13d2d6a6067273d1)) AND t.name = :placeholder5585b8340ac2182b) OR t.name = :placeholder250cc8f7b77a15af OR t.name <> :placeholder50ae8bca45384643 OR t.id < :placeholderf30f7d1907f12e32 OR t.id <= :placeholdere9e3789bfb59e910 OR t.id > :placeholder6bb61e3b7bce0931 OR t.id >= :placeholder5d7b9adcbe1c629e OR t.name IN(:placeholder3b9b9e6a2b055833) OR t.name NOT IN(:placeholder1cf3b2433d6e6986) OR t.name IS NULL OR t.name IS NOT NULL OR t.name LIKE :placeholder52bb4eb0974ded8c OR t.name NOT LIKE :placeholderfa7b4ec623968f9a OR (t.id BETWEEN :placeholdercfcd208495d565ef AND :placeholder37ebc6efcc49ae93) GROUP BY t.name, t.name, t.id HAVING ((1 = 1 AND 1 = 1) OR 1 = 1 OR t.name = :placeholderf6b05f37a61192d6) AND t.name = :placeholder5cde382208614d76 ORDER BY t.id DESC, t.name ASC, t.id DESC');
+            $placeholderKeysToTest = ['placeholderTest2', 'placeholderTest', 'frontEndTestPlaceholder', 'frontEndTestPlaceholder2', 'placeholderTest3'];
+            $placeholderValuesToTest = [
+                'some stuff',
+                'some stuff2',
+                '777',
+                'stuff2',
+                'some stuff3',
+                'BEETHOVEN1',
+                'BEETHOVEN2',
+                'BEETHOVEN3',
+                'BEETHOVEN4',
+                'Blink 182',
+                '99999991',
+                '99999992',
+                '-1',
+                '-2',
+                'BEETHOVEN5',
+                ['Vanilla Ice'],
+                '%BEETHOV%',
+                '%The Ruttles%',
+                '0',
+                '99999993',
+                'BEETHOVEN6',
+                'BEETHOVEN7',
+                'Bob Marley',
+                'Urethra Franklin'
+            ];
 
+            $existingKeys = [];
+            $existingValues = [];
+            $simplePlaceholderReference = [];
+
+            foreach ($placeholders as $placeholder) {
+                $existingKeys[] = $placeholder->getName();
+                $existingValues[] = $placeholder->getValue();
+                $simplePlaceholderReference[$placeholder->getName()] = $placeholder->getValue();
+            }
+
+            foreach ($placeholderKeysToTest as $key) {
+                $this->assertContains($key, $existingKeys);
+            }
+
+            foreach ($placeholderValuesToTest as $value) {
+                $this->assertContains($value, $existingValues);
+            }
 
             /*$this->assertEquals($result['count'], 2);
             $this->assertEquals($result['result'][0]['name'], 'BEETHOVEN');
@@ -1207,30 +1253,44 @@ class CrudTest extends TestCase
                     [
                         'operator'=>'andX',
                         'conditions'=>[
-                            'field'=>'t.name',
-                            'operator'=>'eq',
-                            'arguments'=>['BEETHOVEN']
+                            [
+                                'field'=>'t.name',
+                                'operator'=>'eq',
+                                'arguments'=>['BEETHOVEN1']
+                            ],
+                            [
+                                'field'=>'t.name',
+                                'operator'=>'neq',
+                                'arguments'=>['Bob Marley']
+                            ]
                         ]
                     ],
                     [
                         'operator'=>'orX',
                         'conditions'=>[
-                            'field'=>'t.name',
-                            'operator'=>'eq',
-                            'arguments'=>['BEETHOVEN']
+                            [
+                                'field'=>'t.name',
+                                'operator'=>'eq',
+                                'arguments'=>['BEETHOVEN2']
+                            ],
+                            [
+                                'field'=>'t.name',
+                                'operator'=>'neq',
+                                'arguments'=>['Urethra Franklin']
+                            ]
                         ]
                     ],
                     [
                         'field'=>'t.name',
                         'type'=>'and',
                         'operator'=>'eq',
-                        'arguments'=>['BEETHOVEN']
+                        'arguments'=>['BEETHOVEN3']
                     ],
                     [
                         'field'=>'t.name',
                         'type'=>'or',
                         'operator'=>'eq',
-                        'arguments'=>['BEETHOVEN']
+                        'arguments'=>['BEETHOVEN4']
                     ],
                     [
                         'field'=>'t.name',
@@ -1242,31 +1302,31 @@ class CrudTest extends TestCase
                         'field'=>'t.id',
                         'type'=>'or',
                         'operator'=>'lt',
-                        'arguments'=>[9999999]
+                        'arguments'=>[99999991]
                     ],
                     [
                         'field'=>'t.id',
                         'type'=>'or',
                         'operator'=>'lte',
-                        'arguments'=>[9999999]
+                        'arguments'=>[99999992]
                     ],
                     [
                         'field'=>'t.id',
                         'type'=>'or',
                         'operator'=>'gt',
-                        'arguments'=>[0]
+                        'arguments'=>[-1]
                     ],
                     [
                         'field'=>'t.id',
                         'type'=>'or',
                         'operator'=>'gte',
-                        'arguments'=>[0]
+                        'arguments'=>[-2]
                     ],
                     [
                         'field'=>'t.name',
                         'type'=>'or',
                         'operator'=>'in',
-                        'arguments'=>[['BEETHOVEN']]
+                        'arguments'=>[['BEETHOVEN5']]
                     ],
                     [
                         'field'=>'t.name',
@@ -1302,7 +1362,7 @@ class CrudTest extends TestCase
                         'field'=>'t.id',
                         'type'=>'or',
                         'operator'=>'between',
-                        'arguments'=>[0,9999999]
+                        'arguments'=>[0,99999993]
                     ],
                 ],
                 'having'=>[
@@ -1310,13 +1370,13 @@ class CrudTest extends TestCase
                         'field'=>'t.name',
                         'type'=>'or',
                         'operator'=>'eq',
-                        'arguments'=>['BEETHOVEN']
+                        'arguments'=>['BEETHOVEN6']
                     ],
                     [
                         'field'=>'t.name',
                         'type'=>'and',
                         'operator'=>'eq',
-                        'arguments'=>['BEETHOVEN']
+                        'arguments'=>['BEETHOVEN7']
                     ],
                 ],
                 'orderBy'=>[
@@ -1329,11 +1389,11 @@ class CrudTest extends TestCase
                  ],
                  'placeholders'=>[
                      'frontEndTestPlaceholder'=>[
-                         'value'=>1,
+                         'value'=>777,
                          'type'=>'integer'
                      ],
                      'frontEndTestPlaceholder2'=>[
-                         'value'=>'stuff',
+                         'value'=>'stuff2',
                          'type'=>'string'
                      ]
                  ]

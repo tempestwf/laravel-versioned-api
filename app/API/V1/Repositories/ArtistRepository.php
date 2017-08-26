@@ -263,9 +263,9 @@ class ArtistRepository extends Repository
                         'exprArrayTest2'=>[
                             'type'=>'or',
                             'value'=>[
-                                'expr'=>'orX',
+                                'expr'=>'eq',
                                 'arguments'=>[
-                                    $expr->eq(1, 1)
+                                    1, 1
                                 ]
                             ]
                         ],
@@ -324,7 +324,7 @@ class ArtistRepository extends Repository
                     ],
                     'placeholders'=>[
                         'placeholderTest'=>[
-                            'value'=>'some stuff',
+                            'value'=>'some stuff2',
 
                         ]
                     ],
