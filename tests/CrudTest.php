@@ -249,8 +249,25 @@ class CrudTest extends TestCase
 
             $this->assertInstanceOf(Artist::class, $result['result'][0]);
 
-            /** @var \Doctrine\ORM\QueryBuilder $qb */
+            $optionsOverrides['hydrationType'] = Query::HYDRATE_ARRAY;
+            $optionsOverrides['paginate'] = true;
+            $frontEndOptions['returnCount'] = false;
+            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
 
+            $this->assertNull($result['count']);
+
+            $frontEndOptions['returnCount'] = true;
+            $frontEndOptions['offset'] = 0;
+            $frontEndOptions['limit'] = 2;
+            $result1 = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+
+            $optionsOverrides['fetchJoin'] = false;
+
+            $result2 = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+
+            $this->assertCount(2, $result1['result']);
+
+            $this->assertCount(1, $result2['result']);
 
             $conn->rollBack();
         } catch (Exception $e) {
