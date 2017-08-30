@@ -74,7 +74,7 @@ class CrudTest extends TestCase
             $placeholders = $qb->getParameters();
             $dql = $query->getDQL();
 
-            $this->assertEquals($dql,'SELECT t, a FROM App\API\V1\Entities\Artist t INNER JOIN t.albums a WITH 1 = 1 LEFT JOIN t.albums a2 WITH 1 = 1 WHERE 1 = 1 AND (:placeholderTest2 = \'some stuff\' AND :placeholderTest = \'some stuff2\' AND :frontEndTestPlaceholder = 777 AND :frontEndTestPlaceholder2 = \'stuff2\' AND :placeholderTest3 = \'some stuff3\') AND (t.name <> :placeholder2ed1f0f3fe3b000e AND t.name <> :placeholdere7646f6929cc4da1) AND (t.name <> :placeholder13d2d6a6067273d1 AND t.name <> :placeholderd0c2158016a373e3) AND t.name <> :placeholder7689c193d2472a87 HAVING 1 = 1 OR t.id <> :placeholdercfcd208495d565ef OR t.id <> :placeholder6bb61e3b7bce0931');
+            $this->assertEquals($dql,'SELECT t, a FROM App\API\V1\Entities\Artist t INNER JOIN t.albums a WITH 1 = 1 LEFT JOIN t.albums a2 WITH 1 = 1 WHERE 1 = 1 AND (:placeholderTest2 = \'some stuff\' AND :placeholderTest = \'some stuff2\' AND :frontEndTestPlaceholder = 777 AND :frontEndTestPlaceholder2 = \'stuff2\' AND :placeholderTest3 = \'some stuff3\') AND (t.name <> :placeholder2ed1f0f3fe3b000e AND t.name <> :placeholdere7646f6929cc4da1) AND (t.name <> :placeholder13d2d6a6067273d1 AND t.name <> :placeholderd0c2158016a373e3) AND t.name <> :placeholder7689c193d2472a87 HAVING 1 = 1 OR t.id <> :placeholdercfcd208495d565ef OR t.id <> :placeholdercfcd208495d565ef');
 
 
             $placeholderKeysToTest = ['placeholderTest2', 'placeholderTest', 'frontEndTestPlaceholder', 'frontEndTestPlaceholder2', 'placeholderTest3'];
@@ -85,7 +85,7 @@ class CrudTest extends TestCase
                 'stuff2',
                 'some stuff3',
                 0,
-                -1,
+                0,
                 'Gossepi the squid',
                 'Khaaan!!',
                 'Urethra Franklin',
@@ -1609,7 +1609,7 @@ class CrudTest extends TestCase
                         'field'=>'t.id',
                         'type'=>'or',
                         'operator'=>'neq',
-                        'arguments'=>[-1]
+                        'arguments'=>[0]
                     ],
                 ],
                 'placeholders'=>[

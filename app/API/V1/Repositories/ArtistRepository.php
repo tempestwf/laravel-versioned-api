@@ -179,13 +179,15 @@ class ArtistRepository extends Repository
             'userArtistWithAlbums'=>[
                 'extends'=>[':default'],
                 'read'=>[
-                    'select'=>[
-                        'artistsAndAlbums'=>'a, a2'
-                    ],
-                    'innerJoin'=>[
-                        'justCurrentUsersAlbums'=>[
-                            'join'=>'a.albums',
-                            'alias'=>'a2',
+                    'query'=>[
+                        'select'=>[
+                            'artistsAndAlbums'=>'a, a2'
+                        ],
+                        'innerJoin'=>[
+                            'justCurrentUsersAlbums'=>[
+                                'join'=>'a.albums',
+                                'alias'=>'a2',
+                            ]
                         ]
                     ]
                 ]
@@ -193,199 +195,204 @@ class ArtistRepository extends Repository
             'testQuery'=>[
                 'extends'=>[':default'],
                 'read'=>[
-                    'select'=>[
-                        'artistsWithCustomAlias'=>'t',
-                        'innerJoinTest'=>'a',
-                    ],
-                    'from'=>[
-                        'fromTest'=>[
-                            'className'=>Artist::class,
-                            'alias'=>'t',
-                            'indexBy'=>null,
-                        ]
-                    ],
-                    'where'=>[
-                        'exprArrayTest1'=>[
-                            'value'=>[
-                                'expr'=>'orX',
-                                'arguments'=>[
-                                    [
-                                        'expr'=>'eq',
-                                        'arguments'=>[1,1]
-                                    ],
-                                    [
-                                        'expr'=>'neq',
-                                        'arguments'=>[0,1]
-                                    ],
-                                    [
-                                        'expr'=>'lt',
-                                        'arguments'=>[0,1]
-                                    ],
-                                    [
-                                        'expr'=>'lte',
-                                        'arguments'=>[0,1]
-                                    ],
-                                    [
-                                        'expr'=>'gt',
-                                        'arguments'=>[1,0]
-                                    ],
-                                    [
-                                        'expr'=>'gte',
-                                        'arguments'=>[1,0]
-                                    ],
-                                    [
-                                        'expr'=>'in',
-                                        'arguments'=>['t.id',[1,0]]
-                                    ],
-                                    [
-                                        'expr'=>'notIn',
-                                        'arguments'=>['t.id',[1,0]]
-                                    ],
-                                    [
-                                        'expr'=>'isNull',
-                                        'arguments'=>['t.id']
-                                    ],
-                                    [
-                                        'expr'=>'isNotNull',
-                                        'arguments'=>['t.id']
-                                    ],
-                                    [
-                                        'expr'=>'like',
-                                        'arguments'=>['t.name', $expr->literal('%BEE%')]
-                                    ],
-                                    [
-                                        'expr'=>'notLike',
-                                        'arguments'=>['t.name', $expr->literal('%VAN%')]
-                                    ],
-                                    [
-                                        'expr'=>'between',
-                                        'arguments'=>['t.id',0,2]
+                    'query'=>[
+                        'select'=>[
+                            'artistsWithCustomAlias'=>'t',
+                            'innerJoinTest'=>'a',
+                        ],
+                        'from'=>[
+                            'fromTest'=>[
+                                'className'=>Artist::class,
+                                'alias'=>'t',
+                                'indexBy'=>null,
+                            ]
+                        ],
+                        'where'=>[
+                            'exprArrayTest1'=>[
+                                'value'=>[
+                                    'expr'=>'orX',
+                                    'arguments'=>[
+                                        [
+                                            'expr'=>'eq',
+                                            'arguments'=>[1,1]
+                                        ],
+                                        [
+                                            'expr'=>'neq',
+                                            'arguments'=>[0,1]
+                                        ],
+                                        [
+                                            'expr'=>'lt',
+                                            'arguments'=>[0,1]
+                                        ],
+                                        [
+                                            'expr'=>'lte',
+                                            'arguments'=>[0,1]
+                                        ],
+                                        [
+                                            'expr'=>'gt',
+                                            'arguments'=>[1,0]
+                                        ],
+                                        [
+                                            'expr'=>'gte',
+                                            'arguments'=>[1,0]
+                                        ],
+                                        [
+                                            'expr'=>'in',
+                                            'arguments'=>['t.id',[1,0]]
+                                        ],
+                                        [
+                                            'expr'=>'notIn',
+                                            'arguments'=>['t.id',[1,0]]
+                                        ],
+                                        [
+                                            'expr'=>'isNull',
+                                            'arguments'=>['t.id']
+                                        ],
+                                        [
+                                            'expr'=>'isNotNull',
+                                            'arguments'=>['t.id']
+                                        ],
+                                        [
+                                            'expr'=>'like',
+                                            'arguments'=>['t.name', $expr->literal('%BEE%')]
+                                        ],
+                                        [
+                                            'expr'=>'notLike',
+                                            'arguments'=>['t.name', $expr->literal('%VAN%')]
+                                        ],
+                                        [
+                                            'expr'=>'between',
+                                            'arguments'=>['t.id',0,2]
+                                        ]
                                     ]
                                 ]
-                            ]
-                        ],
-                        'exprArrayTest2'=>[
-                            'type'=>'and',
-                            'value'=>[
-                                'expr'=>'eq',
-                                'arguments'=>[
-                                    1, 1
+                            ],
+                            'exprArrayTest2'=>[
+                                'type'=>'and',
+                                'value'=>[
+                                    'expr'=>'eq',
+                                    'arguments'=>[
+                                        1, 1
+                                    ]
                                 ]
+                            ],
+                            'exprArrayTest3'=>[
+                                'type'=>'or',
+                                'value'=>$expr->eq(1, 1)
+                            ],
+                        ],
+                        'having'=>[
+                            'havingTest1'=>[
+                                'value'=>$expr->eq(1, 1)
+                            ],
+                            'havingTest2'=>[
+                                'type'=>'and',
+                                'value'=>$expr->eq(1, 1)
+                            ],
+                            'havingTest3'=>[
+                                'type'=>'or',
+                                'value'=>$expr->eq(1, 1)
                             ]
                         ],
-                        'exprArrayTest3'=>[
-                            'type'=>'or',
-                            'value'=>$expr->eq(1, 1)
+                        'innerJoin'=>[
+                            'innerJoinTest'=>[
+                                'join'=>'t.albums',
+                                'alias'=>'a',
+                                'conditionType'=>Expr\Join::WITH,
+                                'condition'=>$expr->eq(1, 1),
+                                'indexBy'=>null,
+                            ]
+                        ],
+                        'leftJoin'=>[
+                            'leftJoinTest'=>[
+                                'join'=>'t.albums',
+                                'alias'=>'a2',
+                                'conditionType'=>Expr\Join::WITH,
+                                'condition'=>$expr->eq(1, 1),
+                                'indexBy'=>null,
+                            ]
+                        ],
+                        'orderBy'=>[
+                            'testOrderBy'=>[
+                                'sort'=>'t.id',
+                                'order'=>'DESC'
+                            ]
+                        ],
+                        'groupBy'=>[
+                            'groupByTest'=>'t.name'
                         ],
                     ],
-                    'having'=>[
-                        'havingTest1'=>[
-                            'value'=>$expr->eq(1, 1)
+                    'settings'=>[
+                        'cache'=>[
+                            'useQueryCache'=>false,
+                            'useResultCache'=>true,
+                            'timeToLive'=>777,
+                            'cacheId'=>'test_cache_id',
+                            'queryCacheDrive' => $arrayCache,
+                            'resultCacheDriver' => $arrayCache
                         ],
-                        'havingTest2'=>[
-                            'type'=>'and',
-                            'value'=>$expr->eq(1, 1)
-                        ],
-                        'havingTest3'=>[
-                            'type'=>'or',
-                            'value'=>$expr->eq(1, 1)
-                        ]
-                    ],
-                    'innerJoin'=>[
-                        'innerJoinTest'=>[
-                            'join'=>'t.albums',
-                            'alias'=>'a',
-                            'conditionType'=>Expr\Join::WITH,
-                            'condition'=>$expr->eq(1, 1),
-                            'indexBy'=>null,
-                        ]
-                    ],
-                    'leftJoin'=>[
-                        'leftJoinTest'=>[
-                            'join'=>'t.albums',
-                            'alias'=>'a2',
-                            'conditionType'=>Expr\Join::WITH,
-                            'condition'=>$expr->eq(1, 1),
-                            'indexBy'=>null,
-                        ]
-                    ],
-                    'orderBy'=>[
-                        'testOrderBy'=>[
-                            'sort'=>'t.id',
-                            'order'=>'DESC'
-                        ]
-                    ],
-                    'groupBy'=>[
-                        'groupByTest'=>'t.name'
-                    ],
-                ],
-                'settings'=>[
-                    'cache'=>[
-                        'useQueryCache'=>false,
-                        'useResultCache'=>true,
-                        'timeToLive'=>777,
-                        'cacheId'=>'test_cache_id',
-                        'queryCacheDrive' => $arrayCache,
-                        'resultCacheDriver' => $arrayCache
-                    ],
-                    'placeholders'=>[
-                        'placeholderTest'=>[
-                            'value'=>'some stuff2',
+                        'placeholders'=>[
+                            'placeholderTest'=>[
+                                'value'=>'some stuff2',
 
-                        ]
-                    ],
-                    'fetchJoin'=>true
-                ]
+                            ]
+                        ],
+                        'fetchJoin'=>true
+                    ]
+                ],
+
             ],
             'testQuery2'=>[
                 'extends'=>[':testQuery'],
                 'read'=>[
-                    'where'=>[
-                        'exprArrayTest1'=>null,
-                        'exprArrayTest2'=>null,
-                        'exprArrayTest3'=>null,
-                        'simpleTest'=>[
-                            'type'=>'and',
-                            'value'=>$expr->eq(1, 1)
-                        ],
-                        'andPlaceholders'=>[
-                            'type'=>'and',
-                            'value'=>[
-                                'expr'=>'andX',
-                                'arguments'=>[
-                                    [
-                                        'expr'=>'eq',
-                                        'arguments'=>[':placeholderTest2',$expr->literal('some stuff')]
-                                    ],
-                                    [
-                                        'expr'=>'eq',
-                                        'arguments'=>[':placeholderTest',$expr->literal('some stuff2')]
-                                    ],
-                                    [
-                                        'expr'=>'eq',
-                                        'arguments'=>[':frontEndTestPlaceholder',777]
-                                    ],
-                                    [
-                                        'expr'=>'eq',
-                                        'arguments'=>[':frontEndTestPlaceholder2',$expr->literal('stuff2')]
-                                    ],
-                                    [
-                                        'expr'=>'eq',
-                                        'arguments'=>[':placeholderTest3',$expr->literal('some stuff3')]
-                                    ],
+                    'query'=>[
+                        'where'=>[
+                            'exprArrayTest1'=>null,
+                            'exprArrayTest2'=>null,
+                            'exprArrayTest3'=>null,
+                            'simpleTest'=>[
+                                'type'=>'and',
+                                'value'=>$expr->eq(1, 1)
+                            ],
+                            'andPlaceholders'=>[
+                                'type'=>'and',
+                                'value'=>[
+                                    'expr'=>'andX',
+                                    'arguments'=>[
+                                        [
+                                            'expr'=>'eq',
+                                            'arguments'=>[':placeholderTest2',$expr->literal('some stuff')]
+                                        ],
+                                        [
+                                            'expr'=>'eq',
+                                            'arguments'=>[':placeholderTest',$expr->literal('some stuff2')]
+                                        ],
+                                        [
+                                            'expr'=>'eq',
+                                            'arguments'=>[':frontEndTestPlaceholder',777]
+                                        ],
+                                        [
+                                            'expr'=>'eq',
+                                            'arguments'=>[':frontEndTestPlaceholder2',$expr->literal('stuff2')]
+                                        ],
+                                        [
+                                            'expr'=>'eq',
+                                            'arguments'=>[':placeholderTest3',$expr->literal('some stuff3')]
+                                        ],
+                                    ]
                                 ]
                             ]
-                        ]
-                    ],
-                    'having'=>[
-                        'havingTest1'=>null,
-                        'havingTest2'=>null
-                    ],
-                    'groupBy'=>[
-                        'groupByTest'=>null
-                    ],
-                    'orderBy'=>[
-                        'testOrderBy'=>null
+                        ],
+                        'having'=>[
+                            'havingTest1'=>null,
+                            'havingTest2'=>null
+                        ],
+                        'groupBy'=>[
+                            'groupByTest'=>null
+                        ],
+                        'orderBy'=>[
+                            'testOrderBy'=>null
+                        ],
                     ],
                 ],
             ],

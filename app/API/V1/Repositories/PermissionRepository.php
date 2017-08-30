@@ -18,14 +18,18 @@ class PermissionRepository extends Repository
     {
         return [
             'default'=>[
-                'permissions'=>[
-                    'allowed'=>false
+                'read'=>[
+                    'permissions'=>[
+                        'allowed'=>false
+                    ]
                 ]
             ],
             'superAdmin'=>[
                 'extends'=>[':default'],
-                'permissions'=>[
-                    'allowed'=>true
+                'read'=>[
+                    'permissions'=>[
+                        'allowed'=>true
+                    ]
                 ]
             ],
             'testing'=>[]

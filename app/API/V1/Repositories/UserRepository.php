@@ -18,6 +18,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
 
     /**
      * @return array
+     * @throws \RuntimeException
      */
     public function getTTConfig(): array
     {
@@ -26,25 +27,28 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
         return [
             'default'=>[
                 'read'=>[
-                    'select'=>[
-                        'standardSelect'=>'partial u.{id, name, address, job}'
+                    'query'=>[
+                        'select'=>[
+                            'standardSelect'=>'partial u.{id, name, address, job}'
+                        ],
+                        'where'=>[
+                            'onlyCurrentUser'=>[
+                                'type'=>'and',
+                                'value'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id']))
+                            ]
+                        ],
                     ],
-                    'where'=>[
-                        'onlyCurrentUser'=>[
-                            'type'=>'and',
-                            'value'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id']))
-                        ]
-                    ]
-                ],
-                'permissions'=>[
-                    'where'=>[
-                        'fields'=>[
-                            'password'=>[
-                                'permissive'=>false
+                    'permissions'=>[
+                        'where'=>[
+                            'fields'=>[
+                                'password'=>[
+                                    'permissive'=>false
+                                ]
                             ]
                         ]
                     ]
-                ]
+                ],
+
             ],
             'user'=>[
                 'extends'=>[':default']
@@ -52,19 +56,21 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
             'admin'=>[
                 'extends'=>[':default'],
                 'read'=>[
-                    'where'=>[
-                        'onlyCurrentUser'=>null
-                    ]
-                ],
-                'permissions'=>[
-                    'where'=>[
-                        'fields'=>[
-                            'password'=>[
-                                'permissive'=>true
+                    'query'=>[
+                        'where'=>[
+                            'onlyCurrentUser'=>null
+                        ],
+                    ],
+                    'permissions'=>[
+                        'where'=>[
+                            'fields'=>[
+                                'password'=>[
+                                    'permissive'=>true
+                                ]
                             ]
                         ]
                     ]
-                ]
+                ],
             ],
             'testing'=>[]
         ];

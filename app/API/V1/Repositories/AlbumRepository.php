@@ -141,12 +141,9 @@ class AlbumRepository extends Repository
     }
 
 
-
-
-
-
     /**
      * @return array
+     * @throws \RuntimeException
      */
     public function getTTConfig(): array
     {
@@ -160,12 +157,14 @@ class AlbumRepository extends Repository
             'userMyAlbums'=>[
                 'extends'=>[':default'],
                 'read'=>[
-                    'innerJoin'=>[
-                        'justCurrentUsersAlbums'=>[
-                            'join'=>'a.users',
-                            'alias'=>'u',
-                            'conditionType'=>Expr\Join::WITH,
-                            'condition'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id'])),
+                    'query'=>[
+                        'innerJoin'=>[
+                            'justCurrentUsersAlbums'=>[
+                                'join'=>'a.users',
+                                'alias'=>'u',
+                                'conditionType'=>Expr\Join::WITH,
+                                'condition'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id'])),
+                            ]
                         ]
                     ]
                 ]
