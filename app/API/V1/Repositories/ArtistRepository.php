@@ -5,6 +5,7 @@ namespace App\API\V1\Repositories;
 use App\API\V1\Entities\Artist;
 use App\Repositories\Repository;
 use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\ORM\Query;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 use Doctrine\ORM\Query\Expr;
@@ -395,6 +396,60 @@ class ArtistRepository extends Repository
                         ],
                     ],
                 ],
+            ],
+            'testSqlQuery'=>[
+                'extends'=>[':testQuery2'],
+                'read'=>[
+                    'query'=>[
+                        'select'=>[
+                            'artistsWithCustomAlias'=>null,
+                            'innerJoinTest'=>null,
+                            'selectAll'=>'*'
+                        ],
+                        'from'=>[
+                            'fromTest'=>[
+                                'className'=>'artists',
+                                'alias'=>'t',
+                                'indexBy'=>null,
+                            ]
+                        ],
+                        'innerJoin'=>[
+                            'innerJoinTest'=>[
+                                'join'=>'t.albums',
+                                'alias'=>'a',
+                                'conditionType'=>Expr\Join::WITH,
+                                'condition'=>'a.artist_id = t.id',
+                                'indexBy'=>null,
+                            ]
+                        ],
+                        'leftJoin'=>[
+                            'leftJoinTest'=>[
+                                'join'=>'t.albums',
+                                'alias'=>'a2',
+                                'conditionType'=>Expr\Join::WITH,
+                                'condition'=>'a.artist_id = t.id',
+                                'indexBy'=>null,
+                            ]
+                        ],
+                    ],
+                    'settings'=>[
+                        'queryType'=>'sql',
+                        'cache'=>[
+                            'queryCacheProfile'=>new QueryCacheProfile(0, 'some key')
+                        ]
+                    ]
+                ]
+            ],
+            'testSqlQueryNoCache'=>[
+                'extends'=>[':testSqlQuery'],
+                'read'=>[
+                    'settings'=>[
+                        'queryType'=>'sql',
+                        'cache'=>[
+                            'queryCacheProfile'=>null
+                        ]
+                    ]
+                ]
             ],
             'testing'=>[]
         ];
