@@ -265,7 +265,7 @@ class ArtistRepository extends Repository
                             ]
                         ],
                         'exprArrayTest2'=>[
-                            'type'=>'or',
+                            'type'=>'and',
                             'value'=>[
                                 'expr'=>'eq',
                                 'arguments'=>[
@@ -274,7 +274,7 @@ class ArtistRepository extends Repository
                             ]
                         ],
                         'exprArrayTest3'=>[
-                            'type'=>'and',
+                            'type'=>'or',
                             'value'=>$expr->eq(1, 1)
                         ],
                     ],
@@ -343,11 +343,49 @@ class ArtistRepository extends Repository
                     'where'=>[
                         'exprArrayTest1'=>null,
                         'exprArrayTest2'=>null,
-                        'exprArrayTest3'=>null
+                        'exprArrayTest3'=>null,
+                        'simpleTest'=>[
+                            'type'=>'and',
+                            'value'=>$expr->eq(1, 1)
+                        ],
+                        'andPlaceholders'=>[
+                            'type'=>'and',
+                            'value'=>[
+                                'expr'=>'andX',
+                                'arguments'=>[
+                                    [
+                                        'expr'=>'eq',
+                                        'arguments'=>[':placeholderTest2',$expr->literal('some stuff')]
+                                    ],
+                                    [
+                                        'expr'=>'eq',
+                                        'arguments'=>[':placeholderTest',$expr->literal('some stuff2')]
+                                    ],
+                                    [
+                                        'expr'=>'eq',
+                                        'arguments'=>[':frontEndTestPlaceholder',777]
+                                    ],
+                                    [
+                                        'expr'=>'eq',
+                                        'arguments'=>[':frontEndTestPlaceholder2',$expr->literal('stuff2')]
+                                    ],
+                                    [
+                                        'expr'=>'eq',
+                                        'arguments'=>[':placeholderTest3',$expr->literal('some stuff3')]
+                                    ],
+                                ]
+                            ]
+                        ]
                     ],
                     'having'=>[
                         'havingTest1'=>null,
                         'havingTest2'=>null
+                    ],
+                    'groupBy'=>[
+                        'groupByTest'=>null
+                    ],
+                    'orderBy'=>[
+                        'testOrderBy'=>null
                     ],
                 ],
             ],
