@@ -6,6 +6,7 @@ use App\API\V1\Entities\User;
 use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
+use Doctrine\ORM\Query;
 use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
 use TempestTools\Common\Helper\ArrayHelper;
 use TempestTools\Crud\Constants\EntityEventsConstants;
@@ -124,6 +125,13 @@ class CrudTest extends TestCase
             $this->assertEquals($result['result'][0]['name'], 'BACH');
             $this->assertEquals($result['result'][0]['albums'][0]['name'], 'Amsterdam Baroque Orchestra');
 
+            $optionsOverrides['hydrationType'] = Query::HYDRATE_OBJECT;
+            $optionsOverrides['paginate'] = false;
+            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+
+            $this->assertNull($result['count']);
+
+            $this->assertInstanceOf(Artist::class, $result['result'][0]);
 
             /** @var \Doctrine\ORM\QueryBuilder $qb */
 
