@@ -111,19 +111,32 @@ class CrudTest extends TestCase
                 $this->assertContains($value, $existingValues);
             }
 
+            $foundArtists = [];
+            $foundAlbums = [];
             $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
-
+            $foundArtists[] = $result['result'][0]['name'];
+            $foundAlbums[] = $result['result'][0]['albums'][0]['name'];
             $this->assertEquals($result['count'], 2);
-            $this->assertEquals($result['result'][0]['name'], 'BEETHOVEN');
-            $this->assertEquals($result['result'][0]['albums'][0]['name'], 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+
+            //$this->assertEquals($result['result'][0]['name'], 'BEETHOVEN');
+            //$this->assertEquals($result['result'][0]['albums'][0]['name'], 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
 
             $frontEndOptions['offset'] = 1;
 
             $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
 
+            $foundArtists[] = $result['result'][0]['name'];
+            $foundAlbums[] = $result['result'][0]['albums'][0]['name'];
+
             $this->assertEquals($result['count'], 2);
-            $this->assertEquals($result['result'][0]['name'], 'BACH');
-            $this->assertEquals($result['result'][0]['albums'][0]['name'], 'Amsterdam Baroque Orchestra');
+            //$this->assertEquals($result['result'][0]['name'], 'BACH');
+            //$this->assertEquals($result['result'][0]['albums'][0]['name'], 'Amsterdam Baroque Orchestra');
+
+            $this->assertContains('BEETHOVEN', $foundArtists);
+            $this->assertContains('BACH', $foundArtists);
+
+            $this->assertContains('BEETHOVEN: THE COMPLETE PIANO SONATAS', $foundAlbums);
+            $this->assertContains('Amsterdam Baroque Orchestra', $foundAlbums);
 
             $optionsOverrides['hydrationType'] = Query::HYDRATE_OBJECT;
             $optionsOverrides['paginate'] = false;
