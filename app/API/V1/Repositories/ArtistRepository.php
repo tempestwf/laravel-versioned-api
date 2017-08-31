@@ -451,6 +451,67 @@ class ArtistRepository extends Repository
                     ]
                 ]
             ],
+            'testAllowed'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'allowed'=>false
+                    ]
+                ]
+            ],
+            'testPermissions1'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'where'=>[
+                            'permissive'=>true,
+                            'fields'=>[
+                                't.name'=>[
+                                    'operators'=>[
+                                        'eq'=>false
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'testPermissions2'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'where'=>[
+                            'permissive'=>true,
+                            'fields'=>[
+                                't.id'=>[
+                                    'permissive'=>false
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'testPermissions3'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'where'=>[
+                            'permissive'=>false,
+                            'fields'=>[
+                                't.name'=>[
+                                    'permissive'=>true,
+                                ],
+                                't.id'=>[
+                                    'permissive'=>true,
+                                    'operators'=>[
+                                        'gt'=>false
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
             'testing'=>[]
         ];
     }

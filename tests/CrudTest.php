@@ -14,12 +14,106 @@ use TempestTools\Crud\Constants\RepositoryEventsConstants;
 use TempestTools\Crud\Exceptions\Orm\EntityException;
 use TempestTools\Crud\Exceptions\Orm\Helper\DataBindHelperException;
 use TempestTools\Crud\Exceptions\Orm\Helper\EntityArrayHelperException;
+use TempestTools\Crud\Exceptions\Orm\Helper\QueryBuilderHelperException;
+use TempestTools\Crud\Exceptions\Orm\Wrapper\QueryBuilderWrapperException;
 
 class CrudTest extends TestCase
 {
     use MakeEmTrait;
 
 
+    /**
+     * @group CrudReadOnly5
+     * @throws Exception
+     */
+    public function testReadPermissions () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            $frontEndQuery = $this->makeTestFrontEndQueryArtist();
+            $frontEndOptions = $this->makeFrontEndQueryOptions();
+            $optionsOverrides = [];
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testAllowed'], ['testing']);
+            $e = null;
+            try {
+                $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+
+            $artistRepo->init($arrayHelper, ['testPermissions1'], ['testing']);
+
+            $e = null;
+            try {
+                $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: Operator not allowed. field = t.name, operator = eq', $e->getMessage());
+
+
+            $artistRepo->init($arrayHelper, ['testPermissions2'], ['testing']);
+
+            $e = null;
+            try {
+                $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: Operator not allowed. field = t.id, operator = lt', $e->getMessage());
+
+
+            $artistRepo->init($arrayHelper, ['testPermissions3'], ['testing']);
+
+            $e = null;
+            try {
+                $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: Operator not allowed. field = t.id, operator = gt', $e->getMessage());
+
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'where'=>[
+                            [
+                                'field'=>'t.name',
+                                'type'=>'and',
+                                'operator'=>'not a freaking operator',
+                                'arguments'=>['no arguments about it']
+                            ],
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderWrapperException::class, $e);
+            $this->assertEquals('Error: Requested operator is not safe to use. operator = not a freaking operator', $e->getMessage());
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
     /**
      * @group CrudReadOnly4
      * @throws Exception
@@ -268,6 +362,29 @@ class CrudTest extends TestCase
             $this->assertCount(2, $result1['result']);
 
             $this->assertCount(1, $result2['result']);
+
+            $optionsOverrides['maxLimit'] = 1;
+            $e = null;
+            try {
+                $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+            } catch (\Exception $e) {
+
+            }
+
+            $this->assertInstanceOf( QueryBuilderHelperException::class, $e);
+
+
+            $optionsOverrides['maxLimit'] = 100;
+
+            $optionsOverrides['queryMaxParams'] = 1;
+
+            try {
+                $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+            } catch (\Exception $e) {
+
+            }
+
+            $this->assertInstanceOf( QueryBuilderHelperException::class, $e);
 
             $conn->rollBack();
         } catch (Exception $e) {
