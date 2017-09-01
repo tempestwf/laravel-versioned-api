@@ -12,6 +12,105 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 class CrudReadTest extends CrudTestBaseAbstract
 {
 
+
+
+    /**
+     * @group CrudReadOnly9
+     * @throws Exception
+     */
+    public function testMutateUsed () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            $frontEndOptions = $this->makeFrontEndQueryOptions();
+            $optionsOverrides = [
+                'hydrate'=>false
+            ];
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testMutateUsed'], ['testing']);
+
+            $result = $artistRepo->read([
+                'query'=>[
+                    'where'=>[
+                        [
+                            'field'=>'t.name',
+                            'type'=>'and',
+                            'operator'=>'eq',
+                            'arguments'=>['Where Test']
+                        ],
+                    ],
+                    'having'=>[
+                        [
+                            'field'=>'t.name',
+                            'type'=>'and',
+                            'operator'=>'eq',
+                            'arguments'=>['Having Test']
+                        ],
+                    ],
+                    'orderBy'=>[
+                        't.name'=>'ASC'
+                    ],
+                    'groupBy'=>[
+                        't.name'
+                    ],
+                    'placeholders'=>[
+                        'test'=>[
+                            'value'=>'Bobs your uncle',
+                            'type'=>'string'
+                        ],
+                    ]
+                ]
+            ], $frontEndOptions, $optionsOverrides);
+
+            /** @var  \Doctrine\ORM\QueryBuilder $qb */
+            /** @var \Doctrine\ORM\Query $query */
+            $qb = $result['qb'];
+            $query = $result['query'];
+            $placeholders = $qb->getParameters();
+
+            $placeholderKeysToTest = ['testMutated', 'placeholderTest2', 'placeholdere965bd6ecf5bfd36', 'placeholder4e62ad7b76e2daeb'];
+            $placeholderValuesToTest = [
+                'Bobs your uncle Mutated',
+                'some stuff',
+                'Where Test Mutated',
+                'Having Test Mutated',
+            ];
+
+            $existingKeys = [];
+            $existingValues = [];
+            $simplePlaceholderReference = [];
+
+            foreach ($placeholders as $placeholder) {
+                $existingKeys[] = $placeholder->getName();
+                $existingValues[] = $placeholder->getValue();
+                $simplePlaceholderReference[$placeholder->getName()] = $placeholder->getValue();
+            }
+
+            foreach ($placeholderKeysToTest as $key) {
+                $this->assertContains($key, $existingKeys);
+            }
+
+            foreach ($placeholderValuesToTest as $value) {
+                $this->assertContains($value, $existingValues);
+            }
+
+
+            $dql = $query->getDQL();
+
+            $this->assertEquals($dql,'SELECT a FROM App\API\V1\Entities\Artist a WHERE t.name = :placeholdere965bd6ecf5bfd36 GROUP BY t.nameMutated HAVING t.name = :placeholder4e62ad7b76e2daeb ORDER BY t.nameMutated ASC Mutated');
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
     /**
      * @group CrudReadOnly8
      * @throws Exception
@@ -29,6 +128,27 @@ class CrudReadTest extends CrudTestBaseAbstract
             /** @var ArtistRepository $artistRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
             $artistRepo->init($arrayHelper, ['testMutateAndClosure'], ['testing']);
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'where'=>[
+                            [
+                                'field'=>'t.name',
+                                'type'=>'and',
+                                'operator'=>'eq',
+                                'arguments'=>['BEETHOVEN7']
+                            ],
+                        ],
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: A validation closure did not pass while building query.', $e->getMessage());
 
             $e = null;
             try {

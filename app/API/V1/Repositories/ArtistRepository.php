@@ -592,6 +592,16 @@ class ArtistRepository extends Repository
                 'extends'=>[':default'],
                 'read'=>[
                     'permissions'=>[
+                        'where'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'settings'=>[
+                                        'mutate'=>$mutate,
+                                        'closure'=>$closure,
+                                    ]
+                                ],
+                            ]
+                        ],
                         'having'=>[
                             'fields'=>[
                                 't.name'=>[
@@ -628,6 +638,74 @@ class ArtistRepository extends Repository
                                     'settings'=>[
                                         'mutate'=>$mutate,
                                         'closure'=>$closure,
+                                    ]
+                                ],
+                            ]
+                        ],
+                    ]
+                ]
+            ],
+            'testMutateUsed'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'where'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'settings'=>[
+                                        'mutate'=>function ($extra) {
+                                            $newCondition = $extra['settings'];
+                                            $newCondition['arguments'][0] .= ' Mutated';
+                                            return ['notUsed', $newCondition];
+                                        },
+                                    ]
+                                ],
+                            ]
+                        ],
+                        'having'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'settings'=>[
+                                        'mutate'=>function ($extra) {
+                                            $newCondition = $extra['settings'];
+                                            $newCondition['arguments'][0] .= ' Mutated';
+                                            return ['notUsed', $newCondition];
+                                        },
+                                    ]
+                                ],
+                            ]
+                        ],
+                        'orderBy'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'settings'=>[
+                                        'mutate'=>function ($extra) {
+                                            return [$extra['key'].'Mutated', $extra['settings'].' Mutated'];
+                                        },
+                                    ]
+                                ],
+                            ]
+                        ],
+                        'groupBy'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'settings'=>[
+                                        'mutate'=>function ($extra) {
+                                            return [$extra['key'].'Mutated', 'not used'];
+                                        },
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'placeholders'=>[
+                            'placeholderNames'=>[
+                                'test'=>[
+                                    'settings'=>[
+                                        'mutate'=>function ($extra) {
+                                            $newCondition = $extra['settings'];
+                                            $newCondition['value'] .= ' Mutated';
+                                            return [$extra['key'].'Mutated', $newCondition];
+                                        },
                                     ]
                                 ],
                             ]
