@@ -5,14 +5,13 @@ use App\API\V1\Entities\User;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
 use Doctrine\ORM\Query;
+use TempestTools\Crud\Constants\RepositoryEventsConstants;
 use TempestTools\Crud\Exceptions\Orm\Helper\QueryBuilderHelperException;
 use TempestTools\Crud\Exceptions\Orm\Wrapper\QueryBuilderWrapperException;
 use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 
 class CrudReadTest extends CrudTestBaseAbstract
 {
-
-
 
     /**
      * @group CrudReadOnly9
@@ -758,6 +757,18 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $this->assertInstanceOf( QueryBuilderHelperException::class, $e);
 
+            /** @noinspection NullPointerExceptionInspection */
+            $array = $artistRepo->getArrayHelper()->getArray()->getArrayCopy();
+            foreach ([
+                 RepositoryEventsConstants::PRE_READ,
+                 RepositoryEventsConstants::VALIDATE_READ,
+                 RepositoryEventsConstants::VERIFY_READ,
+                 RepositoryEventsConstants::PROCESS_RESULTS_READ,
+                 RepositoryEventsConstants::POST_READ
+             ] as $event) {
+                $this->assertArrayHasKey($event, $array['repoEvents']);
+            }
+
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
@@ -905,6 +916,8 @@ class CrudReadTest extends CrudTestBaseAbstract
             $userRepo->init($arrayHelper, ['user'], ['testing']);
             $result = $userRepo->read();
             $this->assertEquals($result['result'][0]['id'], 1);
+
+
 
             $conn->rollBack();
         } catch (Exception $e) {

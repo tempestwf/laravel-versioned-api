@@ -164,6 +164,35 @@ class ArtistRepository extends Repository
         /** @noinspection NullPointerExceptionInspection */
         $this->getArrayHelper()->getArray()['repoEvents']['postDeleteBatch']=$e;
     }
+
+
+    public function preRead(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['preRead']=$e;
+    }
+
+    public function validateRead(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['validateRead']=$e;
+    }
+
+    public function verifyRead(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['verifyRead']=$e;
+    }
+
+    public function processResultsRead(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['processResultsRead']=$e;
+    }
+
+    public function postRead(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $this->getArrayHelper()->getArray()['repoEvents']['postRead']=$e;
+    }
+
+
+
     /**
      * @return array
      */
