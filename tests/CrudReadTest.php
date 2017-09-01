@@ -14,7 +14,7 @@ class CrudReadTest extends CrudTestBaseAbstract
 {
 
     /**
-     * @group CrudReadOnly9
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testMutateUsed () {
@@ -111,7 +111,7 @@ class CrudReadTest extends CrudTestBaseAbstract
 
 
     /**
-     * @group CrudReadOnly8
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testMutateAndClosure () {
@@ -232,7 +232,7 @@ class CrudReadTest extends CrudTestBaseAbstract
     }
 
     /**
-     * @group CrudReadOnly7
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testReadPermissions3 () {
@@ -295,7 +295,7 @@ class CrudReadTest extends CrudTestBaseAbstract
 
 
     /**
-     * @group CrudReadOnly6
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testReadPermissions2 () {
@@ -394,7 +394,7 @@ class CrudReadTest extends CrudTestBaseAbstract
 
 
     /**
-     * @group CrudReadOnly5
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testReadPermissions () {
@@ -486,7 +486,7 @@ class CrudReadTest extends CrudTestBaseAbstract
         }
     }
     /**
-     * @group CrudReadOnly4
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testSqlQueryFunctionality () {
@@ -596,7 +596,7 @@ class CrudReadTest extends CrudTestBaseAbstract
 
 
     /**
-     * @group CrudReadOnly3
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testGeneralDataRetrieval () {
@@ -778,7 +778,7 @@ class CrudReadTest extends CrudTestBaseAbstract
 
 
     /**
-     * @group CrudReadOnly2
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testGeneralQueryBuilding () {
