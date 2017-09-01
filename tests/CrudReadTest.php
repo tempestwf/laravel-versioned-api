@@ -1,24 +1,278 @@
 <?php
 
-use App\API\V1\Entities\Album;
 use App\API\V1\Entities\Artist;
 use App\API\V1\Entities\User;
-use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
 use Doctrine\ORM\Query;
-use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
-use TempestTools\Common\Helper\ArrayHelper;
-use TempestTools\Crud\Constants\EntityEventsConstants;
-use TempestTools\Crud\Constants\RepositoryEventsConstants;
-use TempestTools\Crud\Exceptions\Orm\EntityException;
-use TempestTools\Crud\Exceptions\Orm\Helper\DataBindHelperException;
-use TempestTools\Crud\Exceptions\Orm\Helper\EntityArrayHelperException;
 use TempestTools\Crud\Exceptions\Orm\Helper\QueryBuilderHelperException;
 use TempestTools\Crud\Exceptions\Orm\Wrapper\QueryBuilderWrapperException;
+use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 
 class CrudReadTest extends CrudTestBaseAbstract
 {
+
+    /**
+     * @group CrudReadOnly8
+     * @throws Exception
+     */
+    public function testMutateAndClosure () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            $frontEndOptions = $this->makeFrontEndQueryOptions();
+            $optionsOverrides = [
+            ];
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testMutateAndClosure'], ['testing']);
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'having'=>[
+                            [
+                                'field'=>'t.name',
+                                'type'=>'and',
+                                'operator'=>'eq',
+                                'arguments'=>['BEETHOVEN7']
+                            ],
+                        ],
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: A validation closure did not pass while building query.', $e->getMessage());
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'orderBy'=>[
+                            't.name'=>'ASC'
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: A validation closure did not pass while building query.', $e->getMessage());
+
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'groupBy'=>[
+                            't.name'
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: A validation closure did not pass while building query.', $e->getMessage());
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'placeholders'=>[
+                            'test'=>[
+                                'value'=>'Bobs your uncle',
+                                'type'=>'string'
+                            ],
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: A validation closure did not pass while building query.', $e->getMessage());
+
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * @group CrudReadOnly7
+     * @throws Exception
+     */
+    public function testReadPermissions3 () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            $frontEndOptions = $this->makeFrontEndQueryOptions();
+            $optionsOverrides = [
+            ];
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testPermissiveAllowPermissions'], ['testing']);
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'groupBy'=>[
+                            't.name'
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: Group by not allowed. field = t.name', $e->getMessage());
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'placeholders'=>[
+                            'test'=>[
+                                'value'=>'Bobs your uncle',
+                                'type'=>'string'
+                            ],
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: You do not have access requested placeholder. placeholder = test', $e->getMessage());
+
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * @group CrudReadOnly6
+     * @throws Exception
+     */
+    public function testReadPermissions2 () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            $frontEndOptions = $this->makeFrontEndQueryOptions();
+            $optionsOverrides = [];
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testNonWherePermissions'], ['testing']);
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'having'=>[
+                            [
+                                'field'=>'t.name',
+                                'type'=>'and',
+                                'operator'=>'eq',
+                                'arguments'=>['BEETHOVEN7']
+                            ],
+                        ],
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: Operator not allowed. field = t.name, operator = eq', $e->getMessage());
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'orderBy'=>[
+                            't.name'=>'ASC'
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: Order by not allowed. field = t.name, direction = ASC', $e->getMessage());
+
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'groupBy'=>[
+                            't.name'
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: Group by not allowed. field = t.name', $e->getMessage());
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                    'query'=>[
+                        'placeholders'=>[
+                            'test'=>[
+                                'value'=>'Bobs your uncle',
+                                'type'=>'string'
+                            ],
+                        ]
+                    ]
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: You do not have access requested placeholder. placeholder = test', $e->getMessage());
+
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
 
     /**
      * @group CrudReadOnly5

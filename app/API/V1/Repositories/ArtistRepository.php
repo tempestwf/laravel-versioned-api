@@ -25,10 +25,11 @@ class ArtistRepository extends Repository
         $entity = Artist::class;
 
 
+
     /**
      * @var array|NULL $options;
      */
-    protected $options = [
+    protected  /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $options = [
         'paginate'=>true,
         'hydrate'=>true,
         'hydrationType'=>Query::HYDRATE_ARRAY,
@@ -172,6 +173,23 @@ class ArtistRepository extends Repository
         $arrayCache = new ArrayCache();
         /** @noinspection NullPointerExceptionInspection */
         $this->getArrayHelper()->getArray()['arrayCache'] = $arrayCache;
+
+        /** @noinspection PhpUnusedLocalVariableInspection
+         * @return array
+         * @internal param $extra
+         * @internal param $target
+         */
+        $mutate = function () {
+          return ['testKey', ['testValue']];
+        };
+        /** @noinspection PhpUnusedLocalVariableInspection
+         * @param $extra
+         * @return bool
+         * @internal param $target
+         */
+        $closure = function ($extra) {
+            return !($extra['key'] === 'testKey' && $extra['settings'] === ['testValue']);
+        };
         return [
             'default'=>[],
             'user'=>[
@@ -509,6 +527,112 @@ class ArtistRepository extends Repository
                                 ]
                             ]
                         ]
+                    ]
+                ]
+            ],
+            'testNonWherePermissions'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'having'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'operators'=>[
+                                        'eq'=>false
+                                    ]
+                                ],
+                            ]
+                        ],
+                        'orderBy'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'directions'=>[
+                                        'ASC'=>false
+                                    ]
+                                ],
+                            ]
+                        ],
+                        'groupBy'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'allowed'=>false
+                                ],
+                            ]
+                        ],
+                        'placeholders'=>[
+                            'placeholderNames'=>[
+                                'test'=>[
+                                    'allowed'=>false
+                                ],
+                            ]
+                        ],
+
+                    ]
+                ]
+            ],
+            'testPermissiveAllowPermissions'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'groupBy'=>[
+                            'permissive'=>false
+                        ],
+                        'placeholders'=>[
+                            'permissive'=>false,
+                            'placeholderNames'=>[
+                                'placeholderTest2'=>[
+                                    'allowed'=>true
+                                ]
+                            ]
+                        ],
+                    ]
+                ]
+            ],
+            'testMutateAndClosure'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'having'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'settings'=>[
+                                        'mutate'=>$mutate,
+                                        'closure'=>$closure,
+                                    ]
+                                ],
+                            ]
+                        ],
+                        'orderBy'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'settings'=>[
+                                        'mutate'=>$mutate,
+                                        'closure'=>$closure,
+                                    ]
+                                ],
+                            ]
+                        ],
+                        'groupBy'=>[
+                            'fields'=>[
+                                't.name'=>[
+                                    'settings'=>[
+                                        'mutate'=>$mutate,
+                                        'closure'=>$closure,
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'placeholders'=>[
+                            'placeholderNames'=>[
+                                'test'=>[
+                                    'settings'=>[
+                                        'mutate'=>$mutate,
+                                        'closure'=>$closure,
+                                    ]
+                                ],
+                            ]
+                        ],
+
                     ]
                 ]
             ],

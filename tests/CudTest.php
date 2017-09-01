@@ -6,16 +6,13 @@ use App\API\V1\Entities\User;
 use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
-use Doctrine\ORM\Query;
-use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
-use TempestTools\Common\Helper\ArrayHelper;
 use TempestTools\Crud\Constants\EntityEventsConstants;
 use TempestTools\Crud\Constants\RepositoryEventsConstants;
 use TempestTools\Crud\Exceptions\Orm\EntityException;
 use TempestTools\Crud\Exceptions\Orm\Helper\DataBindHelperException;
 use TempestTools\Crud\Exceptions\Orm\Helper\EntityArrayHelperException;
-use TempestTools\Crud\Exceptions\Orm\Helper\QueryBuilderHelperException;
-use TempestTools\Crud\Exceptions\Orm\Wrapper\QueryBuilderWrapperException;
+use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
+
 
 class CudTest extends CrudTestBaseAbstract
 {
