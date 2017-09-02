@@ -40,7 +40,8 @@ class ArtistRepository extends Repository
             'placeholderTest2'=>[
                 'value'=>'some stuff',
             ]
-        ]
+        ],
+        'clearPrePopulatedEntitiesOnFlush'=>true
     ];
 
 
@@ -741,6 +742,17 @@ class ArtistRepository extends Repository
                         ],
 
                     ]
+                ]
+            ],
+            'testTurnOffPrePopulate'=>[
+                'create'=>[
+                    'prePopulateEntities'=>false
+                ],
+                'update'=>[
+                    'prePopulateEntities'=>false
+                ],
+                'delete'=>[
+                    'prePopulateEntities'=>false
                 ]
             ],
             'testing'=>[]
