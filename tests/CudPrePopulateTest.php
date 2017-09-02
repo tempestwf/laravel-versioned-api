@@ -6,16 +6,57 @@ use App\API\V1\Entities\User;
 use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
-use TempestTools\Crud\Constants\EntityEventsConstants;
-use TempestTools\Crud\Constants\RepositoryEventsConstants;
-use TempestTools\Crud\Exceptions\Orm\EntityException;
-use TempestTools\Crud\Exceptions\Orm\Helper\DataBindHelperException;
-use TempestTools\Crud\Exceptions\Orm\Helper\EntityArrayHelperException;
 use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 
 
 class CudPrePopulateTest extends CrudTestBaseAbstract
 {
+
+    /**
+     * A basic test example.
+     * @group CudPrePopulate
+     * @return void
+     * @throws Exception
+     */
+    public function testAssignByIdPrePopulates():void
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $albumRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var Artist[] $artists */
+            $artists = $artistRepo->create([
+                [
+                    'name'=>'BEETHOVEN',
+                ],
+            ]);
+            $albums = $albumRepo->create([
+                [
+                    'name'=>'BEETHOVEN: THE COMPLETE PIANO SONATAS',
+                    'artist'=>$artists[0]->getId(),
+                    'releaseDate'=>new \DateTime('now')
+                ]
+            ], ['clearPrePopulatedEntitiesOnFlush'=>false]);
+
+            /** @noinspection NullPointerExceptionInspection */
+            $array = $artistRepo->getArrayHelper()->getArray();
+            $prePopulate = $array['prePopulatedEntities'];
+            $this->assertEquals($prePopulate['App\API\V1\Entities\Artist'][$artists[0]->getId()]->getName(), 'BEETHOVEN');
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
 
     /**
      * @group CudPrePopulate
