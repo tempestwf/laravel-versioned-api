@@ -17,7 +17,44 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 class CudTest extends CrudTestBaseAbstract
 {
 
-    
+    /**
+     * A basic test example.
+     * @group CrudCudOnly
+     * @return void
+     * @throws Exception
+     */
+    public function testCantAssignNonField():void
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $albumRepo->init($arrayHelper, ['testing'], ['testing']);
+            $e = null;
+            try {
+                $albumRepo->create([
+                    [
+                        'notAField' => 'setting a non field!',
+                    ]
+                ]);
+            } catch (Exception $e) {
+
+            }
+            $this->assertEquals(get_class($e), DataBindHelperException::class);
+            $this->assertEquals($e->getMessage(), 'Error: You attempted to access a property of an entity that wasn\'t a field. entity name = notAField, property name = App\API\V1\Entities\Album');
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+
     /**
      * @group CrudCudOnly
      * @throws Exception
