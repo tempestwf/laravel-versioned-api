@@ -18,6 +18,78 @@ class CudTest extends CrudTestBaseAbstract
 {
 
     /**
+     * @group CrudCudOnly2
+     * @throws Exception
+     */
+    public function testSimpleParamSyntax ():void
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var User[] $users */
+            $users = $userRepo->create($this->createRobAndBobData());
+
+            /** @var AlbumRepository $albumRepo */
+            $albumRepo = $this->em->getRepository(Album::class);
+            $albumRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var Album[] $result */
+            $result = $albumRepo->create([ // Test top level create
+                [
+                    'name'=>'BEETHOVEN: THE COMPLETE PIANO SONATAS',
+                    'releaseDate'=>new \DateTime('now'),
+                    'artist'=> [ // test nested create in single relation
+                        'name'=>'BEETHOVEN',
+                    ],
+                    'users'=>[ //test nested read in many relation
+                        [
+                            'id'=>$users[0]->getId()
+                        ]
+                    ],
+                ],
+            ], [], ['simplifiedParams'=>true]);
+
+            $this->assertEquals($result[0]->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            $this->assertEquals($result[0]->getArtist()->getName(), 'BEETHOVEN');
+            $this->assertEquals($result[0]->getUsers()[0]->getId(), $users[0]->getId());
+
+            /** @var Album[] $result */
+            $result = $albumRepo->update([ // Test top level update
+                [
+                    'id'=>$result[0]->getId(),
+                    'name'=>'UPDATED',
+                    'artist'=> [ // test nested updated in single relation
+                        'id'=>$result[0]->getArtist()->getId(),
+                        'name'=>'UPDATED',
+                    ],
+                    'users'=>[ //test nested update in many relation
+                        [
+                            'id'=>$users[0]->getId(),
+                            'name'=>'UPDATED',
+                            'assignType'=>'null'
+                        ]
+                    ],
+                ],
+            ], [], ['simplifiedParams'=>true]);
+
+            $this->assertEquals($result[0]->getName(), 'UPDATED');
+            $this->assertEquals($result[0]->getArtist()->getName(), 'UPDATED');
+            $this->assertEquals($result[0]->getUsers()[0]->getName(), 'UPDATED');
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
      * A basic test example.
      * @group CrudCudOnly
      * @return void
@@ -45,7 +117,7 @@ class CudTest extends CrudTestBaseAbstract
 
             }
             $this->assertEquals(get_class($e), DataBindHelperException::class);
-            $this->assertEquals($e->getMessage(), 'Error: You attempted to access a property of an entity that wasn\'t a field. entity name = notAField, property name = App\API\V1\Entities\Album');
+            $this->assertEquals($e->getMessage(), 'Error: You attempted to access a property of an entity that wasn\'t a field. entity name = App\API\V1\Entities\Album, property name = notAField');
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
