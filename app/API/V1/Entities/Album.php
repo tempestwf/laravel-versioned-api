@@ -35,7 +35,7 @@ class Album extends EntityAbstract
 
     /**
      * @ORM\ManyToOne(targetEntity="App\API\V1\Entities\Artist", inversedBy="albums", cascade={"persist"})
-     * @ORM\JoinColumn(name="artist_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
+     * @ORM\JoinColumn(name="artist_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      */
     private $artist;
 
@@ -87,7 +87,7 @@ class Album extends EntityAbstract
     /**
      * @return Artist
      */
-    public function getArtist(): Artist
+    public function getArtist(): ?Artist
     {
         return $this->artist;
     }
@@ -96,7 +96,7 @@ class Album extends EntityAbstract
      * @param Artist $artist
      * @return Album
      */
-    public function setArtist(Artist $artist): Album
+    public function setArtist(Artist $artist = null): Album
     {
         $this->artist = $artist;
         return $this;

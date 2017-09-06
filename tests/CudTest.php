@@ -18,7 +18,7 @@ class CudTest extends CrudTestBaseAbstract
 {
 
     /**
-     * @group CrudCudOnly2
+     * @group CrudCudOnly
      * @throws Exception
      */
     public function testSimpleParamSyntax ():void
@@ -55,10 +55,13 @@ class CudTest extends CrudTestBaseAbstract
             ], [], ['simplifiedParams'=>true]);
 
             $this->assertEquals($result[0]->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            /** @noinspection NullPointerExceptionInspection */
             $this->assertEquals($result[0]->getArtist()->getName(), 'BEETHOVEN');
             $this->assertEquals($result[0]->getUsers()[0]->getId(), $users[0]->getId());
-
+            /** @noinspection NullPointerExceptionInspection */
+            $artistId = $result[0]->getArtist()->getId();
             /** @var Album[] $result */
+            /** @noinspection NullPointerExceptionInspection */
             $result = $albumRepo->update([ // Test top level update
                 [
                     'id'=>$result[0]->getId(),
@@ -78,9 +81,74 @@ class CudTest extends CrudTestBaseAbstract
             ], [], ['simplifiedParams'=>true]);
 
             $this->assertEquals($result[0]->getName(), 'UPDATED');
+            /** @noinspection NullPointerExceptionInspection */
             $this->assertEquals($result[0]->getArtist()->getName(), 'UPDATED');
             $this->assertEquals($result[0]->getUsers()[0]->getName(), 'UPDATED');
 
+
+
+            /** @var Album[] $resultRemove */
+            $resultRemove = $albumRepo->update([ // Test top level update
+                [
+                    'id'=>$result[0]->getId(),
+                    'artist'=> null,
+                    'users'=>[ //test nested update in many relation
+                        [
+                            'id'=>$users[0]->getId(),
+                            'name'=>'REMOVED',
+                            'assignType'=>'removeSingle'
+                        ]
+                    ],
+                ],
+            ], [], ['simplifiedParams'=>true]);
+
+            $users2 = $resultRemove[0]->getUsers();
+            $this->assertCount(0, $users2);
+            $this->assertEquals($resultRemove[0]->getArtist(), null);
+
+            // Set it back for more testing
+            /** @var Album[] $result */
+            $result = $albumRepo->update([ // Test top level update
+                [
+                    'id'=>$result[0]->getId(),
+                    'name'=>'UPDATED',
+                    'artist'=> [ // test nested updated in single relation
+                        'id'=>$artistId,
+                        'name'=>'UPDATED',
+                    ],
+                    'users'=>[ //test nested update in many relation
+                        [
+                            'id'=>$users[0]->getId(),
+                            'name'=>'UPDATED',
+                            'assignType'=>'null'
+                        ]
+                    ],
+                ],
+            ], [], ['simplifiedParams'=>true]);
+
+            /** @var Album[] $result */
+            /** @noinspection NullPointerExceptionInspection */
+            $result = $albumRepo->delete([ // Test top level update
+                [
+                    'id'=>$result[0]->getId(),
+                    'artist'=> [ // test nested updated in single relation
+                        'id'=>$result[0]->getArtist()->getId(),
+                        'chainType'=>'delete',
+                    ],
+                    'users'=>[ //test nested update in many relation
+                        [
+                            'id'=>$users[0]->getId(),
+                            'chainType'=>'delete'
+                        ]
+                    ],
+                ],
+            ], [], ['simplifiedParams'=>true]);
+
+            $users3 = $result[0]->getUsers();
+            /** @noinspection NullPointerExceptionInspection */
+            $this->assertEquals($result[0]->getArtist()->getId(), null);
+            $this->assertEquals($result[0]->getId(), null);
+            $this->assertEquals($users3[0]->getId(), null);
 
             $conn->rollBack();
         } catch (Exception $e) {
