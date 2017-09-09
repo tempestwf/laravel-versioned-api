@@ -17,6 +17,108 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @group CrudReadOnly
      * @throws Exception
      */
+    public function testGeneralQueryBuildingWithGetParams () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var User[] $users */
+            $users = $userRepo->create($this->createRobAndBobData());
+
+            $userIds = [];
+            /** @var User $user */
+            foreach ($users as $user) {
+                $userIds[] = $user->getId();
+            }
+
+            /** @var Artist[] $result */
+            $artistRepo->create($this->createArtistChainData($userIds));
+            $artistRepo->init($arrayHelper, ['testQuery'], ['testing']);
+
+            $frontEndQuery = $this->makeTestFrontEndQueryArtist();
+            $frontEndOptions = $this->makeFrontEndQueryOptions();
+            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, [
+                'hydrate'=>false,
+                'placeholders'=>[
+                    'placeholderTest3'=>[
+                        'value'=>'some stuff3',
+                    ]
+                ],
+            ]);
+            /** @var  \Doctrine\ORM\QueryBuilder $qb */
+            /** @var \Doctrine\ORM\Query $query */
+            $query = $result['query'];
+            $qb = $result['qb'];
+
+            $placeholders = $qb->getParameters();
+            $dql = $query->getDQL();
+
+            $this->assertEquals($dql,'SELECT t, a FROM App\API\V1\Entities\Artist t INNER JOIN t.albums a WITH 1 = 1 LEFT JOIN t.albums a2 WITH 1 = 1 WHERE ((((1 = 1 OR 0 <> 1 OR 0 < 1 OR 0 <= 1 OR 1 > 0 OR 1 >= 0 OR t.id IN(1, 0) OR t.id NOT IN(1, 0) OR t.id IS NULL OR t.id IS NOT NULL OR t.name LIKE \'%BEE%\' OR t.name NOT LIKE \'%VAN%\' OR (t.id BETWEEN 0 AND 2)) AND 1 = 1) OR 1 = 1) AND (t.name = :placeholderad553ad84c1ba11a AND t.name <> :placeholdere7646f6929cc4da1) AND t.name = :placeholder5585b8340ac2182b AND t.name = :placeholder250cc8f7b77a15af AND t.name <> :placeholder50ae8bca45384643 AND t.id < :placeholderf30f7d1907f12e32 AND t.id <= :placeholdere9e3789bfb59e910 AND t.id > :placeholder6bb61e3b7bce0931 AND t.id >= :placeholder5d7b9adcbe1c629e AND t.name IN(:placeholder3b9b9e6a2b055833) AND t.name NOT IN(:placeholder1cf3b2433d6e6986) AND t.name IS NULL AND t.name IS NOT NULL AND t.name LIKE :placeholder52bb4eb0974ded8c AND t.name NOT LIKE :placeholderfa7b4ec623968f9a AND (t.id BETWEEN :placeholdercfcd208495d565ef AND :placeholder37ebc6efcc49ae93)) OR (t.name = :placeholder9124f75f1451ed7e OR t.name <> :placeholder13d2d6a6067273d1) GROUP BY t.name, t.name, t.id HAVING (((1 = 1 AND 1 = 1) OR 1 = 1) AND t.name = :placeholder5cde382208614d76) OR t.name = :placeholderf6b05f37a61192d6 ORDER BY t.id DESC, t.name ASC, t.id DESC');
+            $placeholderKeysToTest = ['placeholderTest2', 'placeholderTest', 'frontEndTestPlaceholder', 'frontEndTestPlaceholder2', 'placeholderTest3'];
+            $placeholderValuesToTest = [
+                'some stuff',
+                'some stuff2',
+                '777',
+                'stuff2',
+                'some stuff3',
+                'BEETHOVEN1',
+                'BEETHOVEN2',
+                'BEETHOVEN3',
+                'BEETHOVEN4',
+                'Blink 182',
+                '99999991',
+                '99999992',
+                '-1',
+                '-2',
+                'BEETHOVEN5',
+                ['Vanilla Ice'],
+                '%BEETHOV%',
+                '%The Ruttles%',
+                '0',
+                '99999993',
+                'BEETHOVEN6',
+                'BEETHOVEN7',
+                'Bob Marley',
+                'Urethra Franklin'
+            ];
+
+            $existingKeys = [];
+            $existingValues = [];
+            //$simplePlaceholderReference = [];
+
+            foreach ($placeholders as $placeholder) {
+                $existingKeys[] = $placeholder->getName();
+                $existingValues[] = $placeholder->getValue();
+                //$simplePlaceholderReference[$placeholder->getName()] = $placeholder->getValue();
+            }
+
+            foreach ($placeholderKeysToTest as $key) {
+                $this->assertContains($key, $existingKeys);
+            }
+
+            foreach ($placeholderValuesToTest as $value) {
+                $this->assertContains($value, $existingValues);
+            }
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * @group CrudReadOnly
+     * @throws Exception
+     */
     public function testMutateUsed () {
         $em = $this->em();
         $conn = $em->getConnection();
