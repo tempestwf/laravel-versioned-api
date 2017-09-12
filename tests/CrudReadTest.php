@@ -46,6 +46,7 @@ class CrudReadTest extends CrudTestBaseAbstract
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $result = $artistRepo->read($frontEndQuery, $frontEndOptions, [
                 'hydrate'=>false,
+                'useGetParams'=>true,
                 'placeholders'=>[
                     'placeholderTest3'=>[
                         'value'=>'some stuff3',
@@ -111,6 +112,7 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $result = $artistRepo->read($frontEndQuery, $frontEndOptions, [
                 'hydrate'=>false,
+                'useGetParams'=>true,
                 'placeholders'=>[
                     'placeholderTest3'=>[
                         'value'=>'some stuff3',
