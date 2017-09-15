@@ -40,7 +40,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             //Test as super admin level permissions to be able to create everything in one fell swoop
             /** @var Artist[] $result */
             $result = $artistRepo->create($this->createArtistChainData($userIds), $optionsOverride);
-
+            $transformed = (new ToArrayTransformer)->transform($result);
 
 
             $conn->rollBack();
