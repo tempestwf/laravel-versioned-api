@@ -317,6 +317,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'toArray'=> [
                         'id'=>[],
                         'name'=>[],
+                        'email'=>[],
                         'address'=>[],
                         'job'=>[],
                         'albums'=>[],
