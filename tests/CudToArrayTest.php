@@ -1,9 +1,7 @@
 <?php
 
-use App\API\V1\Entities\Album;
 use App\API\V1\Entities\Artist;
 use App\API\V1\Entities\User;
-use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
 use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
@@ -43,48 +41,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             /** @var Artist[] $result */
             $result = $artistRepo->create($this->createArtistChainData($userIds), $optionsOverride);
 
-            /** @noinspection NullPointerExceptionInspection */
-            $array = $artistRepo->getArrayHelper()->getArray();
 
-            $prePopulate = $array['prePopulatedEntities'];
-
-            $this->assertNull($prePopulate);
-            /** @var Artist[] $result2 */
-            $artistRepo->update([
-                $result[0]->getId() => [
-                    'name'=>'The artist formerly known as BEETHOVEN',
-                    'albums'=>[
-                        'update'=>[
-                            $result[0]->getAlbums()[0]->getId() => [
-                                'name'=>'Kick Ass Piano Solos!'
-                            ]
-                        ]
-                    ]
-                ]
-            ], $optionsOverride);
-
-            /** @noinspection NullPointerExceptionInspection */
-            $array = $artistRepo->getArrayHelper()->getArray();
-            $prePopulate = $array['prePopulatedEntities'];
-
-            $this->assertNull($prePopulate);
-
-
-
-            $artistRepo->delete([
-                $result[0]->getId() => [
-                    'albums'=>[
-                        'delete'=>[
-                            $result[0]->getAlbums()[0]->getId() => [
-                            ]
-                        ]
-                    ]
-                ]
-            ], $optionsOverride);
-
-            $prePopulate = $array['prePopulatedEntities'];
-
-            $this->assertNull($prePopulate);
 
             $conn->rollBack();
         } catch (Exception $e) {
