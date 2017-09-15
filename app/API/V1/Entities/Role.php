@@ -180,7 +180,10 @@ class Role extends EntityAbstract implements RoleContract
                 ],
                 'delete'=>[
                     'extends'=>[':default:create'],
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
@@ -195,6 +198,9 @@ class Role extends EntityAbstract implements RoleContract
                     'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'testing'=>[
                 'create'=>[
@@ -208,7 +214,10 @@ class Role extends EntityAbstract implements RoleContract
                 'delete'=>[
                     'allowed'=>true,
                     'extends'=>[':default:create'],
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
         ];
     }

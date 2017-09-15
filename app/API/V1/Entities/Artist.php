@@ -129,7 +129,10 @@ class Artist extends EntityAbstract
                 ],
                 'delete'=>[
                     'extends'=>[':default:create'],
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'testing'=>[
                 'create'=>[
@@ -143,7 +146,10 @@ class Artist extends EntityAbstract
                 'delete'=>[
                     'allowed'=>true,
                     'extends'=>[':default:create'],
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'admin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
@@ -157,6 +163,9 @@ class Artist extends EntityAbstract
                 'delete'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
                 ],
             ],
             'testNullAssignType'=>[ // can do everything in default, and is allowed to do it when a super admin
@@ -178,6 +187,9 @@ class Artist extends EntityAbstract
                 'delete'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
                 ],
             ]
         ];

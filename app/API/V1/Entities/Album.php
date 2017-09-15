@@ -191,6 +191,7 @@ class Album extends EntityAbstract
 
     /**
      * @return array
+     * @throws \RuntimeException
      */
     public function getTTConfig(): array
     {
@@ -208,6 +209,11 @@ class Album extends EntityAbstract
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
                         ],
+                    ],
+                    'toArray'=> [
+                        'id'=>[],
+                        'name'=>[],
+                        'datetime'=>[],
                     ]
                 ],
                 'update'=>[ // Same as default create
@@ -215,7 +221,10 @@ class Album extends EntityAbstract
                 ],
                 'delete'=>[ // Same as default create
                     'extends'=>[':default:create']
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'user'=>[
                 'create'=>[
@@ -247,6 +256,9 @@ class Album extends EntityAbstract
                 'delete'=>[
                     'extends'=>[':user:create']
                 ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'admin'=>[ // Extends default because default has no additional rules on it, so super admins can do anything
                 'create'=>[
@@ -260,6 +272,9 @@ class Album extends EntityAbstract
                 'delete'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
                 ],
             ],
             'testPermissive1'=>[
@@ -381,7 +396,11 @@ class Album extends EntityAbstract
                 'delete'=>[
                     'allowed'=>true,
                     'extends'=>[':default:create'],
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'allowed'=>true,
+                    'extends'=>[':default:create']
+                ],
             ],
         ];
 

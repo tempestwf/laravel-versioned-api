@@ -320,7 +320,10 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 ],
                 'delete'=>[
                     'extends'=>[':default:create'],
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'user'=>[
                 'create'=>[
@@ -361,7 +364,10 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 'delete'=>[
                     'extends'=>[':user:create'], // users can not delete them selves
                     'allowed'=>false
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'admin'=>[ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
                 'create'=>[
@@ -376,7 +382,10 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 'delete'=>[
                     'extends'=>[':admin:create'],
                     'allowed'=>true,
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
@@ -390,7 +399,10 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 'delete'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true,
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
+                ],
             ],
             'testing'=>[
                 'create'=>[
@@ -404,10 +416,13 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 'delete'=>[
                     'allowed'=>true,
                     'extends'=>[':default:create'],
-                ]
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create'],
+                    'allowed'=>true,
+                ],
             ],
         ];
     }
-
 
 }
