@@ -213,7 +213,9 @@ class Album extends EntityAbstract
                     'toArray'=> [
                         'id'=>[],
                         'name'=>[],
-                        'datetime'=>[],
+                        'releaseDate'=>[],
+                        'artist'=>[],
+                        'users'=>[],
                     ]
                 ],
                 'update'=>[ // Same as default create
@@ -223,7 +225,7 @@ class Album extends EntityAbstract
                     'extends'=>[':default:create']
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':default:create'],
                 ],
             ],
             'user'=>[

@@ -122,7 +122,13 @@ class Artist extends EntityAbstract
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
                         ],
+                    ],
+                    'toArray'=> [
+                        'id'=>[],
+                        'name'=>[],
+                        'albums'=>[],
                     ]
+
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],

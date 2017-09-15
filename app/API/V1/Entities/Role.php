@@ -173,6 +173,12 @@ class Role extends EntityAbstract implements RoleContract
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
                         ],
+                    ],
+                    'toArray'=> [
+                        'id'=>[],
+                        'name'=>[],
+                        'users'=>[],
+                        'permissions'=>[],
                     ]
                 ],
                 'update'=>[

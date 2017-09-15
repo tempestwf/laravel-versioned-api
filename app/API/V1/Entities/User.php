@@ -313,6 +313,15 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
                         ],
+                    ],
+                    'toArray'=> [
+                        'id'=>[],
+                        'name'=>[],
+                        'address'=>[],
+                        'job'=>[],
+                        'albums'=>[],
+                        'permissions'=>[],
+                        'roles'=>[],
                     ]
                 ],
                 'update'=>[

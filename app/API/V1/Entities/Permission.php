@@ -175,6 +175,12 @@ class Permission extends EntityAbstract implements PermissionContract
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
                         ],
+                    ],
+                    'toArray'=> [
+                        'id'=>[],
+                        'name'=>[],
+                        'users'=>[],
+                        'roles'=>[],
                     ]
                 ],
                 'update'=>[
