@@ -40,7 +40,7 @@ class Album extends EntityAbstract
     private $artist;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", mappedBy="albums")
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", mappedBy="albums", fetch="EXTRA_LAZY")
      * 
      */
     private $users;

@@ -121,6 +121,28 @@ class CudToArrayTest extends CrudTestBaseAbstract
 
             $this->assertArrayNotHasKey('users', $transformed[0]['albums'][0]);
 
+            $id = $result[0]->getId();
+            $em->clear();
+
+            $result = $artistRepo->update([
+                $id => [
+                    'name'=>'The artist formerly known as BEETHOVEN',
+                ]
+            ]);
+
+            $transformer->setSettings([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'completeness'=>'full'
+                    ]
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+
+            //Make sure eager load not triggered
+            $this->assertEmpty($transformed[0]['albums']);
+
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();

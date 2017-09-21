@@ -47,7 +47,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
 
 	/**
      * ArrayCollection|App\API\V1\Entities\Album[]
-	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Album", inversedBy="users")
+	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Album", inversedBy="users", fetch="EXTRA_LAZY")
 	 * @ORM\JoinTable(
 	 *     name="AlbumToUser",
 	 *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},
@@ -57,12 +57,12 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
 	protected $albums;
 
 	/**
-	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="users", cascade={"persist"})
+	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="users", cascade={"persist"}, fetch="EXTRA_LAZY")
 	 */
 	private $permissions;
 
 	/**
-	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Role", mappedBy="users", cascade={"persist"})
+	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Role", mappedBy="users", cascade={"persist"}, fetch="EXTRA_LAZY")
 	 */
 	private $roles;
 

@@ -27,7 +27,7 @@ class Permission extends EntityAbstract implements PermissionContract
     protected $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", inversedBy="permissions", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", inversedBy="permissions", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\JoinTable(
      *     name="UserToPermission",
      *     joinColumns={@ORM\JoinColumn(name="permission_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},
@@ -37,7 +37,7 @@ class Permission extends EntityAbstract implements PermissionContract
     private $users;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Role", inversedBy="permissions", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Role", inversedBy="permissions", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\JoinTable(
      *     name="RoleToPermission",
      *     joinColumns={@ORM\JoinColumn(name="permission_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},

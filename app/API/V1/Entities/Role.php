@@ -30,7 +30,7 @@ class Role extends EntityAbstract implements RoleContract
     protected $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", inversedBy="roles", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\User", inversedBy="roles", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\JoinTable(
      *     name="UserToRole",
      *     joinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},
@@ -40,7 +40,7 @@ class Role extends EntityAbstract implements RoleContract
     private $users;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="roles", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="roles", cascade={"persist"}, fetch="EXTRA_LAZY")
      */
     private $permissions;
 
