@@ -16,7 +16,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
      * @group CudToArray
      * @throws Exception
      */
-    public function testToArray () {
+    public function testToArrayBasicFunctionality () {
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -44,6 +44,82 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $transformer = new ToArrayTransformer();
             $transformed = $transformer->transform($result);
 
+            $this->assertEquals($transformed[0]['name'], 'BEETHOVEN');
+            $this->assertEquals($transformed[0]['albums'][0]['name'], 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            $this->assertCount(2, $transformed[0]['albums']);
+            $this->assertTrue(is_string($transformed[0]['albums'][0]['releaseDate']['timezoneName']));
+            $this->assertTrue(is_string($transformed[0]['albums'][0]['releaseDate']['formatted']));
+            $this->assertTrue(is_int($transformed[0]['albums'][0]['releaseDate']['timestamp']));
+            $this->assertTrue(is_int($transformed[0]['albums'][0]['releaseDate']['offset']));
+            $this->assertEquals($transformed[0]['albums'][0]['artist']['name'], 'BEETHOVEN');
+
+            $this->assertEquals($transformed[1]['name'], 'BACH');
+            $this->assertCount(2, $transformed[1]['albums']);
+
+            unset($arrayHelper->getArray()['entitiesTransformedToArray']);
+
+            $transformer = new ToArrayTransformer([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'completeness'=>'limited'
+                    ]
+                ]
+            ]);
+            $transformed = $transformer->transform($result);
+
+            $this->assertArrayNotHasKey('albums', $transformed[1]);
+            unset($arrayHelper->getArray()['entitiesTransformedToArray']);
+
+            $transformer->setSettings([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'completeness'=>'minimal'
+                    ]
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+
+            $this->assertEquals( $transformed[1], []);
+
+
+            unset($arrayHelper->getArray()['entitiesTransformedToArray']);
+
+            $transformer->setSettings([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'completeness'=>'none'
+                    ]
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+            $this->assertEmpty($transformed[0]);
+
+            $transformer->setSettings([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'completeness'=>'full',
+                        'maxDepth'=>2
+                    ]
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+
+            $this->assertEmpty($transformed[0]['albums'][0]['artist']);
+
+            $transformer->setSettings([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'excludeKeys'=>['users']
+                    ]
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+
+            $this->assertArrayNotHasKey('users', $transformed[0]['albums'][0]);
 
             $conn->rollBack();
         } catch (Exception $e) {
