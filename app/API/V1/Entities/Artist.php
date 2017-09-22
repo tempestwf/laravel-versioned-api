@@ -5,6 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
+use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -105,6 +106,24 @@ class Artist extends EntityAbstract
     {
         $this->albums->removeElement($album);
         return $this;
+    }
+
+    public function preToArray(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $array = $this->getArrayHelper()->getArray();
+        if (!isset($array['entityEvents'])) {
+            $array['entityEvents'] = [];
+        }
+        $array['entityEvents']['preToArray'] = $e->getArgs()->getArrayCopy();
+    }
+
+    public function postToArray(GenericEventArgs $e) {
+        /** @noinspection NullPointerExceptionInspection */
+        $array = $this->getArrayHelper()->getArray();
+        if (!isset($array['entityEvents'])) {
+            $array['entityEvents'] = [];
+        }
+        $array['entityEvents']['postToArray'] = $e->getArgs()->getArrayCopy();
     }
 
     /**

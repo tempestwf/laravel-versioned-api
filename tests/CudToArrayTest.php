@@ -213,6 +213,11 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $this->assertEquals($transformed[0]['literalArrayExpression'], 'literalArrayExpression');
             $this->assertEquals($transformed[0]['literalDateWithFormat']['formatted'], '2001-01-01 00:00:00');
 
+            $array = $arrayHelper->getArray();
+            $this->assertArrayHasKey('postToArray', $array['entityEvents']);
+            $this->assertArrayHasKey('preToArray', $array['entityEvents']);
+
+
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
