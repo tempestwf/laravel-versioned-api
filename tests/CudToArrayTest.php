@@ -29,7 +29,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $arrayHelper = $this->makeArrayHelper();
             /** @var ArtistRepository $artistRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
-            $artistRepo->init($arrayHelper, ['testTurnOffPrePopulate'], ['testing']);
+            $artistRepo->init($arrayHelper, ['testing'], ['testing']);
             /** @var UserRepository $userRepo */
             $userRepo = $this->em->getRepository(User::class);
             $userRepo->init($arrayHelper, ['testing'], ['testing']);
@@ -183,7 +183,35 @@ class CudToArrayTest extends CrudTestBaseAbstract
             //Make sure eager load not triggered
             $this->assertEmpty($transformed[0]['albums']);
 
+            $em->clear();
 
+            $artistRepo->init($arrayHelper, ['testLazyLoadEnabled'], ['testing']);
+
+            $result = $artistRepo->update([
+                $id => [
+                    'name'=>'The artist formerly known as BEETHOVEN',
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+
+            $this->assertCount(2, $transformed[0]['albums']);
+
+            $em->clear();
+
+            $artistRepo->init($arrayHelper, ['testLiteralToArray'], ['testing']);
+
+            $result = $artistRepo->update([
+                $id => [
+                    'name'=>'The artist formerly known as BEETHOVEN',
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+
+            $this->assertEquals($transformed[0]['literalString'], 'bob\'s your uncle');
+            $this->assertEquals($transformed[0]['literalArrayExpression'], 'literalArrayExpression');
+            $this->assertEquals($transformed[0]['literalDateWithFormat']['formatted'], '2001-01-01 00:00:00');
 
             $conn->rollBack();
         } catch (Exception $e) {

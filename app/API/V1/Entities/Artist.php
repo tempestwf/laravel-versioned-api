@@ -1,8 +1,10 @@
 <?php
 namespace App\API\V1\Entities;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -128,7 +130,6 @@ class Artist extends EntityAbstract
                         'name'=>[],
                         'albums'=>[],
                     ]
-
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],
@@ -196,6 +197,60 @@ class Artist extends EntityAbstract
                 ],
                 'read'=>[ // Same as default create
                     'extends'=>[':default:create']
+                ],
+            ],
+            'testLazyLoadEnabled'=>[
+                'create'=>[
+                    'extends'=>[':admin:create'],
+                    'allowed'=>true,
+                    'toArray'=> [
+                        'albums'=>[
+                            'allowLazyLoad'=>true
+                        ],
+                    ]
+                ],
+                'update'=>[
+                    'extends'=>[':testLazyLoadEnabled:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':testLazyLoadEnabled:create'],
+                ],
+                'read'=>[
+                    'extends'=>[':testLazyLoadEnabled:create']
+                ],
+            ],
+            'testLiteralToArray'=>[
+                'create'=>[
+                    'extends'=>[':admin:create'],
+                    'allowed'=>true,
+                    'toArray'=> [
+                        'literalString'=>[
+                            'type'=>'literal',
+                            'value'=>'bob\'s your uncle'
+                        ],
+                        'literalArrayExpression'=>[
+                            'type'=>'literal',
+                            'value'=>ArrayExpressionBuilder::closure(
+                                function (array $params) {
+                                    return $params['key'];
+                                }
+                            )
+                        ],
+                        'literalDateWithFormat'=>[
+                            'type'=>'literal',
+                            'value'=>new DateTime('2001-01-01'),
+                            'format'=>'Y-m-d H:i:s'
+                        ],
+                    ]
+                ],
+                'update'=>[
+                    'extends'=>[':testLiteralToArray:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':testLiteralToArray:create'],
+                ],
+                'read'=>[
+                    'extends'=>[':testLiteralToArray:create']
                 ],
             ]
         ];
