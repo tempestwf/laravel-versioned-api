@@ -1103,6 +1103,50 @@ class CrudReadTest extends CrudTestBaseAbstract
         }
     }
 
+    /**
+     * @group CrudReadOnly2
+     * @throws Exception
+     */
+    public function testFixedLimit () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['user'], ['testing']);
+
+            $e = null;
+            $frontEndOptions= [];
+            $frontEndOptions['limit'] = 5;
+            $frontEndOptions['offset'] = 0;
+            $optionsOverrides['fixedLimit'] = 5;
+
+            $userRepo->read([], $frontEndOptions, $optionsOverrides);
+
+            $frontEndOptions['offset'] = 5;
+            $userRepo->read([], $frontEndOptions, $optionsOverrides);
+
+            $optionsOverrides['fixedLimit'] = 4;
+
+            try {
+                $userRepo->read([], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: Requested limit and offset are not divisible by the fixed limit. limit = 5, offset = 5, fixed limit = 4', $e->getMessage());
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
 
 
 }
