@@ -20,6 +20,11 @@ class CudToArrayTest extends CrudTestBaseAbstract
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
+
+
+        $uow = $this->em()->getUnitOfWork();
+        $uow->computeChangeSets();
+
         try {
             $arrayHelper = $this->makeArrayHelper();
             /** @var ArtistRepository $artistRepo */
@@ -41,7 +46,14 @@ class CudToArrayTest extends CrudTestBaseAbstract
             //Test as super admin level permissions to be able to create everything in one fell swoop
             /** @var Artist[] $result */
             $result = $artistRepo->create($this->createArtistChainData($userIds), $optionsOverride);
-            $transformer = new ToArrayTransformer();
+
+            $transformer = new ToArrayTransformer([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'allowOnlyRequestedParams'=>false
+                    ]
+                ]
+            ]);
             $transformed = $transformer->transform($result);
 
             $this->assertEquals($transformed[0]['name'], 'BEETHOVEN');
@@ -56,39 +68,36 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $this->assertEquals($transformed[1]['name'], 'BACH');
             $this->assertCount(2, $transformed[1]['albums']);
 
-            unset($arrayHelper->getArray()['entitiesTransformedToArray']);
-
             $transformer = new ToArrayTransformer([
                 'frontEndOptions'=>[
                     'toArray'=>[
-                        'completeness'=>'limited'
+                        'completeness'=>'limited',
+                        'allowOnlyRequestedParams'=>false
                     ]
                 ]
             ]);
             $transformed = $transformer->transform($result);
 
-            $this->assertArrayNotHasKey('albums', $transformed[1]);
-            unset($arrayHelper->getArray()['entitiesTransformedToArray']);
+            $this->assertArrayNotHasKey('users', $transformed[0]['albums'][1]);
 
             $transformer->setSettings([
                 'frontEndOptions'=>[
                     'toArray'=>[
-                        'completeness'=>'minimal'
+                        'completeness'=>'minimal',
+                        'allowOnlyRequestedParams'=>false
                     ]
                 ]
             ]);
 
             $transformed = $transformer->transform($result);
 
-            $this->assertEquals( $transformed[1], []);
-
-
-            unset($arrayHelper->getArray()['entitiesTransformedToArray']);
+            $this->assertEmpty( $transformed[0]['albums'][1]);
 
             $transformer->setSettings([
                 'frontEndOptions'=>[
                     'toArray'=>[
-                        'completeness'=>'none'
+                        'completeness'=>'none',
+                        'allowOnlyRequestedParams'=>false
                     ]
                 ]
             ]);
@@ -100,19 +109,21 @@ class CudToArrayTest extends CrudTestBaseAbstract
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'completeness'=>'full',
-                        'maxDepth'=>2
+                        'maxDepth'=>2,
+                        'allowOnlyRequestedParams'=>false
                     ]
                 ]
             ]);
 
             $transformed = $transformer->transform($result);
 
-            $this->assertEmpty($transformed[0]['albums'][0]['artist']);
+            $this->assertEmpty($transformed[0]['albums'][0]);
 
             $transformer->setSettings([
                 'frontEndOptions'=>[
                     'toArray'=>[
-                        'excludeKeys'=>['users']
+                        'excludeKeys'=>['users'],
+                        'allowOnlyRequestedParams'=>false
                     ]
                 ]
             ]);
@@ -120,6 +131,33 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $transformed = $transformer->transform($result);
 
             $this->assertArrayNotHasKey('users', $transformed[0]['albums'][0]);
+
+
+            $transformer->setSettings([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'completeness'=>'full',
+                    ]
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+
+            $this->assertArrayNotHasKey('email', $transformed[0]['albums'][0]['users'][0]);
+
+            $transformer->setSettings([
+                'frontEndOptions'=>[
+                    'toArray'=>[
+                        'completeness'=>'full',
+                        'forceIncludeKeys'=>['id', 'email']
+                    ]
+                ]
+            ]);
+
+            $transformed = $transformer->transform($result);
+
+            $this->assertArrayHasKey('email', $transformed[0]['albums'][0]['users'][0]);
+
 
             $id = $result[0]->getId();
             $em->clear();
@@ -130,10 +168,12 @@ class CudToArrayTest extends CrudTestBaseAbstract
                 ]
             ]);
 
+
             $transformer->setSettings([
                 'frontEndOptions'=>[
                     'toArray'=>[
-                        'completeness'=>'full'
+                        'completeness'=>'full',
+                        'allowOnlyRequestedParams'=>false
                     ]
                 ]
             ]);
@@ -142,6 +182,8 @@ class CudToArrayTest extends CrudTestBaseAbstract
 
             //Make sure eager load not triggered
             $this->assertEmpty($transformed[0]['albums']);
+
+
 
             $conn->rollBack();
         } catch (Exception $e) {
