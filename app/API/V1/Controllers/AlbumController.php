@@ -15,6 +15,7 @@ class AlbumController extends Controller
     public function index()
     {
         //
+        $bob = 'your uncle';
     }
 
     /**

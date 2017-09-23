@@ -1104,7 +1104,7 @@ class CrudReadTest extends CrudTestBaseAbstract
     }
 
     /**
-     * @group CrudReadOnly2
+     * @group CrudReadOnly
      * @throws Exception
      */
     public function testFixedLimit () {
