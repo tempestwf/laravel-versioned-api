@@ -3,6 +3,17 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use TempestTools\Crud\Laravel\Events\Controller\Init;
+use TempestTools\Crud\Laravel\Events\Controller\PreIndex;
+use TempestTools\Crud\Laravel\Events\Controller\PostIndex;
+use TempestTools\Crud\Laravel\Events\Controller\PreStore;
+use TempestTools\Crud\Laravel\Events\Controller\PostStore;
+use TempestTools\Crud\Laravel\Events\Controller\PreShow;
+use TempestTools\Crud\Laravel\Events\Controller\PostShow;
+use TempestTools\Crud\Laravel\Events\Controller\PreUpdate;
+use TempestTools\Crud\Laravel\Events\Controller\PostUpdate;
+use TempestTools\Crud\Laravel\Events\Controller\PreDestroy;
+use TempestTools\Crud\Laravel\Events\Controller\PostDestroy;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -13,17 +24,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $listen = [
-    	'\TempestTools\Crud\Laravel\Doctrine\Events\Controller\Init'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PreIndex'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PostIndex'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PreStore'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PostStore'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PreShow'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PostShow'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PreUpdate'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PostUpdate'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PreDestroy'=>[],
-        '\TempestTools\Crud\Laravel\Doctrine\Events\Controller\PostDestroy'=>[],
+    	Init::class =>[],
+        PreIndex::class =>[],
+        PostIndex::class =>[],
+        PreStore::class =>[],
+        PostStore::class =>[],
+        PreShow::class =>[],
+        PostShow::class =>[],
+        PreUpdate::class =>[],
+        PostUpdate::class =>[],
+        PreDestroy::class =>[],
+        PostDestroy::class =>[],
     ];
 
     /**
