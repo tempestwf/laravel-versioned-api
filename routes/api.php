@@ -11,6 +11,8 @@
 |
 */
 
+use App\API\V1\Controllers\AlbumController;
+
 /** @var Dingo\Api\Routing\Router $api */
 use TempestTools\AclMiddleware\Constants\PermissionsTemplatesConstants;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
@@ -42,4 +44,17 @@ $api->version(
 	{
 		$api->get('auth/me', 'App\API\V1\Controllers\UserController@me');
 	}
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => [],
+        'provider'   => 'V1',
+        'permissions' => []
+    ],
+    function () use ($api)
+    {
+        $api->resource('album', AlbumController::class);
+    }
 );
