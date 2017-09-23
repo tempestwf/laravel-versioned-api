@@ -2,85 +2,18 @@
 
 namespace App\API\V1\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\API\V1\Repositories\AlbumRepository;
+use TempestTools\Common\Doctrine\Transformers\ToArrayTransformer;
+use TempestTools\Crud\Laravel\Controllers\RestfulControllerTrait;
 
-class AlbumController extends Controller
+/** @noinspection LongInheritanceChainInspection */
+class AlbumController extends APIControllerAbstract
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    use RestfulControllerTrait;
+    public function __construct(AlbumRepository $repo, ToArrayTransformer $arrayTransformer)
     {
-        //
-        $bob = 'your uncle';
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $this->setRepo($repo);
+        $this->setTransformer($arrayTransformer);
+        parent::__construct();
     }
 }
