@@ -20,7 +20,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
      * @group CrudController
      * @throws Exception
      */
-    public function testBasic () {
+    public function testIndex () {
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
