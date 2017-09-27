@@ -101,8 +101,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             //Prove recompute over writes it
 
             $this->assertArrayNotHasKey('booop!', $stored);
-
-
+            
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
