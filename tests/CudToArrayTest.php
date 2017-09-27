@@ -11,19 +11,14 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 class CudToArrayTest extends CrudTestBaseAbstract
 {
 
-
     /**
      * @group CudToArray
      * @throws Exception
      */
-    public function testToArrayBasicFunctionality () {
+    public function testToArrayArrayStorage () {
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
-
-
-        $uow = $this->em()->getUnitOfWork();
-        $uow->computeChangeSets();
 
         try {
             $arrayHelper = $this->makeArrayHelper();
@@ -48,6 +43,108 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $result = $artistRepo->create($this->createArtistChainData($userIds), $optionsOverride);
 
             $transformer = new ToArrayTransformer([
+                'store'=>false
+            ]);
+            $transformer->transform($result);
+
+            $stored = $result[0]->getLastToArray();
+
+            //Prove you can not store it
+
+            $this->assertNull($stored);
+
+            $transformer->setSettings([
+                'store'=>true
+            ]);
+
+
+            $transformer->transform($result);
+
+            $stored = $result[0]->getLastToArray();
+
+            //Prove you can store it
+
+            $this->assertNotNull($stored);
+
+            $stored['booop!'] = true;
+            $result[0]->setLastToArray($stored);
+
+            $transformer->transform($result);
+
+            $stored = $result[0]->getLastToArray();
+
+            //Prove that if not recompute it doesn't recompute it
+
+            $this->assertArrayHasKey('booop!', $stored);
+
+            $transformer->setSettings([
+                'useStored'=>false
+            ]);
+
+            $transformer->transform($result);
+
+            $stored = $result[0]->getLastToArray();
+
+            //Prove that it can not use the stored on when requested not too
+
+            $this->assertArrayNotHasKey('booop!', $stored);
+
+
+            $transformer->setSettings([
+                'recompute'=>true
+            ]);
+
+            $transformer->transform($result);
+
+            $stored = $result[0]->getLastToArray();
+
+            //Prove recompute over writes it
+
+            $this->assertArrayNotHasKey('booop!', $stored);
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+
+    /**
+     * @group CudToArray
+     * @throws Exception
+     */
+    public function testToArrayBasicFunctionality () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var User[] $users */
+            $users = $userRepo->create($this->createRobAndBobData());
+
+            $userIds = [];
+            /** @var User $user */
+            foreach ($users as $user) {
+                $userIds[] = $user->getId();
+            }
+
+            $optionsOverride = ['clearPrePopulatedEntitiesOnFlush'=>false];
+            //Test as super admin level permissions to be able to create everything in one fell swoop
+            /** @var Artist[] $result */
+            $result = $artistRepo->create($this->createArtistChainData($userIds), $optionsOverride);
+
+            $transformer = new ToArrayTransformer([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'allowOnlyRequestedParams'=>false
@@ -69,6 +166,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $this->assertCount(2, $transformed[1]['albums']);
 
             $transformer = new ToArrayTransformer([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'completeness'=>'limited',
@@ -81,6 +179,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $this->assertArrayNotHasKey('users', $transformed[0]['albums'][1]);
 
             $transformer->setSettings([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'completeness'=>'minimal',
@@ -94,6 +193,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $this->assertEmpty( $transformed[0]['albums'][1]);
 
             $transformer->setSettings([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'completeness'=>'none',
@@ -106,6 +206,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $this->assertEmpty($transformed[0]);
 
             $transformer->setSettings([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'completeness'=>'full',
@@ -120,6 +221,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $this->assertEmpty($transformed[0]['albums'][0]);
 
             $transformer->setSettings([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'excludeKeys'=>['users'],
@@ -134,6 +236,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
 
 
             $transformer->setSettings([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'completeness'=>'full',
@@ -146,6 +249,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
             $this->assertArrayNotHasKey('email', $transformed[0]['albums'][0]['users'][0]);
 
             $transformer->setSettings([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'completeness'=>'full',
@@ -170,6 +274,7 @@ class CudToArrayTest extends CrudTestBaseAbstract
 
 
             $transformer->setSettings([
+                'recompute'=>true,
                 'frontEndOptions'=>[
                     'toArray'=>[
                         'completeness'=>'full',
