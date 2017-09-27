@@ -2,14 +2,14 @@
 
 namespace App\API\V1\Controllers;
 
-use App\API\V1\Entities\User;
-
 use Dingo\Api\Exception\ValidationHttpException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use TempestTools\AclMiddleware\Contracts\HasIdContract;
+use TempestTools\Common\Contracts\HasUserContract;
 use TempestTools\Common\Laravel\Controller\BaseControllerAbstract;
 
 use App;
@@ -18,7 +18,7 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class APIControllerAbstract extends BaseControllerAbstract
+class APIControllerAbstract extends BaseControllerAbstract implements HasUserContract
 {
 	use Helpers, ValidatesRequests;
 
@@ -32,11 +32,11 @@ class APIControllerAbstract extends BaseControllerAbstract
 	}
 
     /**
-     * @return User
+     * @return HasIdContract
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @throws \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException
      */
-	public function getUser():?User
+	public function getUser():?HasIdContract
 	{
 		try
 		{
