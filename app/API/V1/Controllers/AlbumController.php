@@ -3,8 +3,8 @@
 namespace App\API\V1\Controllers;
 
 use App\API\V1\Repositories\AlbumRepository;
-use TempestTools\Common\Doctrine\Transformers\ToArrayTransformer;
 use TempestTools\Crud\Laravel\Controllers\RestfulControllerTrait;
+use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
 class AlbumController extends APIControllerAbstract
