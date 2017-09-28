@@ -36,7 +36,7 @@ $api->version(
 $api->version(
 	'V1',
 	[
-		'middleware' => ['api.auth', 'acl'],
+		'middleware' => ['api.auth', 'basic.extractor', 'acl'],
 		'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)]
 	],
@@ -49,7 +49,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => [],
+        'middleware' => ['basic.extractor'],
         'provider'   => 'V1',
         'permissions' => []
     ],
