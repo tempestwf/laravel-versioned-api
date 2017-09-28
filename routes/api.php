@@ -49,7 +49,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor'],
+        'middleware' => ['basic.extractor', 'prime.controller'],
         'provider'   => 'V1',
         'permissions' => []
     ],

@@ -9,8 +9,9 @@ use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use TempestTools\AclMiddleware\Http\Middleware\Acl;
-use TempestTools\Common\Laravel\Http\Middleware\BasicDataExtractor;
+use TempestTools\AclMiddleware\Http\Middleware\AclMiddleware;
+use TempestTools\Common\Laravel\Http\Middleware\BasicDataExtractorMiddleware;
+use TempestTools\Crud\Laravel\Http\Middleware\PrimeControllerMiddleware;
 
 class Kernel extends HttpKernel
 {
@@ -52,7 +53,8 @@ class Kernel extends HttpKernel
 	protected $routeMiddleware = [
 		'auth.basic' => AuthenticateWithBasicAuth::class,
 		'throttle'   => ThrottleRequests::class,
-        'acl' => Acl::class,
-        'basic.extractor' => BasicDataExtractor::class
+        'acl' => AclMiddleware::class,
+        'basic.extractor' => BasicDataExtractorMiddleware::class,
+        'prime.controller' => PrimeControllerMiddleware::class
 	];
 }
