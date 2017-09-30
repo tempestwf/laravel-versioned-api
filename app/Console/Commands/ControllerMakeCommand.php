@@ -3,37 +3,39 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 
 class ControllerMakeCommand extends GeneratorCommand
 {
+
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'tempest-tools-make:controller';
+    protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $name = 'make:tempest-tools-controller {name} \'{repository}\' {namespace_root?}';
+
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new controller class that uses Tempest Tools Crud functionality';
+    protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $description = 'Create a new controller class that uses Tempest Tools Crud functionality';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Controller';
+    protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $type = 'Controller';
 
     /**
      * Get the stub file for the generator.
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub():string
     {
         return __DIR__ . '/stubs/controller.stub';
     }
@@ -44,20 +46,24 @@ class ControllerMakeCommand extends GeneratorCommand
      * @param  string  $rootNamespace
      * @return string
      */
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace($rootNamespace):string
     {
-        return $rootNamespace.'\Http\Controllers';
+        $namespaceRoot = $this->argument('namespace_root');
+        $namespaceRoot = $namespaceRoot??$rootNamespace . '\Controllers';
+        return $namespaceRoot;
     }
 
     /**
-     * Get the console command options.
+     * Get the console command arguments.
      *
      * @return array
      */
-    protected function getOptions()
+    protected function getArguments():array
     {
         return [
-            ['resource', null, InputOption::VALUE_NONE, 'Generate a resource controller class.'],
+            ['name', InputArgument::REQUIRED, 'Name of new controller'],
+            ['repository', InputArgument::REQUIRED, 'Name of repository to use'],
+            ['namespace_root', InputArgument::OPTIONAL, 'The root namespace where both the controller and the repo should be located']
         ];
     }
 
@@ -69,10 +75,16 @@ class ControllerMakeCommand extends GeneratorCommand
      * @param  string  $name
      * @return string
      */
-    protected function buildClass($name)
+    protected function buildClass($name):string
     {
         $namespace = $this->getNamespace($name);
+        $namespace = preg_replace('/\\\Controllers$/', '', $namespace);
+        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+        $name = $this->argument('name');
+        $repo = $this->argument('repository');
 
-        return str_replace("use {$namespace}\Controller;\n", '', parent::buildClass($name));
+        $string = parent::buildClass($name);
+        $string =  str_replace(array('NamespaceRoot', 'DummyRepo', 'DummyClass'), array($namespace, $repo, $name), $string);
+        return $string;
     }
 }

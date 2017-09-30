@@ -1,19 +1,19 @@
 <?php
 
-namespace NamespaceRoot\Controllers;
+namespace App\API\V1\Controllers;
 
-use NamespaceRoot\Repositories\DummyRepo;
+use App\API\V1\Repositories\ArtistRepository;
 use TempestTools\Crud\Contracts\Controller\ControllerContract;
 use TempestTools\Crud\Contracts\Events\SimpleEventContract;
 use TempestTools\Crud\Laravel\Controllers\RestfulControllerTrait;
 use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
-class DummyClass extends APIControllerAbstract implements ControllerContract
+class ArtistController extends APIControllerAbstract implements ControllerContract
 {
     use /** @noinspection TraitsPropertiesConflictsInspection */ RestfulControllerTrait;
 
-    public function __construct(DummyRepo $repo, ToArrayTransformer $arrayTransformer)
+    public function __construct(ArtistRepository $repo, ToArrayTransformer $arrayTransformer)
     {
         $this->setRepo($repo);
         $this->setTransformer($arrayTransformer);
