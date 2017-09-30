@@ -14,6 +14,9 @@
 use App\API\V1\Controllers\AlbumController;
 
 /** @var Dingo\Api\Routing\Router $api */
+
+use App\API\V1\Controllers\ArtistController;
+use App\API\V1\Controllers\UserController;
 use TempestTools\AclMiddleware\Constants\PermissionsTemplatesConstants;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 
@@ -49,12 +52,122 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => []
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'ttPath'=>['user'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
     ],
     function () use ($api)
     {
         $api->resource('album', AlbumController::class);
+    }
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'ttPath'=>['admin'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->resource('album/admin', AlbumController::class);
+    }
+);
+
+
+
+
+
+
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'ttPath'=>['user'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->resource('artist', ArtistController::class);
+    }
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'ttPath'=>['admin'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->resource('artist/admin', ArtistController::class);
+    }
+);
+
+
+
+
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'ttPath'=>['user'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->resource('user', UserController::class);
+    }
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'ttPath'=>['admin'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->resource('user/admin', UserController::class);
+    }
+);
+
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'ttPath'=>['superAdmin'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->resource('user/superAdmin', UserController::class);
     }
 );
