@@ -11,6 +11,7 @@
 |
 */
 
+use Dingo\Api\Routing\Router;
 use App\API\V1\Controllers\AlbumController;
 
 /** @var Dingo\Api\Routing\Router $api */
@@ -20,8 +21,7 @@ use App\API\V1\Controllers\UserController;
 use TempestTools\AclMiddleware\Constants\PermissionsTemplatesConstants;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 
-$api = app('Dingo\Api\Routing\Router');
-
+$api = app(Router::class);
 
 
 $api->version(
@@ -49,12 +49,14 @@ $api->version(
 	}
 );
 
+
+
 $api->version(
     'V1',
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['user'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
@@ -70,7 +72,7 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['admin'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
@@ -92,7 +94,7 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['user'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
@@ -108,7 +110,7 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['admin'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
@@ -128,7 +130,7 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['user'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
@@ -144,7 +146,7 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['admin'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
@@ -161,7 +163,7 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['superAdmin'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
