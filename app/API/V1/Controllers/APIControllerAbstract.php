@@ -18,7 +18,7 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class APIControllerAbstract extends BaseControllerAbstract implements HasUserContract
+abstract class APIControllerAbstract extends BaseControllerAbstract implements HasUserContract
 {
 	use Helpers, ValidatesRequests;
 
