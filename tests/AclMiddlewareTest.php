@@ -31,7 +31,7 @@ class AclMiddlewareTest extends TestCase
      * @return void
      * @throws Exception
      */
-    public function testAclMiddlewareAllows()
+    public function testAclMiddlewareAllows():void
     {
         $em = $this->em();
         $conn = $em->getConnection();
@@ -60,11 +60,12 @@ class AclMiddlewareTest extends TestCase
             $this->refreshApplication();
             $conn->beginTransaction();
             $response = $this->json('GET', '/auth/me', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-            $result = $response->decodeResponseJson();
-            $this->assertEquals($result['email'], $user->getEmail());
             $em->remove($user);
             $em->flush();
             $conn->commit();
+            $result = $response->decodeResponseJson();
+            $this->assertEquals($result['email'], $user->getEmail());
+
             $this->refreshApplication();
         } catch (Exception $e) {
             $conn->rollBack();
@@ -100,11 +101,12 @@ class AclMiddlewareTest extends TestCase
             $this->refreshApplication();
             $conn->beginTransaction();
             $response = $this->json('GET', '/auth/me', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-
-            $response->assertResponseStatus(403);
             $em->remove($user);
             $em->flush();
             $conn->commit();
+            $response->assertResponseStatus(403);
+
+
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
