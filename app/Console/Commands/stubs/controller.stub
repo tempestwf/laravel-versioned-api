@@ -9,10 +9,8 @@ use TempestTools\Crud\Laravel\Controllers\RestfulControllerTrait;
 use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
-class DummyClass extends APIControllerAbstract implements ControllerContract
+class DummyClass extends APIControllerAbstract
 {
-    use /** @noinspection TraitsPropertiesConflictsInspection */ RestfulControllerTrait;
-
     public function __construct(DummyRepo $repo, ToArrayTransformer $arrayTransformer)
     {
         $this->setRepo($repo);

@@ -3,15 +3,12 @@
 namespace App\API\V1\Controllers;
 
 use App\API\V1\Repositories\AlbumRepository;
-use TempestTools\Crud\Contracts\Controller\ControllerContract;
 use TempestTools\Crud\Contracts\Events\SimpleEventContract;
-use TempestTools\Crud\Laravel\Controllers\RestfulControllerTrait;
 use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
-class AlbumController extends APIControllerAbstract implements ControllerContract
+class AlbumController extends APIControllerAbstract
 {
-    use /** @noinspection TraitsPropertiesConflictsInspection */ RestfulControllerTrait;
 
     public function __construct(AlbumRepository $repo, ToArrayTransformer $arrayTransformer)
     {
