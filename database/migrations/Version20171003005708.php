@@ -43,29 +43,6 @@ class Version20171003005708 extends AbstractMigration
                 '/super-admin/user/{user}',
             ]
         ]);
-
-        $repo->removePermissions([
-            'user'=>[
-                '/album',
-                '/album/{album}',
-                '/artist',
-                '/artist/{artist}',
-                '/user',
-                '/user/{user}',
-            ],
-            'admin'=>[
-                '/admin/album',
-                '/admin/album/{album}',
-                '/admin/artist',
-                '/admin/artist/{artist}',
-                '/admin/user',
-                '/admin/user/{user}',
-            ],
-            'super-admin'=>[
-                '/super-admin/user',
-                '/super-admin/user/{user}',
-            ]
-        ]);
     }
 
     /**

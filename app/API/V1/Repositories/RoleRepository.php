@@ -29,7 +29,7 @@ class RoleRepository extends Repository
         try {
             foreach ($rolePermissions as $key => $permissions) {
                 /** @var Role $role */
-                $role = $this->findBy(['name'=>$key]);
+                $role = $this->findOneBy(['name'=>$key]);
                 /** @var array $permissions */
                 foreach ($permissions as $permissionName) {
                     $perm = new Permission();
@@ -63,11 +63,11 @@ class RoleRepository extends Repository
         try {
             foreach ($rolePermissions as $key => $permissions) {
                 /** @var Role $role */
-                $role = $this->findBy(['name'=>$key]);
+                $role = $this->findOneBy(['name'=>$key]);
                 /** @var array $permissions */
                 foreach ($permissions as $permissionName) {
                     /** @var Permission $perm */
-                    $perm = $permissionRepo->findBy(['name'=>$permissionName]);
+                    $perm = $permissionRepo->findOneBy(['name'=>$permissionName]);
                     $role->removePermission($perm);
                 }
                 $em->persist($role);
