@@ -45,9 +45,17 @@ class CrudControllerTest extends CrudTestBaseAbstract
             /** @var Artist[] $result */
             $result = $artistRepo->create($this->createArtistChainData($userIds));
 
-            $response = $this->json('GET', '/album');
+
+            $testUser = $userRepo->findOneBy(['id'=>1]);
+
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => $testUser->getPassword()]);
             $result = $response->decodeResponseJson();
 
+            /** @var string $token */
+            $token = $result['token'];
+            $this->refreshApplication();
+            $response = $this->json('GET', '/album', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
 
             $conn->rollBack();
         } catch (Exception $e) {

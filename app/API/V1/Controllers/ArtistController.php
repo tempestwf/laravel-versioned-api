@@ -23,7 +23,14 @@ class ArtistController extends APIControllerAbstract
      */
     public function getTTConfig(): array
     {
-        return [];
+        return [
+            'default'=>[
+                'GET'=>[],
+                'POST'=>[],
+                'PUT'=>[],
+                'DELETE'=>[]
+            ]
+        ];
     }
 
     /**
