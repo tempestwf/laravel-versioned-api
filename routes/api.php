@@ -79,7 +79,7 @@ $api->version(
     ],
     function () use ($api)
     {
-        $api->resource('album/admin', AlbumController::class);
+        $api->resource('admin/album', AlbumController::class);
     }
 );
 
@@ -117,7 +117,7 @@ $api->version(
     ],
     function () use ($api)
     {
-        $api->resource('artist/admin', ArtistController::class);
+        $api->resource('admin/artist', ArtistController::class);
     }
 );
 
@@ -153,7 +153,7 @@ $api->version(
     ],
     function () use ($api)
     {
-        $api->resource('user/admin', UserController::class);
+        $api->resource('admin/user', UserController::class);
     }
 );
 
@@ -170,6 +170,6 @@ $api->version(
     ],
     function () use ($api)
     {
-        $api->resource('user/superAdmin', UserController::class);
+        $api->resource('super-admin/user', UserController::class);
     }
 );
