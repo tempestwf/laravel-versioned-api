@@ -46,7 +46,6 @@ class Version20171004014650 extends AbstractMigration
             $conn->rollBack();
             throw $e;
         }
-
     }
 
     /**

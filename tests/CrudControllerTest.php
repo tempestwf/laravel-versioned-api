@@ -9,11 +9,153 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 
 class CrudControllerTest extends CrudTestBaseAbstract
 {
+
+    /**
+     * @group CrudController2
+     * @throws Exception
+     */
+    public function testCreateUpdateDelete () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testNullAssignType'], ['testing']);
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['testing'], ['testing']);
+
+            $testUser = $userRepo->findOneBy(['id'=>1]);
+
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => $testUser->getPassword()]);
+            $result = $response->decodeResponseJson();
+
+            /** @var string $token */
+            $token = $result['token'];
+            $this->refreshApplication();
+
+            $create = [
+                'token'=>$token,
+                'params'=>[
+                    [
+                        'name'=>'Test Artist'
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true
+                ]
+            ];
+            $response = $this->json('POST', '/admin/artist', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+
+            $update = [
+                'token'=>$token,
+                'params'=>[
+                    [
+                        'id'=>$result[0]['id'],
+                        'name'=>'Test Artist Updated'
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true
+                ]
+            ];
+
+
+            $response = $this->json('PUT', '/admin/artist', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+            $update = [
+                'token'=>$token,
+                'params'=> [
+                    'name'=>'Test Artist Updated'
+                ]
+            ];
+
+
+            $response = $this->json('PUT', '/admin/artist/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+            $update = [
+                'token'=>$token,
+                'params'=> [
+                    'name'=>'Test Artist Updated Again'
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true
+                ]
+            ];
+
+
+            $response = $this->json('PUT', '/admin/artist/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+
+
+            $delete = [
+                'token'=>$token,
+                'params'=>[
+                    [
+                        'id'=>$result[0]['id'],
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true
+                ]
+            ];
+
+
+            $response = $this->json('DELETE', '/admin/artist', $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+
+            $response = $this->json('POST', '/admin/artist', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+
+
+            $update = [
+                'token'=>$token,
+                'params'=> [
+                ]
+            ];
+
+
+            $response = $this->json('DELETE', '/admin/artist/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+            $response = $this->json('POST', '/admin/artist', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+            $update = [
+                'token'=>$token,
+                'params'=> [
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true
+                ]
+            ];
+
+
+            $response = $this->json('DELETE', '/admin/artist/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
     /**
      * @group CrudController
      * @throws Exception
      */
-    public function testIndex () {
+    public function testRead () {
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
