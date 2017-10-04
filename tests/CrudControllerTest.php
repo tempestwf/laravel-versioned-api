@@ -35,10 +35,38 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $token = $result['token'];
             $this->refreshApplication();
 
+
             $testArtist = $artistRepo->findOneBy(['name'=>'Brahms']);
             $response = $this->json('GET', '/artist/' . $testArtist->getId(), ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->assertEquals($result['result'][0]['name'], 'Brahms');
+
+            $query = [
+                'query'=>[
+                    'where'=>[
+                        [
+                            'field'=>'a.name',
+                            'type'=>'and',
+                            'operator'=>'eq',
+                            'arguments'=>['Brahms']
+                        ],
+                    ]
+                ]
+            ];
+
+            $response = $this->json('GET', '/artist?queryLocation=body', array_merge(['token'=>$token], $query), ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->assertEquals($result['result'][0]['name'], 'Brahms');
+
+            $response = $this->json('GET', '/artist?queryLocation=singleParam&query='. json_encode($query), ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->assertEquals($result['result'][0]['name'], 'Brahms');
+
+
+            $response = $this->json('GET', '/artist?queryLocation=params&and_where_eq_a-name=Brahms', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->assertEquals($result['result'][0]['name'], 'Brahms');
+
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
