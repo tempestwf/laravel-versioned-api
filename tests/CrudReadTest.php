@@ -210,8 +210,10 @@ class CrudReadTest extends CrudTestBaseAbstract
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
                 'hydrate'=>false,
-                'placeholderTest2'=>[
-                    'value'=>'some stuff',
+                'placeholders'=>[
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
+                    ]
                 ]
             ];
             /** @var ArtistRepository $artistRepo */
@@ -309,8 +311,10 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
-                'placeholderTest2'=>[
-                    'value'=>'some stuff',
+                'placeholders'=>[
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
+                    ]
                 ]
             ];
             /** @var ArtistRepository $artistRepo */
@@ -433,8 +437,10 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
-                'placeholderTest2'=>[
-                    'value'=>'some stuff',
+                'placeholders'=>[
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
+                    ]
                 ]
             ];
             /** @var ArtistRepository $artistRepo */
@@ -499,8 +505,10 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
-                'placeholderTest2'=>[
-                    'value'=>'some stuff',
+                'placeholders'=>[
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
+                    ]
                 ]
             ];
             /** @var ArtistRepository $artistRepo */
@@ -603,8 +611,10 @@ class CrudReadTest extends CrudTestBaseAbstract
             $frontEndQuery = $this->makeTestFrontEndQueryArtist();
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
-                'placeholderTest2'=>[
-                    'value'=>'some stuff',
+                'placeholders'=>[
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
+                    ]
                 ]
             ];
             /** @var ArtistRepository $artistRepo */
@@ -781,14 +791,14 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
 
-            $this->assertEquals($result['count'], 16);
-            $this->assertEquals($result['result'][0]['name'], 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            $this->assertEquals($result['count'], 25);
+            $this->assertEquals($result['result'][0]['name'], 'Brahms: Complete Edition');
 
             $artistRepo->init($arrayHelper, ['testSqlQueryNoCache'], ['testing']);
             $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
 
-            $this->assertEquals($result['count'], 16);
-            $this->assertEquals($result['result'][0]['name'], 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
+            $this->assertEquals($result['count'], 25);
+            $this->assertEquals($result['result'][0]['name'], 'Brahms: Complete Edition');
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -895,7 +905,7 @@ class CrudReadTest extends CrudTestBaseAbstract
             $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
             $foundArtists[] = $result['result'][0]['name'];
             $foundAlbums[] = $result['result'][0]['albums'][0]['name'];
-            $this->assertEquals($result['count'], 2);
+            $this->assertEquals($result['count'], 3);
 
             $frontEndOptions['offset'] = 1;
 
@@ -904,13 +914,13 @@ class CrudReadTest extends CrudTestBaseAbstract
             $foundArtists[] = $result['result'][0]['name'];
             $foundAlbums[] = $result['result'][0]['albums'][0]['name'];
 
-            $this->assertEquals($result['count'], 2);
+            $this->assertEquals($result['count'], 3);
 
             $this->assertContains('BEETHOVEN', $foundArtists);
-            $this->assertContains('BACH', $foundArtists);
+            $this->assertContains('Brahms', $foundArtists);
 
             $this->assertContains('BEETHOVEN: THE COMPLETE PIANO SONATAS', $foundAlbums);
-            $this->assertContains('Amsterdam Baroque Orchestra', $foundAlbums);
+            $this->assertContains('Brahms: Complete Edition', $foundAlbums);
 
             $optionsOverrides['hydrationType'] = Query::HYDRATE_OBJECT;
             $optionsOverrides['paginate'] = false;
@@ -938,7 +948,7 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $this->assertCount(2, $result1['result']);
 
-            $this->assertCount(1, $result2['result']);
+            $this->assertCount(2, $result2['result']);
 
             $optionsOverrides['maxLimit'] = 1;
             $e = null;
@@ -1155,8 +1165,7 @@ class CrudReadTest extends CrudTestBaseAbstract
             $frontEndOptions['limit'] = 5;
             $frontEndOptions['offset'] = 0;
             $optionsOverrides = [
-                'placeholderTest2'=>[
-                    'value'=>'some stuff',
+                'placeholders'=>[
                 ]
             ];
             $optionsOverrides['fixedLimit'] = 5;

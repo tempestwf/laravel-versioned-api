@@ -26,9 +26,17 @@ class ArtistController extends APIControllerAbstract
         return [
             'default'=>[
                 'GET'=>[],
-                'POST'=>[],
-                'PUT'=>[],
-                'DELETE'=>[]
+                'POST'=>[
+                    'transformerSettings'=>[
+                        'recompute'=>true
+                    ]
+                ],
+                'PUT'=>[
+                    'extends'=>[':default:POST']
+                ],
+                'DELETE'=>[
+                    'extends'=>[':default:POST']
+                ]
             ]
         ];
     }
