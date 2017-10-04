@@ -23,24 +23,24 @@ class Version20171003005708 extends AbstractMigration
         $repo = $em->getRepository(Role::class);
         $repo->buildPermissions([
             'user'=>[
-                '/album',
-                '/album/{album}',
-                '/artist',
-                '/artist/{artist}',
-                '/user',
-                '/user/{user}',
+                'album',
+                'album/{album}',
+                'artist',
+                'artist/{artist}',
+                'user',
+                'user/{user}',
             ],
             'admin'=>[
-                '/admin/album',
-                '/admin/album/{album}',
-                '/admin/artist',
-                '/admin/artist/{artist}',
-                '/admin/user',
-                '/admin/user/{user}',
+                'admin/album',
+                'admin/album/{album}',
+                'admin/artist',
+                'admin/artist/{artist}',
+                'admin/user',
+                'admin/user/{user}',
             ],
             'super-admin'=>[
-                '/super-admin/user',
-                '/super-admin/user/{user}',
+                'super-admin/user',
+                'super-admin/user/{user}',
             ]
         ]);
     }
@@ -55,25 +55,25 @@ class Version20171003005708 extends AbstractMigration
         $repo = $em->getRepository(Role::class);
         $repo->removePermissions([
             'user'=>[
-                '/album',
-                '/album/{album}',
-                '/artist',
-                '/artist/{artist}',
-                '/user',
-                '/user/{user}',
+                'album',
+                'album/{album}',
+                'artist',
+                'artist/{artist}',
+                'user',
+                'user/{user}',
             ],
             'admin'=>[
-                '/admin/album',
-                '/admin/album/{album}',
-                '/admin/artist',
-                '/admin/artist/{artist}',
-                '/admin/user',
-                '/admin/user/{user}',
+                'admin/album',
+                'admin/album/{album}',
+                'admin/artist',
+                'admin/artist/{artist}',
+                'admin/user',
+                'admin/user/{user}',
             ],
             'super-admin'=>[
-                '/super-admin/user',
-                '/super-admin/user/{user}',
+                'super-admin/user',
+                'super-admin/user/{user}',
             ]
-        ]);
+        ], true);
     }
 }

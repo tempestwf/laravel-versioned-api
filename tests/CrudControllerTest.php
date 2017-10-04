@@ -25,18 +25,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             /** @var UserRepository $userRepo */
             $userRepo = $this->em->getRepository(User::class);
             $userRepo->init($arrayHelper, ['testing'], ['testing']);
-            /** @var User[] $users */
-            $users = $userRepo->create($this->createRobAndBobData());
-
-            $userIds = [];
-            /** @var User $user */
-            foreach ($users as $user) {
-                $userIds[] = $user->getId();
-            }
-
-            //Test as super admin level permissions to be able to create everything in one fell swoop
-            /** @var Artist[] $result */
-            $result = $artistRepo->create($this->createArtistChainData($userIds));
 
             $testUser = $userRepo->findOneBy(['id'=>1]);
 
@@ -46,9 +34,11 @@ class CrudControllerTest extends CrudTestBaseAbstract
             /** @var string $token */
             $token = $result['token'];
             $this->refreshApplication();
-            $response = $this->json('GET', '/admin/album/1', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-            $result = $response->decodeResponseJson();
 
+            $testArtist = $artistRepo->findOneBy(['name'=>'Brahms']);
+            $response = $this->json('GET', '/artist/' . $testArtist->getId(), ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->assertEquals($result['result'][0]['name'], 'Brahms');
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();

@@ -47,14 +47,15 @@ class RoleRepository extends Repository
 
     /**
      * A convenience method to add permissions to a role
+     *
      * @param array $rolePermissions example:
      * [
      *  'name'=>'user',
      *  'permissions'=>['/user']
      * ]
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @param bool $delete
      */
-    public function removePermissions(array $rolePermissions):void
+    public function removePermissions(array $rolePermissions, bool $delete=false):void
     {
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
@@ -69,6 +70,9 @@ class RoleRepository extends Repository
                     /** @var Permission $perm */
                     $perm = $permissionRepo->findOneBy(['name'=>$permissionName]);
                     $role->removePermission($perm);
+                    if ($delete === true) {
+                        $em->remove($perm);
+                    }
                 }
                 $em->persist($role);
             }

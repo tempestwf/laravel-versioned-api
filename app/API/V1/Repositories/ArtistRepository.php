@@ -6,7 +6,6 @@ use App\API\V1\Entities\Artist;
 use App\Repositories\Repository;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
-use Doctrine\ORM\Query;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 use Doctrine\ORM\Query\Expr;
 
@@ -24,25 +23,6 @@ class ArtistRepository extends Repository
     protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
         $entity = Artist::class;
 
-
-
-    /**
-     * @var array|NULL $options;
-     */
-    protected  /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $options = [
-        'paginate'=>true,
-        'hydrate'=>true,
-        'hydrationType'=>Query::HYDRATE_ARRAY,
-        'transaction'=>true,
-        'entitiesShareConfigs'=>true,
-        'flush'=>true,
-        'placeholders'=>[
-            'placeholderTest2'=>[
-                'value'=>'some stuff',
-            ]
-        ],
-        'clearPrePopulatedEntitiesOnFlush'=>true
-    ];
 
 
     public function preStart(GenericEventArgs $e) {

@@ -50,6 +50,9 @@ class CrudReadTest extends CrudTestBaseAbstract
                 'placeholders'=>[
                     'placeholderTest3'=>[
                         'value'=>'some stuff3',
+                    ],
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
                     ]
                 ],
             ]);
@@ -122,6 +125,9 @@ class CrudReadTest extends CrudTestBaseAbstract
                 'placeholders'=>[
                     'placeholderTest3'=>[
                         'value'=>'some stuff3',
+                    ],
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
                     ]
                 ],
             ]);
@@ -203,7 +209,10 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
-                'hydrate'=>false
+                'hydrate'=>false,
+                'placeholderTest2'=>[
+                    'value'=>'some stuff',
+                ]
             ];
             /** @var ArtistRepository $artistRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
@@ -300,6 +309,9 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
+                'placeholderTest2'=>[
+                    'value'=>'some stuff',
+                ]
             ];
             /** @var ArtistRepository $artistRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
@@ -421,6 +433,9 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
+                'placeholderTest2'=>[
+                    'value'=>'some stuff',
+                ]
             ];
             /** @var ArtistRepository $artistRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
@@ -483,7 +498,11 @@ class CrudReadTest extends CrudTestBaseAbstract
             $arrayHelper = $this->makeArrayHelper();
 
             $frontEndOptions = $this->makeFrontEndQueryOptions();
-            $optionsOverrides = [];
+            $optionsOverrides = [
+                'placeholderTest2'=>[
+                    'value'=>'some stuff',
+                ]
+            ];
             /** @var ArtistRepository $artistRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
             $artistRepo->init($arrayHelper, ['testNonWherePermissions'], ['testing']);
@@ -583,7 +602,11 @@ class CrudReadTest extends CrudTestBaseAbstract
 
             $frontEndQuery = $this->makeTestFrontEndQueryArtist();
             $frontEndOptions = $this->makeFrontEndQueryOptions();
-            $optionsOverrides = [];
+            $optionsOverrides = [
+                'placeholderTest2'=>[
+                    'value'=>'some stuff',
+                ]
+            ];
             /** @var ArtistRepository $artistRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
             $artistRepo->init($arrayHelper, ['testAllowed'], ['testing']);
@@ -701,6 +724,9 @@ class CrudReadTest extends CrudTestBaseAbstract
                 'placeholders'=>[
                     'placeholderTest3'=>[
                         'value'=>'some stuff3',
+                    ],
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
                     ]
                 ],
             ];
@@ -809,6 +835,9 @@ class CrudReadTest extends CrudTestBaseAbstract
                 'placeholders'=>[
                     'placeholderTest3'=>[
                         'value'=>'some stuff3',
+                    ],
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
                     ]
                 ],
             ];
@@ -990,6 +1019,9 @@ class CrudReadTest extends CrudTestBaseAbstract
                 'placeholders'=>[
                     'placeholderTest3'=>[
                         'value'=>'some stuff3',
+                    ],
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
                     ]
                 ],
             ]);
@@ -1122,6 +1154,11 @@ class CrudReadTest extends CrudTestBaseAbstract
             $frontEndOptions= [];
             $frontEndOptions['limit'] = 5;
             $frontEndOptions['offset'] = 0;
+            $optionsOverrides = [
+                'placeholderTest2'=>[
+                    'value'=>'some stuff',
+                ]
+            ];
             $optionsOverrides['fixedLimit'] = 5;
 
             $userRepo->read([], $frontEndOptions, $optionsOverrides);
