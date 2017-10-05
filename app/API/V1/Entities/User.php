@@ -382,7 +382,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'admin'=>[ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
                 'create'=>[
                     'extends'=>[':user:create'],
-                    'enforce'=>NULL,
+                    'settings'=>[
+                        'enforce'=>null
+                    ],
                     'allowed'=>true,
                 ],
                 'update'=>[
@@ -399,19 +401,27 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             ],
             'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':admin:create'],
                     'allowed'=>true,
+                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'permissions'=>[ // Users can update their name
+                            'permissive'=>true,
+                        ],
+                        'roles'=>[ // Users can update their job
+                            'permissive'=>true,
+                        ]
+                    ],
                 ],
                 'update'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:create'],
                     'allowed'=>true,
                 ],
                 'delete'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:create'],
                     'allowed'=>true,
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':superAdmin:create']
                 ],
             ],
             'testing'=>[
