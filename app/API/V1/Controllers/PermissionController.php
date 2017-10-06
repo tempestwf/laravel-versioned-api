@@ -1,15 +1,15 @@
 <?php
 
-namespace NamespaceRoot\Controllers;
+namespace App\API\V1\Controllers;
 
-use NamespaceRoot\Repositories\DummyRepo;
+use App\API\V1\Repositories\PermissionRepository;
 use TempestTools\Crud\Contracts\Events\SimpleEventContract;
 use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
-class DummyClass extends APIControllerAbstract
+class PermissionController extends APIControllerAbstract
 {
-    public function __construct(DummyRepo $repo, ToArrayTransformer $arrayTransformer)
+    public function __construct(PermissionRepository $repo, ToArrayTransformer $arrayTransformer)
     {
         $this->setRepo($repo);
         $this->setTransformer($arrayTransformer);

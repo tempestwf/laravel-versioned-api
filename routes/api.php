@@ -11,6 +11,8 @@
 |
 */
 
+use App\API\V1\Controllers\PermissionController;
+use App\API\V1\Controllers\RoleController;
 use Dingo\Api\Routing\Router;
 use App\API\V1\Controllers\AlbumController;
 
@@ -121,10 +123,6 @@ $api->version(
     }
 );
 
-
-
-
-
 $api->version(
     'V1',
     [
@@ -157,7 +155,6 @@ $api->version(
     }
 );
 
-
 $api->version(
     'V1',
     [
@@ -173,3 +170,38 @@ $api->version(
         $api->resource('super-admin/user', UserController::class);
     }
 );
+
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        'ttPath'=>['superAdmin'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->resource('super-admin/permission', PermissionController::class);
+    }
+);
+
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        'ttPath'=>['superAdmin'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->resource('super-admin/role', RoleController::class);
+    }
+);
+
