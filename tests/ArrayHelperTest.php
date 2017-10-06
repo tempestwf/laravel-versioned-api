@@ -2,11 +2,43 @@
 
 use App\API\V1\Entities\User;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
+use TempestTools\Common\ArrayObject\DefaultTTArrayObject;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
+use TempestTools\Common\Exceptions\ArrayObject\ArrayObjectException;
 use TempestTools\Common\Helper\ArrayHelper;
 
 class ArrayHelperTest extends TestCase
 {
+    /**
+     * @group arrayHelper
+     * Tests that auto parsing is working
+     */
+    public function testFixedOnArrayObject()
+    {
+        $arrayHelper = new ArrayHelper(new DefaultTTArrayObject([CommonArrayObjectKeyConstants::FRAMEWORK_KEY_NAME=>['1'=>true,'2'=>true]]));
+        $array = $arrayHelper->getArray();
+        $e = null;
+        try {
+            $array[CommonArrayObjectKeyConstants::FRAMEWORK_KEY_NAME] = 'bam!';
+        } catch (\Exception $e) {
+
+        }
+        $this->assertInstanceOf( ArrayObjectException::class, $e);
+    }
+
+    /**
+     * @group arrayHelper
+     * Tests that auto parsing is working
+     */
+    public function testDefaultsOnArrayObject()
+    {
+        $arrayHelper = new ArrayHelper(new DefaultTTArrayObject());
+        $array = $arrayHelper->getArray();
+        $keys = CommonArrayObjectKeyConstants::getAll();
+        foreach ($keys as $key) {
+            $this->assertArrayHasKey($key, $array);
+        }
+    }
 
     /**
      * @group arrayHelper
