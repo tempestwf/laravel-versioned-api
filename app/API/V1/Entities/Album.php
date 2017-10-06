@@ -4,6 +4,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
 
@@ -238,7 +239,7 @@ class Album extends EntityAbstract
                             'permissive'=>false,
                             'settings'=>[
                                 'enforce'=>[
-                                    'id'=>$this->getArrayHelper()->parseArrayPath(['userEntity', 'id']) // When adding them selves to an album we enforce that the user is assigning their own user entity to the album
+                                    'id'=>$this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']) // When adding them selves to an album we enforce that the user is assigning their own user entity to the album
                                 ],
                             ],
                             'assign'=>[ // the can only add and remove them selves from an album

@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping AS ORM;
 use TempestTools\AclMiddleware\Contracts\HasRolesContract;
 use TempestTools\AclMiddleware\Contracts\HasIdContract;
 use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
+use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -109,7 +110,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     public function extractValues() : array
     {
         return [
-            'userEntity' => [
+            CommonArrayObjectKeyConstants::USER_KEY_NAME => [
                 'id'=>$this->getId(),
                 'name'=>$this->getName(),
                 'job'=>$this->getJob(),
@@ -342,7 +343,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'permissive'=>false,
                     'settings'=>[
                         'enforce'=>[
-                            'id'=>$this->getArrayHelper()->parseArrayPath(['userEntity', 'id']) // If you are a user, then you should only be able to alter your self
+                            'id'=>$this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']) // If you are a user, then you should only be able to alter your self
                         ],
                     ],
                     'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete

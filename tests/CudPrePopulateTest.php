@@ -6,6 +6,8 @@ use App\API\V1\Entities\User;
 use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
+use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
+use TempestTools\Crud\Orm\Helper\DataBindHelper;
 use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 
 
@@ -47,7 +49,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
 
             /** @noinspection NullPointerExceptionInspection */
             $array = $artistRepo->getArrayHelper()->getArray();
-            $prePopulate = $array['prePopulatedEntities'];
+            $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
             $this->assertEquals($prePopulate['App\API\V1\Entities\Artist'][$artists[0]->getId()]->getName(), 'BEETHOVEN');
 
 
@@ -91,7 +93,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
             /** @noinspection NullPointerExceptionInspection */
             $array = $artistRepo->getArrayHelper()->getArray();
 
-            $prePopulate = $array['prePopulatedEntities'];
+            $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
             $this->assertNull($prePopulate);
             /** @var Artist[] $result2 */
@@ -110,7 +112,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
 
             /** @noinspection NullPointerExceptionInspection */
             $array = $artistRepo->getArrayHelper()->getArray();
-            $prePopulate = $array['prePopulatedEntities'];
+            $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
             $this->assertNull($prePopulate);
 
@@ -127,7 +129,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
                 ]
             ], $optionsOverride);
 
-            $prePopulate = $array['prePopulatedEntities'];
+            $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
             $this->assertNull($prePopulate);
 
@@ -174,7 +176,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
             /** @noinspection NullPointerExceptionInspection */
             $array = $artistRepo->getArrayHelper()->getArray();
 
-            $prePopulate = $array['prePopulatedEntities'];
+            $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
             $this->assertEquals($prePopulate['App\API\V1\Entities\User'][$userIds[0]]->getName(), 'bob');
             $this->assertEquals($prePopulate['App\API\V1\Entities\User'][$userIds[1]]->getName(), 'rob');
@@ -194,7 +196,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
 
             /** @noinspection NullPointerExceptionInspection */
             $array = $artistRepo->getArrayHelper()->getArray();
-            $prePopulate = $array['prePopulatedEntities'];
+            $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
             $this->assertEquals($prePopulate['App\API\V1\Entities\Artist'][$result2[0]->getId()]->getName(), 'The artist formerly known as BEETHOVEN');
             $this->assertEquals($prePopulate['App\API\V1\Entities\Album'][$result2[0]->getAlbums()[0]->getId()]->getName(), 'Kick Ass Piano Solos!');
@@ -212,7 +214,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
                 ]
             ]);
 
-            $prePopulate = $array['prePopulatedEntities'];
+            $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
             $this->assertNull($prePopulate['App\API\V1\Entities\Artist']);
 
@@ -229,7 +231,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
                 ]
             ], $optionsOverride);
 
-            $prePopulate = $array['prePopulatedEntities'];
+            $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
             $this->assertEquals($prePopulate['App\API\V1\Entities\Artist'][$artistId]->getName(), 'The artist formerly known as BEETHOVEN');
             $this->assertEquals($prePopulate['App\API\V1\Entities\Album'][$albumId]->getName(), 'Kick Ass Piano Solos!');

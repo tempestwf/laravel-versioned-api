@@ -2,6 +2,7 @@
 
 use App\API\V1\Entities\User;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
+use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Helper\ArrayHelper;
 
 class ArrayHelperTest extends TestCase
@@ -84,7 +85,7 @@ class ArrayHelperTest extends TestCase
         $arrayHelper->extract([$user]);
         $array = $arrayHelper->getArray();
 
-        $this->assertSame($array['userEntity']['email'], 'bobs@youruncle.com');
+        $this->assertSame($array[CommonArrayObjectKeyConstants::USER_KEY_NAME]['email'], 'bobs@youruncle.com');
     }
 
     /**

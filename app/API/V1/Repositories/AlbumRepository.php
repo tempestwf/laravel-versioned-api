@@ -4,6 +4,7 @@ namespace App\API\V1\Repositories;
 use App\Repositories\Repository;
 use App\API\V1\Entities\Album;
 use Doctrine\ORM\Query\Expr;
+use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -163,7 +164,7 @@ class AlbumRepository extends Repository
                                 'join'=>'a.users',
                                 'alias'=>'u',
                                 'conditionType'=>Expr\Join::WITH,
-                                'condition'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id'])),
+                                'condition'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id'])),
                             ]
                         ]
                     ]

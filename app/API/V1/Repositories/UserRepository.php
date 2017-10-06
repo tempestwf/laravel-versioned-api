@@ -7,6 +7,7 @@ use App\Repositories\Repository;
 use Doctrine\ORM\Query\Expr;
 use TempestTools\AclMiddleware\Contracts\RepoHasPermissionsContract;
 use TempestTools\AclMiddleware\Repository\HasPermissionsQueryTrait;
+use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 
 /** @noinspection LongInheritanceChainInspection */
 class UserRepository extends Repository implements RepoHasPermissionsContract
@@ -34,7 +35,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                         'where'=>[
                             'onlyCurrentUser'=>[
                                 'type'=>'and',
-                                'value'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath(['userEntity', 'id']))
+                                'value'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']))
                             ]
                         ],
                     ],
