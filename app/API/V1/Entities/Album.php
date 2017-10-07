@@ -112,11 +112,12 @@ class Album extends EntityAbstract
     }
 
     /**
-     * @param DateTime $releaseDate
+     * @param mixed $releaseDate
      * @return Album
      */
-    public function setReleaseDate(DateTime $releaseDate): Album
+    public function setReleaseDate($releaseDate): Album
     {
+        $releaseDate = ($releaseDate instanceof DateTime)?$releaseDate:new DateTime($releaseDate);
         $this->releaseDate = $releaseDate;
         return $this;
     }
@@ -278,6 +279,20 @@ class Album extends EntityAbstract
                 ],
                 'read'=>[ // Same as default create
                     'extends'=>[':default:create']
+                ],
+            ],
+            'superAdmin'=>[ // Extends default because default has no additional rules on it, so super admins can do anything
+                'create'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'update'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':admin:create']
                 ],
             ],
             'testPermissive1'=>[

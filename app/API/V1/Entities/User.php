@@ -309,7 +309,8 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         'validate'=>[ // Validates name and email and inherited by the rest of the config
                             'rules'=>[
                                 'name'=>'required|min:2',
-                                'email'=>'required|email'
+                                'email'=>'required|email',
+                                'password'=>'required|min:8'
                             ],
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
@@ -328,12 +329,19 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],
+                    'settings'=>[
+                        'validate'=>[ // Validates name and email and inherited by the rest of the config
+                            'rules'=>[
+                                'password'=>'min:8'
+                            ],
+                        ],
+                    ],
                 ],
                 'delete'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':default:update']
                 ],
             ],
             'user'=>[
@@ -352,6 +360,8 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'assign'=>[
                                 'add'=>true,
                                 'remove'=>true,
+                                'addSingle'=>true,
+                                'removeSingle'=>true,
                             ],
                             'chain'=>[
                                 'read'=>true
@@ -364,6 +374,12 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'permissive'=>true,
                         ],
                         'address'=>[ // Users can update their address
+                            'permissive'=>true,
+                        ],
+                        'email'=>[ // Users can update their address
+                            'permissive'=>true,
+                        ],
+                        'password'=>[ // Users can update their address
                             'permissive'=>true,
                         ]
                     ],
@@ -389,21 +405,22 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'allowed'=>true,
                 ],
                 'update'=>[
-                    'extends'=>[':admin:create'],
+                    'extends'=>[':user:update'],
                     'allowed'=>true,
                 ],
                 'delete'=>[
-                    'extends'=>[':admin:create'],
+                    'extends'=>[':user:delete'],
                     'allowed'=>true,
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':user:read']
                 ],
             ],
             'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
                     'extends'=>[':admin:create'],
                     'allowed'=>true,
+                    'permissive'=>true,
                     'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
                         'permissions'=>[ // Users can update their name
                             'permissive'=>true,
@@ -415,11 +432,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 ],
                 'update'=>[
                     'extends'=>[':superAdmin:create'],
-                    'allowed'=>true,
                 ],
                 'delete'=>[
                     'extends'=>[':superAdmin:create'],
-                    'allowed'=>true,
                 ],
                 'read'=>[ // Same as default create
                     'extends'=>[':superAdmin:create']

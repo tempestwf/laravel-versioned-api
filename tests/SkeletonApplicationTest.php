@@ -10,7 +10,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
 
 
     /**
-     * @group skeletonApplication
+     * @group SkeletonApplication
      * @throws Exception
      */
     public function testUserController () {
@@ -18,8 +18,8 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         $conn = $em->getConnection();
         $conn->beginTransaction();
         try {
-            /*$token = $this->getToken();
-
+            $token = $this->getToken();
+            $time = new DateTime();
             $create = [
                 'token'=>$token,
                 'params'=>[
@@ -28,8 +28,11 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                         'email'=>'test@test.com',
                         'job'=>'doing stuff!',
                         'address'=>'my home!',
+                        'password'=>'zipityzapity',
                         'albums'=>[
+                            'assignType'=>'addSingle',
                             'name'=>'Test Album',
+                            'releaseDate'=>$time->format('Y-m-d H:i:s'),
                             'artist'=>[
                                 'name'=>'The Artist'
                             ]
@@ -46,34 +49,43 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should fail
 
-            $create['params']['roles'] = ['name'=>'test'];
+            $this->assertEquals( 500, $result['status_code']);
+
+            $create['params'][0]['roles'] = ['name'=>'test'];
 
             $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should fail
 
-            $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-            $result = $response->decodeResponseJson();
-            $this->refreshApplication();
-            //Assert should fail
-
-            unset($create['params']['roles']);
-
-            $create['params']['permissions'] = ['name'=>'test'];
+            $this->assertEquals( 500, $result['status_code']);
 
             $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should fail
 
-            unset($create['params']['permissions']);
+            $this->assertEquals( 500, $result['status_code']);
+
+            unset($create['params'][0]['roles']);
+
+            $create['params'][0]['permissions'] = ['name'=>'test'];
+
+            $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->refreshApplication();
+            //Assert should fail
+
+            $this->assertEquals( 500, $result['status_code']);
+
+            unset($create['params'][0]['permissions']);
 
             $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed
 
+            $this->assertArrayHasKey('id', $result[0]);
 
             $create = [
                 'token'=>$token,
@@ -81,14 +93,15 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                     [
                         'name'=>'Test User2',
                         'email'=>'test2@test.com',
-                        'roles'=>['name'=>'test'],
-                        'permissions'=>['name'=>'test'],
                         'job'=>'doing stuff!',
                         'address'=>'my home!',
+                        'password'=>'zipityzapity',
                         'albums'=>[
+                            'assignType'=>'addSingle',
                             'name'=>'Test Album',
+                            'releaseDate'=>$time->format('Y-m-d H:i:s'),
                             'artist'=>[
-                                'name'=>'The Artist'
+                                'name'=>'The Artist2'
                             ]
                         ]
                     ]
@@ -98,10 +111,13 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                 ]
             ];
 
+            $this->refreshApplication();
             $response = $this->json('POST', 'super-admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $userResult = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result[0]);
 
             $response = $this->json('GET', 'user', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
@@ -150,10 +166,14 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should fail
 
+            $this->assertEquals( 500, $result['status_code']);
+
             $response = $this->json('PUT', 'admin/user', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should fail
+
+            $this->assertEquals( 500, $result['status_code']);
 
             $response = $this->json('PUT', 'super-admin/user', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
@@ -198,6 +218,8 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should fail
+
+            $this->assertEquals( 500, $result['status_code']);
 
             $update['params'] = $update['params'][0];
             $response = $this->json('DELETE', '/admin/user' . $delete, [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
