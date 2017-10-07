@@ -31,6 +31,67 @@ class AclMiddlewareTest extends TestCase
      * @return void
      * @throws Exception
      */
+    public function testDoubleExtractorFails():void
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $repo = $this->em->getRepository(Role::class);
+            /** @var Role $userRole */
+            $userRole = $repo->findOneBy(['name' => 'user']);
+
+            $user = $this->makeUser();
+
+            $user->addRole($userRole);
+
+            $em->persist($user);
+
+            $em->flush();
+
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => $user->getPassword()]);
+            $result = $response->decodeResponseJson();
+            //$auth = App::make(JWTAuth::class);
+            //$result = $auth->attempt(['email' => $user->getEmail(), 'password' => $user->getPassword()]);
+
+            $token = $result['token'];
+            // This would not work with out storing to the db and then removing it after
+            $conn->commit();
+            $this->refreshApplication();
+            $conn->beginTransaction();
+            $response = $this->json('GET', '/fail/user', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->assertEquals($result['message'], 'Error: the key of this array object is fixed -- it can not be set twice. key = user.');
+
+
+            $response = $this->json('GET', '/fail2/user', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $e = null;
+            try {
+                $result = $response->decodeResponseJson();
+            } catch (\Exception $e) {
+
+            }
+
+            $this->assertNotNull($e);
+
+            $em->remove($user);
+            $em->flush();
+            $conn->commit();
+
+            $this->refreshApplication();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * Test that acl middle ware works in allowing some one to access an end point
+     * @group aclMiddleware
+     * @return void
+     * @throws Exception
+     */
     public function testAclMiddlewareAllows():void
     {
         $em = $this->em();

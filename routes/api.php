@@ -25,6 +25,43 @@ use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 
 $api = app(Router::class);
 
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        'additionalExtractors' =>[ArrayExpressionBuilder::closure(function ($params) {
+            /** @var UserController $controller */
+            $controller = $params['controller'];
+            return $controller->getUser();
+        })]
+    ],
+    function () use ($api)
+    {
+        $api->resources([
+            'fail/user'=> UserController::class
+        ]);
+    }
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissionClosures' =>[ArrayExpressionBuilder::closure(function () {
+            return false;
+        })]
+    ],
+    function () use ($api)
+    {
+        $api->resources([
+            'fail2/user'=> UserController::class
+        ]);
+    }
+);
+
 
 $api->version(
 	'V1',
@@ -85,7 +122,6 @@ $api->version(
     ],
     function () use ($api)
     {
-        //$api->resource('admin/album', AlbumController::class);
         $api->resources([
             'admin/album'=>AlbumController::class,
             'admin/artist'=>ArtistController::class,
@@ -106,7 +142,6 @@ $api->version(
     ],
     function () use ($api)
     {
-        //$api->resource('super-admin/user', UserController::class);
         $api->resources([
             'super-admin/user'=> UserController::class,
             'super-admin/permission'=>PermissionController::class,
@@ -114,3 +149,7 @@ $api->version(
         ]);
     }
 );
+
+
+
+
