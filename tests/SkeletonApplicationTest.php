@@ -1,25 +1,12 @@
 <?php
 
-use App\API\V1\Entities\User;
 use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 
 
 class SkeletonApplicationTest extends CrudTestBaseAbstract
 {
 
-    protected function getToken () {
-        $userRepo = $this->em->getRepository(User::class);
 
-        $testUser = $userRepo->findOneBy(['id'=>1]);
-
-        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => $testUser->getPassword()]);
-        $result = $response->decodeResponseJson();
-
-        /** @var string $token */
-        $token = $result['token'];
-        $this->refreshApplication();
-        return $token;
-    }
 
 
     /**
@@ -218,7 +205,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should succeed*/
 
-
+            $this->refreshApplication();
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
