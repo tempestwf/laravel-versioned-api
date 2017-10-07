@@ -30,11 +30,12 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                         'address'=>'my home!',
                         'password'=>'zipityzapity',
                         'albums'=>[
-                            'assignType'=>'addSingle',
-                            'name'=>'Test Album',
-                            'releaseDate'=>$time->format('Y-m-d H:i:s'),
-                            'artist'=>[
-                                'name'=>'The Artist'
+                            [
+                                'name'=>'Test Album',
+                                'releaseDate'=>$time->format('Y-m-d H:i:s'),
+                                'artist'=>[
+                                    'name'=>'The Artist'
+                                ]
                             ]
                         ]
                     ]
@@ -47,34 +48,28 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $response = $this->json('POST', '/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
-            //Assert should fail
+            //Assert should fail, user level can't make other users
 
             $this->assertEquals( 500, $result['status_code']);
 
-            $create['params'][0]['roles'] = ['name'=>'test'];
+            $create['params'][0]['roles'] = [['name'=>'test']];
 
             $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
-            //Assert should fail
+            //Assert should fail, admins can't do anything with roles
 
             $this->assertEquals( 500, $result['status_code']);
 
-            $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-            $result = $response->decodeResponseJson();
-            $this->refreshApplication();
-            //Assert should fail
-
-            $this->assertEquals( 500, $result['status_code']);
 
             unset($create['params'][0]['roles']);
 
-            $create['params'][0]['permissions'] = ['name'=>'test'];
+            $create['params'][0]['permissions'] = [['name'=>'test']];
 
             $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
-            //Assert should fail
+            //Assert should fail, user level can't do anything with permissions
 
             $this->assertEquals( 500, $result['status_code']);
 
@@ -83,7 +78,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $response = $this->json('POST', 'admin/user', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
-            //Assert should succeed
+            //Assert should succeed, with out permissions and roles it should work
 
             $this->assertArrayHasKey('id', $result[0]);
 
@@ -97,11 +92,12 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                         'address'=>'my home!',
                         'password'=>'zipityzapity',
                         'albums'=>[
-                            'assignType'=>'addSingle',
-                            'name'=>'Test Album',
-                            'releaseDate'=>$time->format('Y-m-d H:i:s'),
-                            'artist'=>[
-                                'name'=>'The Artist2'
+                            [
+                                'name'=>'Test Album2',
+                                'releaseDate'=>$time->format('Y-m-d H:i:s'),
+                                'artist'=>[
+                                    'name'=>'The Artist2'
+                                ]
                             ]
                         ]
                     ]
@@ -123,6 +119,9 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed
+
+            $allUsers = $this->em->getRepository(\App\API\V1\Entities\User::class)->findAll();
+
 
             $response = $this->json('GET', 'user/' . $userResult[0]['id'], [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();

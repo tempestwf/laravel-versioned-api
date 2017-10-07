@@ -402,18 +402,23 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'settings'=>[
                         'enforce'=>null
                     ],
+                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'albums'=>[
+                            'permissive'=>true,
+                        ]
+                    ],
                     'allowed'=>true,
                 ],
                 'update'=>[
-                    'extends'=>[':user:update'],
+                    'extends'=>[':admin:create'],
                     'allowed'=>true,
                 ],
                 'delete'=>[
-                    'extends'=>[':user:delete'],
+                    'extends'=>[':admin:create'],
                     'allowed'=>true,
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':user:read']
+                    'extends'=>[':admin:create']
                 ],
             ],
             'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin

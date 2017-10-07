@@ -25,7 +25,7 @@ class Album extends EntityAbstract
     private $id;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=true, unique=true)
      */
     private $name;
 
