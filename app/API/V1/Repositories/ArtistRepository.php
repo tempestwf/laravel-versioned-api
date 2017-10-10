@@ -6,6 +6,7 @@ use App\API\V1\Entities\Artist;
 use App\Repositories\Repository;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 use Doctrine\ORM\Query\Expr;
 
@@ -217,6 +218,21 @@ class ArtistRepository extends Repository
                                 'join'=>'a.albums',
                                 'alias'=>'a2',
                             ]
+                        ]
+                    ]
+                ]
+            ],
+            'testTopLevelMutateAndClosure'=>[
+                'extends'=>[':default'],
+                'read'=>[
+                    'permissions'=>[
+                        'settings'=>[
+                            'mutate'=>ArrayExpressionBuilder::closure(function () {
+                                return [null, ['iAm'=>'a mutant']];
+                            }),
+                            'closure'=>ArrayExpressionBuilder::closure(function ($extra) {
+                                return !$extra['settings']['iAm'] === 'a mutant';
+                            })
                         ]
                     ]
                 ]

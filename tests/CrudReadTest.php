@@ -312,11 +312,28 @@ class CrudReadTest extends CrudTestBaseAbstract
             $frontEndOptions = $this->makeFrontEndQueryOptions();
             $optionsOverrides = [
                 'placeholders'=>[
-                    'placeholderTest2'=>[
+                    /*'placeholderTest2'=>[
                         'value'=>'some stuff',
-                    ]
+                    ]*/
                 ]
             ];
+
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testTopLevelMutateAndClosure'], ['testing']);
+
+            $e = null;
+            try {
+                $artistRepo->read([
+                ], $frontEndOptions, $optionsOverrides);
+            } catch (Exception $e) {
+
+            }
+
+            $this->assertInstanceOf(QueryBuilderHelperException::class, $e);
+            $this->assertEquals('Error: A validation closure did not pass while building query.', $e->getMessage());
+
+
             /** @var ArtistRepository $artistRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
             $artistRepo->init($arrayHelper, ['testMutateAndClosure'], ['testing']);
