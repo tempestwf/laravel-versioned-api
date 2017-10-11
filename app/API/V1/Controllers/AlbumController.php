@@ -29,6 +29,13 @@ class AlbumController extends APIControllerAbstract
                 'POST'=>[],
                 'PUT'=>[],
                 'DELETE'=>[]
+            ],
+            'user/users'=>[
+                'GET'=>[
+                    'resourceIdConversion'=>[
+                        'user'=>'userResourceId'
+                    ]
+                ],
             ]
         ];
     }
