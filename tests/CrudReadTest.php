@@ -1,5 +1,6 @@
 <?php
 
+use App\API\V1\Entities\Album;
 use App\API\V1\Entities\Artist;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\ArtistRepository;
@@ -12,7 +13,6 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 
 class CrudReadTest extends CrudTestBaseAbstract
 {
-
     /**
      * @group CrudReadOnly
      * @throws Exception

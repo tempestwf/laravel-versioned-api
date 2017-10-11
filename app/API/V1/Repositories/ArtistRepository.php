@@ -203,8 +203,11 @@ class ArtistRepository extends Repository
         };
         return [
             'default'=>[],
-            'user'=>[
+            'guest'=>[
                 'extends'=>[':default']
+            ],
+            'user'=>[
+                'extends'=>[':guest']
             ],
             'userArtistWithAlbums'=>[
                 'extends'=>[':default'],
@@ -379,7 +382,6 @@ class ArtistRepository extends Repository
                         'placeholders'=>[
                             'placeholderTest'=>[
                                 'value'=>'some stuff2',
-
                             ]
                         ],
                         'fetchJoin'=>true

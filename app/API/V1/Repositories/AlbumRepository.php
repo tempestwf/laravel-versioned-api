@@ -152,8 +152,26 @@ class AlbumRepository extends Repository
         /** @noinspection NullPointerExceptionInspection */
         return [
             'default'=>[],
-            'user'=>[
+            'guest'=>[
                 'extends'=>[':default']
+            ],
+            'user'=>[
+                'extends'=>[':guest']
+            ],
+            'user/users'=>[
+                'extends'=>[':user'],
+                'read'=>[
+                    'query'=>[
+                        'innerJoin'=>[
+                            'justCurrentUsersAlbums'=>[
+                                'join'=>'a.users',
+                                'alias'=>'u',
+                                'conditionType'=>Expr\Join::WITH,
+                                'condition'=>$expr->eq('u.id', ':userResourceId'),
+                            ]
+                        ]
+                    ],
+                ]
             ],
             'userMyAlbums'=>[
                 'extends'=>[':default'],
