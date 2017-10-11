@@ -173,6 +173,21 @@ class AlbumRepository extends Repository
                     ],
                 ]
             ],
+            'user/artists'=>[
+                'extends'=>[':user'],
+                'read'=>[
+                    'query'=>[
+                        'innerJoin'=>[
+                            'justCurrentUsersAlbums'=>[
+                                'join'=>'a.artists',
+                                'alias'=>'a',
+                                'conditionType'=>Expr\Join::WITH,
+                                'condition'=>$expr->eq('a.id', ':artistResourceId'),
+                            ]
+                        ]
+                    ],
+                ]
+            ],
             'userMyAlbums'=>[
                 'extends'=>[':default'],
                 'read'=>[
