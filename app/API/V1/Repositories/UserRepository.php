@@ -73,6 +73,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                     ]
                 ],
             ],
+            // Below here is for testing purposes only
             'testing'=>[]
         ];
     }

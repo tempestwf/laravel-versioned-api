@@ -160,23 +160,6 @@ class Artist extends EntityAbstract
                     'extends'=>[':default:create']
                 ],
             ],
-            'testing'=>[
-                'create'=>[
-                    'allowed'=>true,
-                    'extends'=>[':default:create'],
-                ],
-                'update'=>[
-                    'allowed'=>true,
-                    'extends'=>[':default:create'],
-                ],
-                'delete'=>[
-                    'allowed'=>true,
-                    'extends'=>[':default:create'],
-                ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
-                ],
-            ],
             'admin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
                     'extends'=>[':default:create'],
@@ -206,6 +189,24 @@ class Artist extends EntityAbstract
                 ],
                 'read'=>[ // Same as default create
                     'extends'=>[':admin:create']
+                ],
+            ],
+            // Below here is for testing purposes only
+            'testing'=>[
+                'create'=>[
+                    'allowed'=>true,
+                    'extends'=>[':default:create'],
+                ],
+                'update'=>[
+                    'allowed'=>true,
+                    'extends'=>[':default:create'],
+                ],
+                'delete'=>[
+                    'allowed'=>true,
+                    'extends'=>[':default:create'],
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create']
                 ],
             ],
             'testNullAssignType'=>[ // can do everything in default, and is allowed to do it when a super admin

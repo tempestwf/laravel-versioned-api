@@ -208,6 +208,7 @@ class Role extends EntityAbstract implements RoleContract
                     'extends'=>[':default:create']
                 ],
             ],
+            // Below here is for testing purposes only
             'testing'=>[
                 'create'=>[
                     'allowed'=>true,

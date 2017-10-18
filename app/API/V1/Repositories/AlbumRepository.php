@@ -188,6 +188,7 @@ class AlbumRepository extends Repository
                     ],
                 ]
             ],
+            // Below here is for testing purposes only
             'userMyAlbums'=>[
                 'extends'=>[':default'],
                 'read'=>[

@@ -295,6 +295,7 @@ class Album extends EntityAbstract
                     'extends'=>[':admin:create']
                 ],
             ],
+            // Below here is for testing purposes only
             'testPermissive1'=>[
                 'create'=>[
                     'permissive'=>true, // the following rules are defined here in order to be inherited further down

@@ -209,6 +209,7 @@ class ArtistRepository extends Repository
             'user'=>[
                 'extends'=>[':guest']
             ],
+            // Below here is for testing purposes only
             'userArtistWithAlbums'=>[
                 'extends'=>[':default'],
                 'read'=>[
