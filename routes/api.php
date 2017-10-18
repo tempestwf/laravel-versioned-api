@@ -25,6 +25,7 @@ use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 
 $api = app(Router::class);
 
+// For testing:
 $api->version(
     'V1',
     [
@@ -61,7 +62,7 @@ $api->version(
         ]);
     }
 );
-
+// Came with original skeleton
 
 $api->version(
 	'V1',
@@ -88,6 +89,24 @@ $api->version(
 	}
 );
 
+// Scribe routes:
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        'ttPath'=>['guest'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->get('/contexts/guest/albums', AlbumController::class . '@index');
+        $api->get('/contexts/guest/artists', ArtistController::class . '@index');
+    }
+);
 
 
 $api->version(
@@ -103,10 +122,42 @@ $api->version(
     function () use ($api)
     {
         $api->resources([
-            'album'=> AlbumController::class,
-            'artist'=>ArtistController::class,
-            'user'=> UserController::class
+            '/contexts/user/albums'=> AlbumController::class,
+            '/contexts/user/artists'=>ArtistController::class,
+            '/contexts/user/users'=> UserController::class
         ]);
+    }
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        'ttPath'=>['user/users'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->get('/contexts/user/users/{user}/albums', AlbumController::class . '@index');
+    }
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        'ttPath'=>['user/artists'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->get('/contexts/user/artists/{artist}/albums', AlbumController::class . '@index');
     }
 );
 
@@ -123,9 +174,9 @@ $api->version(
     function () use ($api)
     {
         $api->resources([
-            'admin/album'=>AlbumController::class,
-            'admin/artist'=>ArtistController::class,
-            'admin/user'=>UserController::class,
+            '/contexts/admin/albums'=>AlbumController::class,
+            '/contexts/admin/artists'=>ArtistController::class,
+            '/contexts/admin/users'=>UserController::class,
         ]);
     }
 );
@@ -143,9 +194,9 @@ $api->version(
     function () use ($api)
     {
         $api->resources([
-            'super-admin/user'=> UserController::class,
-            'super-admin/permission'=>PermissionController::class,
-            'super-admin/role'=>RoleController::class
+            '/contexts/super-admin/users'=> UserController::class,
+            '/contexts/super-admin/permissions'=>PermissionController::class,
+            '/contexts/super-admin/roles'=>RoleController::class
         ]);
     }
 );
