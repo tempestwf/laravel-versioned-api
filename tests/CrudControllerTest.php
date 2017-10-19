@@ -10,54 +10,7 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 class CrudControllerTest extends CrudTestBaseAbstract
 {
 
-    /**
-     * @group CrudController
-     * @throws Exception
-     */
-    public function testContexts () {
-        $em = $this->em();
-        /** @var UserRepository $userRepo */
-        $userRepo = $em->getRepository(User::class);
-        $testUser = $userRepo->findOneBy(['id'=>1]);
 
-        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => $testUser->getPassword()]);
-        $result = $response->decodeResponseJson();
-
-        /** @var string $token */
-        $token = $result['token'];
-        $this->refreshApplication();
-
-        $response = $this->json('GET', '/contexts', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
-
-        $this->assertArrayHasKey('guest', $result);
-        $this->assertArrayHasKey('user', $result);
-        $this->assertArrayHasKey('admin', $result);
-        $this->assertArrayHasKey('super-admin', $result);
-
-        $response = $this->json('GET', '/contexts/guest', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
-
-        $this->assertArrayHasKey('description', $result);
-
-        $response = $this->json('GET', '/contexts/user', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
-
-        $this->assertArrayHasKey('description', $result);
-
-        $response = $this->json('GET', '/contexts/admin', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
-
-        $this->assertArrayHasKey('description', $result);
-
-        $response = $this->json('GET', '/contexts/super-admin', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
-
-        $this->assertArrayHasKey('description', $result);
-
-
-
-    }
     /**
      * @group CrudController2
      * @throws Exception
@@ -87,6 +40,21 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $create = [
                 'token'=>$token,
                 'params'=>[
+                    'name'=>'Test Artist'
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true
+                ]
+            ];
+            $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+
+            $this->assertEquals('Test Artist', $result[0]['name']);
+
+
+            $create = [
+                'token'=>$token,
+                'params'=>[
                     [
                         'name'=>'Test Artist'
                     ]
@@ -95,7 +63,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
                     'simplifiedParams'=>true
                 ]
             ];
-            $response = $this->json('POST', '/admin/artist', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertEquals('Test Artist', $result[0]['name']);
@@ -114,7 +82,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             ];
 
 
-            $response = $this->json('PUT', '/admin/artist/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('PUT', '/contexts/admin/artists/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertEquals('Test Artist Updated', $result[0]['name']);
@@ -127,7 +95,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             ];
 
 
-            $response = $this->json('PUT', '/admin/artist/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('PUT', '/contexts/admin/artists/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertEquals('Test Artist Updated Again', $result[0]['name']);
@@ -143,7 +111,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             ];
 
 
-            $response = $this->json('PUT', '/admin/artist/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('PUT', '/contexts/admin/artists/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertEquals('Test Artist Updated Again And Again', $result[0]['name']);
@@ -163,12 +131,12 @@ class CrudControllerTest extends CrudTestBaseAbstract
             ];
 
 
-            $response = $this->json('DELETE', '/admin/artist/batch', $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('DELETE', '/contexts/admin/artists/batch', $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertNull($result[0]['id']);
 
-            $response = $this->json('POST', '/admin/artist', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
 
@@ -180,12 +148,12 @@ class CrudControllerTest extends CrudTestBaseAbstract
             ];
 
 
-            $response = $this->json('DELETE', '/admin/artist/'. $result[0]['id'], $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('DELETE', '/contexts/admin/artists/'. $result[0]['id'], $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertNull($result[0]['id']);
 
-            $response = $this->json('POST', '/admin/artist', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $delete = [
@@ -198,7 +166,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             ];
 
 
-            $response = $this->json('DELETE', '/admin/artist/'. $result[0]['id'], $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('DELETE', '/contexts/admin/artists/'. $result[0]['id'], $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertNull($result[0]['id']);
@@ -239,7 +207,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
 
 
             $testArtist = $artistRepo->findOneBy(['name'=>'Brahms']);
-            $response = $this->json('GET', '/artist/' . $testArtist->getId(), ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('GET', '/contexts/guest/artists/' . $testArtist->getId(), ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->assertEquals($result['result'][0]['name'], 'Brahms');
 
@@ -256,16 +224,16 @@ class CrudControllerTest extends CrudTestBaseAbstract
                 ]
             ];
 
-            $response = $this->json('GET', '/artist?queryLocation=body', array_merge(['token'=>$token], $query), ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('GET', '/contexts/guest/artists?queryLocation=body', array_merge(['token'=>$token], $query), ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->assertEquals($result['result'][0]['name'], 'Brahms');
 
-            $response = $this->json('GET', '/artist?queryLocation=singleParam&query='. json_encode($query), ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('GET', '/contexts/guest/artists?queryLocation=singleParam&query='. json_encode($query), ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->assertEquals($result['result'][0]['name'], 'Brahms');
 
 
-            $response = $this->json('GET', '/artist?queryLocation=params&and_where_eq_a-name=Brahms', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('GET', '/contexts/guest/artists?queryLocation=params&and_where_eq_a-name=Brahms', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->assertEquals($result['result'][0]['name'], 'Brahms');
 
