@@ -37,7 +37,7 @@ class AlbumController extends APIControllerAbstract
                     ]
                 ],
             ],
-            'user/artists'=>[
+            'guest/artists'=>[
                 'GET'=>[
                     'resourceIdConversion'=>[
                         'user'=>'artistResourceId'

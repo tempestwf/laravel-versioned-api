@@ -4,7 +4,9 @@ namespace App\API\V1\Repositories;
 use App\Repositories\Repository;
 use App\API\V1\Entities\Album;
 use Doctrine\ORM\Query\Expr;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
+use TempestTools\Common\Contracts\ArrayHelperContract;
 use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -161,6 +163,22 @@ class AlbumRepository extends Repository
             'user/users'=>[
                 'extends'=>[':user'],
                 'read'=>[
+                    'permissions'=>[
+                        'placeholders'=>[
+                            'placeholderNames'=>[
+                                'userResourceId'=>[
+                                    'allowed'=>true,
+                                    'settings'=>[
+                                        'closure'=>ArrayExpressionBuilder::closure(function ($extra){
+                                            /** @var ArrayHelperContract $arrayHelper */
+                                            $arrayHelper = $extra['arrayHelper'];
+                                            return $extra['settings'] === $arrayHelper->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']);
+                                        })
+                                    ]
+                                ],
+                            ]
+                        ]
+                    ],
                     'query'=>[
                         'innerJoin'=>[
                             'justCurrentUsersAlbums'=>[
@@ -173,7 +191,17 @@ class AlbumRepository extends Repository
                     ],
                 ]
             ],
-            'user/artists'=>[
+            'admin/users'=>[
+                'extends'=>[':user/users'],
+                'permissions'=>[
+                    'placeholders'=>[
+                        'placeholderNames'=>[
+                            'userResourceId'=>null
+                        ]
+                    ]
+                ],
+            ],
+            'guest/artists'=>[
                 'extends'=>[':user'],
                 'read'=>[
                     'query'=>[

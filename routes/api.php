@@ -11,6 +11,7 @@
 |
 */
 
+use App\API\V1\Controllers\ContextController;
 use App\API\V1\Controllers\PermissionController;
 use App\API\V1\Controllers\RoleController;
 use Dingo\Api\Routing\Router;
@@ -96,13 +97,15 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        'permissions' => [],
         'ttPath'=>['guest'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
     ],
     function () use ($api)
     {
+        $api->get('/contexts', ContextController::class . '@index');
+        $api->get('/contexts/{context}', ContextController::class . '@show');
         $api->get('/contexts/guest/albums', AlbumController::class . '@index');
         $api->get('/contexts/guest/artists', ArtistController::class . '@index');
     }
@@ -151,13 +154,29 @@ $api->version(
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
-        'ttPath'=>['user/artists'],
+        'ttPath'=>['admin/users'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
     ],
     function () use ($api)
     {
-        $api->get('/contexts/user/artists/{artist}/albums', AlbumController::class . '@index');
+        $api->get('/contexts/admin/users/{user}/albums', AlbumController::class . '@index');
+    }
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'provider'   => 'V1',
+        'permissions' => [],
+        'ttPath'=>['guest/artists'],
+        'ttFallback'=>['default'],
+        'configOverrides'=>[],
+    ],
+    function () use ($api)
+    {
+        $api->get('/contexts/guest/artists/{artist}/albums', AlbumController::class . '@index');
     }
 );
 
@@ -168,7 +187,7 @@ $api->version(
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['admin'],
-        'ttFallback'=>['default'],
+        'ttFallback'=>['user'],
         'configOverrides'=>[],
     ],
     function () use ($api)
@@ -188,7 +207,7 @@ $api->version(
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['superAdmin'],
-        'ttFallback'=>['default'],
+        'ttFallback'=>['admin'],
         'configOverrides'=>[],
     ],
     function () use ($api)
