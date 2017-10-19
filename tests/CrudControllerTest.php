@@ -10,15 +10,35 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 class CrudControllerTest extends CrudTestBaseAbstract
 {
 
+    /**
+     * @return Artist
+     */
+    protected function makeTestArtist():Artist
+    {
+        $artist = new Artist();
+        $artist->setName('Test Artist');
+        $this->em()->persist($artist);
+        $this->em()->flush();
+        return $artist;
+    }
 
     /**
-     * @group CrudController2
+     * @return Artist
+     */
+    protected function getDefaultArtist():Artist
+    {
+        $artist = $artistRepo = $this->em->getRepository(Artist::class)->findOneBy(['name'=>'Brahms']);
+        return $artist;
+    }
+    /**
+     * @group CrudController
      * @throws Exception
      */
     public function testCreateUpdateDelete () {
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
+        $artistRepo = null;
         try {
             $arrayHelper = $this->makeArrayHelper();
             /** @var ArtistRepository $artistRepo */
@@ -43,7 +63,8 @@ class CrudControllerTest extends CrudTestBaseAbstract
                     'name'=>'Test Artist'
                 ],
                 'options'=>[
-                    'simplifiedParams'=>true
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
                 ]
             ];
             $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
@@ -60,7 +81,8 @@ class CrudControllerTest extends CrudTestBaseAbstract
                     ]
                 ],
                 'options'=>[
-                    'simplifiedParams'=>true
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
                 ]
             ];
             $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
@@ -68,16 +90,18 @@ class CrudControllerTest extends CrudTestBaseAbstract
 
             $this->assertEquals('Test Artist', $result[0]['name']);
 
+            $artist = $this->getDefaultArtist();
             $update = [
                 'token'=>$token,
                 'params'=>[
                     [
-                        'id'=>$result[0]['id'],
+                        'id'=>$artist->getId(),
                         'name'=>'Test Artist Updated'
                     ]
                 ],
                 'options'=>[
-                    'simplifiedParams'=>true
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
                 ]
             ];
 
@@ -91,6 +115,9 @@ class CrudControllerTest extends CrudTestBaseAbstract
                 'token'=>$token,
                 'params'=> [
                     'name'=>'Test Artist Updated Again'
+                ],
+                'options'=>[
+                    'testMode'=>true
                 ]
             ];
 
@@ -106,7 +133,8 @@ class CrudControllerTest extends CrudTestBaseAbstract
                     'name'=>'Test Artist Updated Again And Again'
                 ],
                 'options'=>[
-                    'simplifiedParams'=>true
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
                 ]
             ];
 
@@ -126,7 +154,8 @@ class CrudControllerTest extends CrudTestBaseAbstract
                     ]
                 ],
                 'options'=>[
-                    'simplifiedParams'=>true
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
                 ]
             ];
 
@@ -136,37 +165,33 @@ class CrudControllerTest extends CrudTestBaseAbstract
 
             $this->assertNull($result[0]['id']);
 
-            $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-            $result = $response->decodeResponseJson();
-
-
-
             $delete = [
                 'token'=>$token,
                 'params'=> [
+                ],
+                'options'=>[
+                    'testMode'=>true
                 ]
             ];
 
 
-            $response = $this->json('DELETE', '/contexts/admin/artists/'. $result[0]['id'], $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('DELETE', '/contexts/admin/artists/'. $artist->getId(), $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertNull($result[0]['id']);
-
-            $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-            $result = $response->decodeResponseJson();
 
             $delete = [
                 'token'=>$token,
                 'params'=> [
                 ],
                 'options'=>[
-                    'simplifiedParams'=>true
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
                 ]
             ];
 
 
-            $response = $this->json('DELETE', '/contexts/admin/artists/'. $result[0]['id'], $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('DELETE', '/contexts/admin/artists/'. $artist->getId(), $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
             $this->assertNull($result[0]['id']);

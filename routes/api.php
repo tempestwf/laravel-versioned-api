@@ -108,6 +108,8 @@ $api->version(
         $api->get('/contexts/{context}', ContextController::class . '@show');
         $api->get('/contexts/guest/albums', AlbumController::class . '@index');
         $api->get('/contexts/guest/artists', ArtistController::class . '@index');
+        $api->get('/contexts/guest/albums/{album}', AlbumController::class . '@show');
+        $api->get('/contexts/guest/artists/{artist}', ArtistController::class . '@show');
     }
 );
 
@@ -187,7 +189,7 @@ $api->version(
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['admin'],
-        'ttFallback'=>['user'],
+        'ttFallback'=>['default'],
         'configOverrides'=>[],
     ],
     function () use ($api)
@@ -207,7 +209,7 @@ $api->version(
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['superAdmin'],
-        'ttFallback'=>['admin'],
+        'ttFallback'=>['default'],
         'configOverrides'=>[],
     ],
     function () use ($api)
