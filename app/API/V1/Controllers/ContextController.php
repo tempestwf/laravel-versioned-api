@@ -70,4 +70,19 @@ class ContextController extends APIControllerAbstract
     {
         throw ControllerException::methodNotImplemented('destroy');
     }
+
+    /**
+     * @return array
+     */
+    public function getTTConfig(): array
+    {
+        return [
+            'default'=>[
+                'GET'=>[],
+                'POST'=>[],
+                'PUT'=>[],
+                'DELETE'=>[]
+            ]
+        ];
+    }
 }

@@ -14,6 +14,54 @@ class CrudControllerTest extends CrudTestBaseAbstract
      * @group CrudController
      * @throws Exception
      */
+    public function testContexts () {
+        $em = $this->em();
+        /** @var UserRepository $userRepo */
+        $userRepo = $em->getRepository(User::class);
+        $testUser = $userRepo->findOneBy(['id'=>1]);
+
+        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => $testUser->getPassword()]);
+        $result = $response->decodeResponseJson();
+
+        /** @var string $token */
+        $token = $result['token'];
+        $this->refreshApplication();
+
+        $response = $this->json('GET', '/contexts', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('guest', $result);
+        $this->assertArrayHasKey('user', $result);
+        $this->assertArrayHasKey('admin', $result);
+        $this->assertArrayHasKey('super-admin', $result);
+
+        $response = $this->json('GET', '/contexts/guest', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('description', $result);
+
+        $response = $this->json('GET', '/contexts/user', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('description', $result);
+
+        $response = $this->json('GET', '/contexts/admin', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('description', $result);
+
+        $response = $this->json('GET', '/contexts/super-admin', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('description', $result);
+
+
+
+    }
+    /**
+     * @group CrudController2
+     * @throws Exception
+     */
     public function testCreateUpdateDelete () {
         $em = $this->em();
         $conn = $em->getConnection();
