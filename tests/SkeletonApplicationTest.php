@@ -2,6 +2,8 @@
 
 use App\API\V1\Entities\Album;
 use App\API\V1\Entities\Artist;
+use App\API\V1\Entities\Permission;
+use App\API\V1\Entities\Role;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\UserRepository;
 use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
@@ -20,7 +22,9 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         $user = $em->getRepository(User::class)->findOneBy(['id'=>1]);
         $album = $em->getRepository(Album::class)->findOneBy(['name'=>'Brahms: Complete Edition']);
         $artist = $em->getRepository(Artist::class)->findOneBy(['name'=>'Brahms']);
-        return [$user, $album, $artist];
+        $role = $em->getRepository(Role::class)->findOneBy(['name'=>'user']);
+        $permission = $em->getRepository(Permission::class)->findOneBy(['name'=>'auth/me:GET']);
+        return [$user, $album, $artist, $role, $permission];
 
     }
     /**
@@ -77,7 +81,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
-        [$user, $album, $artist] = $this->getFixtureData();
+        [$user, $album, $artist, $role, $permission] = $this->getFixtureData();
         try {
             $token = $this->getToken();
             $time = new DateTime();
@@ -170,7 +174,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
 
             $this->refreshApplication();
             $response = $this->json('POST', '/contexts/super-admin/users', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-            $userResult = $response->decodeResponseJson();
+            $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed
 
@@ -198,21 +202,26 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                         'name'=>'Test User2 Updated',
                         'email'=>'test2@test.com',
                         'roles'=>[
-                            //'id'=>$userResult[0]['roles'][0]['id'],
-                            'name'=>'test'
+                            [
+                                'name'=>'test'
+                            ]
                         ],
                         'permissions'=>[
-                            //'id'=>$userResult[0]['permissions'][0]['id'],
-                            'name'=>'test'
+                            [
+                                'name'=>'test'
+                            ]
                         ],
                         'job'=>'doing stuff!',
                         'address'=>'my home!',
                         'albums'=>[
-                            'id'=>$album->getId(),
-                            'name'=>'Test Album',
-                            'artist'=>[
-                                'id'=>$artist->getId(),
-                                'name'=>'The Artist'
+                            [
+                                'id'=>$album->getId(),
+                                'assignType'=>'null',
+                                'name'=>'Test Album',
+                                'artist'=>[
+                                    'id'=>$artist->getId(),
+                                    'name'=>'The Artist'
+                                ]
                             ]
                         ]
                     ]
@@ -223,48 +232,57 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                 ]
             ];
 
-            $response = $this->json('PUT', '/contexts/user/users', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('PUT', '/contexts/user/users/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should fail
 
             $this->assertEquals( 500, $result['status_code']);
 
-            $response = $this->json('PUT', '/contexts/admin/users', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('PUT', '/contexts/admin/users/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should fail
 
             $this->assertEquals( 500, $result['status_code']);
 
-            $response = $this->json('PUT', '/contexts/super-admin/users', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('PUT', '/contexts/super-admin/users/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed
 
+            $this->assertArrayHasKey('id', $result[0]);
 
             $update['params'] = $update['params'][0];
-            $response = $this->json('PUT', '/contexts/super-admin/users/' . $userResult[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('PUT', '/contexts/super-admin/users/' . $user->getId(), $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result[0]);
 
             $delete = [
                 'params'=>[
                     [
-                        'id'=>$userResult[0]['id'],
+                        'id'=>$user->getId(),
                         'name'=>'Test User2 Updated',
                         'email'=>'test2@test.com',
                         'roles'=>[
-                            'id'=>$userResult[0]['roles'][0]['id'],
+                            [
+                                'id'=>$role->getId(),
+                            ]
                         ],
                         'permissions'=>[
-                            'id'=>$userResult[0]['permissions'][0]['id'],
+                            [
+                                'id'=>$permission->getId(),
+                            ]
                         ],
                         'albums'=>[
-                            'id'=>$userResult[0]['albums'][0]['id'],
-                            'artist'=>[
-                                'id'=>$userResult[0]['albums'][0]['artist'][0]['id'],
+                            [
+                                'id'=>$album->getId(),
+                                'artist'=>[
+                                    'id'=>$artist->getId(),
+                                ]
                             ]
                         ]
                     ]
@@ -275,19 +293,27 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                 ]
             ];
 
-            $update['params'] = $update['params'][0];
-            $response = $this->json('DELETE', '/contexts/user/users', $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('DELETE', '/contexts/user/users/batch', $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should fail
 
             $this->assertEquals( 500, $result['status_code']);
 
-            $update['params'] = $update['params'][0];
-            $response = $this->json('DELETE', '/contexts//admin/users' . $delete, [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('DELETE', '/contexts/super-admin/users/batch', $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed*/
+
+            $this->assertArrayHasKey('id', $result[0]);
+
+            $delete['params'] = $delete['params'][0];
+            $response = $this->json('DELETE', '/contexts/super-admin/users/' . $user->getId(), $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->refreshApplication();
+            //Assert should succeed*/
+
+            $this->assertArrayHasKey('id', $result[0]);
 
             $this->refreshApplication();
             $conn->rollBack();
