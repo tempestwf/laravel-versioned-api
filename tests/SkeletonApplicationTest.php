@@ -1,5 +1,7 @@
 <?php
 
+use App\API\V1\Entities\Album;
+use App\API\V1\Entities\Artist;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\UserRepository;
 use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
@@ -9,7 +11,18 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
 {
 
 
+    /**
+     * @return array
+     */
+    protected function getFixtureData():array
+    {
+        $em = $this->em();
+        $user = $em->getRepository(User::class)->findOneBy(['id'=>1]);
+        $album = $em->getRepository(Album::class)->findOneBy(['name'=>'Brahms: Complete Edition']);
+        $artist = $em->getRepository(Artist::class)->findOneBy(['name'=>'Brahms']);
+        return [$user, $album, $artist];
 
+    }
     /**
      * @group SkeletonApplication
      * @throws Exception
@@ -64,11 +77,11 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
+        [$user, $album, $artist] = $this->getFixtureData();
         try {
             $token = $this->getToken();
             $time = new DateTime();
             $create = [
-                'token'=>$token,
                 'params'=>[
                     [
                         'name'=>'Test User',
@@ -131,7 +144,6 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->assertArrayHasKey('id', $result[0]);
 
             $create = [
-                'token'=>$token,
                 'params'=>[
                     [
                         'name'=>'Test User2',
@@ -164,7 +176,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
 
             $this->assertArrayHasKey('id', $result[0]);
 
-            $response = $this->json('GET', 'user', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('GET', '/contexts/user/users', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed
@@ -172,33 +184,32 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             //$allUsers = $this->em->getRepository(\App\API\V1\Entities\User::class)->findAll();
 
 
-            $response = $this->json('GET', '/contexts/user/users/' . $userResult[0]['id'], [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('GET', '/contexts/user/users/' . $user->getId(), [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should succeed
 
             $update = [
-                'token'=>$token,
                 'params'=>[
                     [
-                        'id'=>$userResult[0]['id'],
+                        'id'=>$user->getId(),
                         'name'=>'Test User2 Updated',
                         'email'=>'test2@test.com',
                         'roles'=>[
-                            'id'=>$userResult[0]['roles'][0]['id'],
+                            //'id'=>$userResult[0]['roles'][0]['id'],
                             'name'=>'test'
                         ],
                         'permissions'=>[
-                            'id'=>$userResult[0]['permissions'][0]['id'],
+                            //'id'=>$userResult[0]['permissions'][0]['id'],
                             'name'=>'test'
                         ],
                         'job'=>'doing stuff!',
                         'address'=>'my home!',
                         'albums'=>[
-                            'id'=>$userResult[0]['albums'][0]['id'],
+                            'id'=>$album->getId(),
                             'name'=>'Test Album',
                             'artist'=>[
-                                'id'=>$userResult[0]['albums'][0]['artist'][0]['id'],
+                                'id'=>$artist->getId(),
                                 'name'=>'The Artist'
                             ]
                         ]
@@ -237,7 +248,6 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             //Assert should succeed
 
             $delete = [
-                'token'=>$token,
                 'params'=>[
                     [
                         'id'=>$userResult[0]['id'],
