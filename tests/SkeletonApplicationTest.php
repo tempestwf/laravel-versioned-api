@@ -181,6 +181,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should succeed
 
+            $this->assertArrayHasKey('id', $result['result'][0]);
             //$allUsers = $this->em->getRepository(\App\API\V1\Entities\User::class)->findAll();
 
 
@@ -189,6 +190,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should succeed
 
+            $this->assertEquals($user->getId(), $result['result'][0]['id']);
             $update = [
                 'params'=>[
                     [
