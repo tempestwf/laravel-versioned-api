@@ -14,63 +14,60 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
 
 
     /**
-     * @return array
-     */
-    protected function getFixtureData():array
-    {
-        $em = $this->em();
-        $user = $em->getRepository(User::class)->findOneBy(['id'=>1]);
-        $album = $em->getRepository(Album::class)->findOneBy(['name'=>'Brahms: Complete Edition']);
-        $artist = $em->getRepository(Artist::class)->findOneBy(['name'=>'Brahms']);
-        $role = $em->getRepository(Role::class)->findOneBy(['name'=>'user']);
-        $permission = $em->getRepository(Permission::class)->findOneBy(['name'=>'auth/me:GET']);
-        return [$user, $album, $artist, $role, $permission];
-
-    }
-    /**
-     * @group SkeletonApplication
+     * @group SkeletonApplication2
      * @throws Exception
      */
-    public function testContexts () {
+    public function testAlbumController () {
         $em = $this->em();
-        /** @var UserRepository $userRepo */
-        $userRepo = $em->getRepository(User::class);
-        $testUser = $userRepo->findOneBy(['id'=>1]);
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        [$user, $album, $artist, $role, $permission] = $this->getFixtureData();
+        try {
 
-        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => $testUser->getPassword()]);
-        $result = $response->decodeResponseJson();
+            $token = $this->getToken();
+            $response = $this->json('GET', '/contexts/user/albums', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->refreshApplication();
+            //Assert should succeed
 
-        /** @var string $token */
-        $token = $result['token'];
-        $this->refreshApplication();
+            $this->assertArrayHasKey('id', $result['result'][0]);
+            //$allUsers = $this->em->getRepository(\App\API\V1\Entities\User::class)->findAll();
 
-        $response = $this->json('GET', '/contexts', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
 
-        $this->assertArrayHasKey('guest', $result);
-        $this->assertArrayHasKey('user', $result);
-        $this->assertArrayHasKey('admin', $result);
-        $this->assertArrayHasKey('super-admin', $result);
+            $response = $this->json('GET', '/contexts/user/albums/' . $album->getId(), [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->refreshApplication();
+            //Assert should succeed
 
-        $response = $this->json('GET', '/contexts/guest', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
+            $this->assertArrayHasKey('id', $result['result'][0]);
 
-        $this->assertArrayHasKey('description', $result);
 
-        $response = $this->json('GET', '/contexts/user', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
+            $response = $this->json('GET', '/contexts/user/users/' . $user->getId() . '/albums', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->refreshApplication();
+            //Assert should succeed
 
-        $this->assertArrayHasKey('description', $result);
+            $this->assertArrayHasKey('id', $result['result'][0]);
 
-        $response = $this->json('GET', '/contexts/admin', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
+            $response = $this->json('GET', '/contexts/user/users/' . 72 . '/albums', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->refreshApplication();
+            //Assert should fail
 
-        $this->assertArrayHasKey('description', $result);
+            $this->assertEquals( 500, $result['status_code']);
 
-        $response = $this->json('GET', '/contexts/super-admin', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
-        $result = $response->decodeResponseJson();
 
-        $this->assertArrayHasKey('description', $result);
+            $response = $this->json('GET', '/contexts/admin/users/' . 72 . '/albums', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            $this->refreshApplication();
+            //Assert should return empty
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -323,7 +320,66 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         }
     }
 
+    /**
+     * @group SkeletonApplication
+     * @throws Exception
+     */
+    public function testContexts () {
+        $em = $this->em();
+        /** @var UserRepository $userRepo */
+        $userRepo = $em->getRepository(User::class);
+        $testUser = $userRepo->findOneBy(['id'=>1]);
 
+        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => $testUser->getPassword()]);
+        $result = $response->decodeResponseJson();
+
+        /** @var string $token */
+        $token = $result['token'];
+        $this->refreshApplication();
+
+        $response = $this->json('GET', '/contexts', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('guest', $result);
+        $this->assertArrayHasKey('user', $result);
+        $this->assertArrayHasKey('admin', $result);
+        $this->assertArrayHasKey('super-admin', $result);
+
+        $response = $this->json('GET', '/contexts/guest', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('description', $result);
+
+        $response = $this->json('GET', '/contexts/user', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('description', $result);
+
+        $response = $this->json('GET', '/contexts/admin', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('description', $result);
+
+        $response = $this->json('GET', '/contexts/super-admin', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+        $result = $response->decodeResponseJson();
+
+        $this->assertArrayHasKey('description', $result);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getFixtureData():array
+    {
+        $em = $this->em();
+        $user = $em->getRepository(User::class)->findOneBy(['id'=>1]);
+        $album = $em->getRepository(Album::class)->findOneBy(['name'=>'Brahms: Complete Edition']);
+        $artist = $em->getRepository(Artist::class)->findOneBy(['name'=>'Brahms']);
+        $role = $em->getRepository(Role::class)->findOneBy(['name'=>'user']);
+        $permission = $em->getRepository(Permission::class)->findOneBy(['name'=>'auth/me:GET']);
+        return [$user, $album, $artist, $role, $permission];
+
+    }
 
 
 }
