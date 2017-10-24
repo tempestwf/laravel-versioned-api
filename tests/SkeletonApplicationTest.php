@@ -12,7 +12,6 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 class SkeletonApplicationTest extends CrudTestBaseAbstract
 {
 
-
     /**
      * @group SkeletonApplication2
      * @throws Exception
@@ -57,11 +56,11 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->assertEquals( 500, $result['status_code']);
 
 
-            $response = $this->json('GET', '/contexts/admin/users/' . 72 . '/albums', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('GET', '/contexts/admin/users/' . -1 . '/albums', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             $this->refreshApplication();
             //Assert should return empty
-
+            $this->assertEquals($result['count'], 0);
 
             $conn->rollBack();
         } catch (Exception $e) {

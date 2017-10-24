@@ -139,7 +139,8 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        // For reasons I can not figure out dingo with laravel doesn't always put a slash at the front of a uri internally. It's unreliable so I made this template to compensate
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_FORCE_FIRST_SLASH)],
         'ttPath'=>['user/users'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],
@@ -155,7 +156,7 @@ $api->version(
     [
         'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
         'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_FORCE_FIRST_SLASH)],
         'ttPath'=>['admin/users'],
         'ttFallback'=>['default'],
         'configOverrides'=>[],

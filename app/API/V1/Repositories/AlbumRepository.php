@@ -172,7 +172,7 @@ class AlbumRepository extends Repository
                                         'closure'=>ArrayExpressionBuilder::closure(function ($extra){
                                             /** @var ArrayHelperContract $arrayHelper */
                                             $arrayHelper = $extra['arrayHelper'];
-                                            return $extra['settings'] === $arrayHelper->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']);
+                                            return (int)$extra['settings']['value'] === (int)$arrayHelper->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']);
                                         })
                                     ]
                                 ],
@@ -193,13 +193,15 @@ class AlbumRepository extends Repository
             ],
             'admin/users'=>[
                 'extends'=>[':user/users'],
-                'permissions'=>[
-                    'placeholders'=>[
-                        'placeholderNames'=>[
-                            'userResourceId'=>null
+                'read'=>[
+                    'permissions'=>[
+                        'placeholders'=>[
+                            'placeholderNames'=>[
+                                'userResourceId'=>null
+                            ]
                         ]
-                    ]
-                ],
+                    ],
+                ]
             ],
             'guest/artists'=>[
                 'extends'=>[':user'],
