@@ -16,6 +16,111 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
      * @group SkeletonApplication2
      * @throws Exception
      */
+    public function testArtistController ()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        [$user, $album, $artist, $role, $permission] = $this->getFixtureData();
+        try {
+            $token = $this->getToken();
+            $response = $this->json('GET', '/contexts/guest/artists', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result['result'][0]);
+
+            $response = $this->json('GET', '/contexts/guest/artists/' . $artist->getId(), [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result);
+
+
+            $response = $this->json('GET', '/contexts/user/artists', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result['result'][0]);
+
+            $response = $this->json('GET', '/contexts/user/artists/' . $artist->getId(), [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result['result'][0]);
+
+
+
+            $create = [
+                'params'=>[
+                    [
+                        'name'=>'Test Artist',
+                        'albums'=>[
+                            'name'=>'Test Album'
+                        ]
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
+                ]
+            ];
+
+            $response = $this->json('POST', '/contexts/user/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Users can't make artists should fail
+            $this->assertEquals( 500, $result['status_code']);
+
+            $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Admins can make artists should succeed
+            $this->assertArrayHasKey('id', $result[0]);
+
+
+
+            $update = [
+                'params'=>[
+                    [
+                        'id'=>$artist->getId(),
+                        'name'=>'Test Artist updated',
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
+                ]
+            ];
+
+            $response = $this->json('PUT', '/contexts/user/artists/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Users can't update artists, should fail
+            $this->assertEquals( 500, $result['status_code']);
+
+            $response = $this->json('PUT', '/contexts/admin/artists/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Admins can update artists, should succeed
+            $this->assertArrayHasKey('id', $result[0]);
+
+            $response = $this->json('DELETE', '/contexts/user/artists/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Users can't delete artists, should fail
+            $this->assertEquals( 500, $result['status_code']);
+
+            $response = $this->json('DELETE', '/contexts/admin/artists/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Admins can delete artists, should succeed
+            $this->assertArrayHasKey('id', $result[0]);
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+    /**
+     * @group SkeletonApplication
+     * @throws Exception
+     */
     public function testAlbumController () {
         $em = $this->em();
         $conn = $em->getConnection();
