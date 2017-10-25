@@ -12,8 +12,106 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 class SkeletonApplicationTest extends CrudTestBaseAbstract
 {
 
+
     /**
      * @group SkeletonApplication2
+     * @throws Exception
+     */
+    public function testRolesController ()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        [$user, $album, $artist, $role, $permission] = $this->getFixtureData();
+        $time = new DateTime();
+        try {
+            $token = $this->getToken();
+            $response = $this->json('GET', '/contexts/super-admin/roles', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result['result'][0]);
+
+            $response = $this->json('GET', '/contexts/super-admin/roles/' . $role->getId(), [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result);
+
+            $create = [
+                'params'=>[
+                    'name'=>'Test Role',
+                    'users'=>[
+                        [
+                            'id'=>$user->getId()
+                        ]
+                    ],
+                    'permissions'=>[
+                        [
+                            'name'=>'Test Permission'
+                        ]
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
+                ]
+            ];
+
+            $response = $this->json('POST', '/contexts/super-admin/roles', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+            $this->assertArrayHasKey('id', $result);
+
+
+            $update = [
+                'params'=>[
+                    'id'=>$role->getId(),
+                    'name'=>'Test Role2',
+                    'users'=>[
+                        [
+                            'id'=>$user->getId(),
+                            'name'=>'Test User',
+                            'assignType'=>'null'
+                        ]
+                    ],
+                    'permissions'=>[
+                        [
+                            'id'=>$permission->getId(),
+                            'name'=>'Test Permission',
+                            'assignType'=>'null'
+                        ]
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
+                ]
+            ];
+
+            $response = $this->json('PUT', '/contexts/super-admin/roles/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+            $this->assertArrayHasKey('id', $result[0]);
+
+
+            $response = $this->json('DELETE', '/contexts/super-admin/roles/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+            $this->assertArrayHasKey('id', $result[0]);
+
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
+    /**
+     * @group SkeletonApplication
      * @throws Exception
      */
     public function testArtistController ()
@@ -22,6 +120,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         $conn = $em->getConnection();
         $conn->beginTransaction();
         [$user, $album, $artist, $role, $permission] = $this->getFixtureData();
+        $time = new DateTime();
         try {
             $token = $this->getToken();
             $response = $this->json('GET', '/contexts/guest/artists', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
@@ -47,16 +146,15 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $result = $response->decodeResponseJson();
             //Assert should succeed
 
-            $this->assertArrayHasKey('id', $result['result'][0]);
-
-
+            $this->assertArrayHasKey('id', $result);
 
             $create = [
                 'params'=>[
-                    [
-                        'name'=>'Test Artist',
-                        'albums'=>[
-                            'name'=>'Test Album'
+                    'name'=>'Test Artist',
+                    'albums'=>[
+                        [
+                            'name'=>'Test Album',
+                            'releaseDate'=>$time->format('Y-m-d H:i:s'),
                         ]
                     ]
                 ],
@@ -74,9 +172,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
             //Admins can make artists should succeed
-            $this->assertArrayHasKey('id', $result[0]);
-
-
+            $this->assertArrayHasKey('id', $result);
 
             $update = [
                 'params'=>[
