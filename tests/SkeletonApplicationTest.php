@@ -12,9 +12,104 @@ use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
 class SkeletonApplicationTest extends CrudTestBaseAbstract
 {
 
+    /**
+     * @group SkeletonApplication
+     * @throws Exception
+     */
+    public function testPermissionsController ()
+    {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        [$user, $album, $artist, $role, $permission] = $this->getFixtureData();
+        $time = new DateTime();
+        try {
+            $token = $this->getToken();
+            $response = $this->json('GET', '/contexts/super-admin/permissions', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result['result'][0]);
+
+            $response = $this->json('GET', '/contexts/super-admin/permissions/' . $permission->getId(), [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+
+            $this->assertArrayHasKey('id', $result);
+
+            $create = [
+                'params'=>[
+                    'name'=>'Test Permission',
+                    'users'=>[
+                        [
+                            'id'=>$user->getId()
+                        ]
+                    ],
+                    'roles'=>[
+                        [
+                            'name'=>'Test Role'
+                        ]
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
+                ]
+            ];
+
+            $response = $this->json('POST', '/contexts/super-admin/permissions', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+            $this->assertArrayHasKey('id', $result);
+
+
+            $update = [
+                'params'=>[
+                    'id'=>$permission->getId(),
+                    'name'=>'Test Permission',
+                    'users'=>[
+                        [
+                            'id'=>$user->getId(),
+                            'name'=>'Test User',
+                            'assignType'=>'null'
+                        ]
+                    ],
+                    'roles'=>[
+                        [
+                            'id'=>$permission->getId(),
+                            'name'=>'Test Role',
+                            'assignType'=>'null'
+                        ]
+                    ]
+                ],
+                'options'=>[
+                    'simplifiedParams'=>true,
+                    'testMode'=>true
+                ]
+            ];
+
+            $response = $this->json('PUT', '/contexts/super-admin/permissions/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+            $this->assertArrayHasKey('id', $result[0]);
+
+
+            $response = $this->json('DELETE', '/contexts/super-admin/permissions/batch', $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $result = $response->decodeResponseJson();
+            //Assert should succeed
+            $this->assertArrayHasKey('id', $result[0]);
+
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
 
     /**
-     * @group SkeletonApplication2
+     * @group SkeletonApplication
      * @throws Exception
      */
     public function testRolesController ()
