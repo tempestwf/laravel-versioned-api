@@ -108,8 +108,8 @@ $api->version(
         $api->get('/contexts/{context}', ContextController::class . '@show');
         $api->get('/contexts/guest/albums', AlbumController::class . '@index');
         $api->get('/contexts/guest/artists', ArtistController::class . '@index');
-        $api->get('/contexts/guest/albums/{album}', AlbumController::class . '@show');
-        $api->get('/contexts/guest/artists/{artist}', ArtistController::class . '@show');
+        $api->get('/contexts/guest/albums/{id}', AlbumController::class . '@show');
+        $api->get('/contexts/guest/artists/{id}', ArtistController::class . '@show');
     }
 );
 

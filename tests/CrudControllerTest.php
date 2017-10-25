@@ -70,7 +70,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $response = $this->json('POST', '/contexts/admin/artists', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
-            $this->assertEquals('Test Artist', $result[0]['name']);
+            $this->assertEquals('Test Artist', $result['name']);
 
 
             $create = [
@@ -125,7 +125,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $response = $this->json('PUT', '/contexts/admin/artists/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
-            $this->assertEquals('Test Artist Updated Again', $result[0]['name']);
+            $this->assertEquals('Test Artist Updated Again', $result['name']);
 
             $update = [
                 'token'=>$token,
@@ -139,10 +139,10 @@ class CrudControllerTest extends CrudTestBaseAbstract
             ];
 
 
-            $response = $this->json('PUT', '/contexts/admin/artists/'. $result[0]['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('PUT', '/contexts/admin/artists/'. $result['id'], $update, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
-            $this->assertEquals('Test Artist Updated Again And Again', $result[0]['name']);
+            $this->assertEquals('Test Artist Updated Again And Again', $result['name']);
 
 
 
@@ -150,7 +150,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
                 'token'=>$token,
                 'params'=>[
                     [
-                        'id'=>$result[0]['id'],
+                        'id'=>$result['id'],
                     ]
                 ],
                 'options'=>[
@@ -178,7 +178,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $response = $this->json('DELETE', '/contexts/admin/artists/'. $artist->getId(), $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
-            $this->assertNull($result[0]['id']);
+            $this->assertNull($result['id']);
 
             $delete = [
                 'token'=>$token,
@@ -194,7 +194,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $response = $this->json('DELETE', '/contexts/admin/artists/'. $artist->getId(), $delete, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
 
-            $this->assertNull($result[0]['id']);
+            $this->assertNull($result['id']);
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -234,7 +234,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $testArtist = $artistRepo->findOneBy(['name'=>'Brahms']);
             $response = $this->json('GET', '/contexts/guest/artists/' . $testArtist->getId(), ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
-            $this->assertEquals($result['result'][0]['name'], 'Brahms');
+            $this->assertEquals($result['name'], 'Brahms');
 
             $query = [
                 'query'=>[
