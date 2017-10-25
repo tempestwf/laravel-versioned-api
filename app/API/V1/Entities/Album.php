@@ -246,6 +246,8 @@ class Album extends EntityAbstract
                             'assign'=>[ // the can only add and remove them selves from an album
                                 'add'=>true,
                                 'remove'=>true,
+                                'addSingle'=>true,
+                                'removeSingle'=>true,
                             ],
                             'chain'=>[
                                 'read'=>true // Then can only add existing users, they can not create update or delete users in the process

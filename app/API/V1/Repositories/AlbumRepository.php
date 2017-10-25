@@ -209,10 +209,10 @@ class AlbumRepository extends Repository
                     'query'=>[
                         'innerJoin'=>[
                             'justCurrentUsersAlbums'=>[
-                                'join'=>'a.artists',
-                                'alias'=>'a',
+                                'join'=>'a.artist',
+                                'alias'=>'a2',
                                 'conditionType'=>Expr\Join::WITH,
-                                'condition'=>$expr->eq('a.id', ':artistResourceId'),
+                                'condition'=>$expr->eq('a2.id', ':artistResourceId'),
                             ]
                         ]
                     ],
