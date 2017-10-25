@@ -333,7 +333,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $result = $response->decodeResponseJson();
             //Assert should succeed
 
-            $this->assertArrayHasKey('id', $result[0]);
+            $this->assertArrayHasKey('id', $result);
 
 
             $token = $this->getToken();
@@ -348,7 +348,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $result = $response->decodeResponseJson();
             //Assert should succeed
 
-            $this->assertArrayHasKey('id', $result[0]);
+            $this->assertArrayHasKey('id', $result);
 
 
             $response = $this->json('GET', '/contexts/user/users/' . $user->getId() . '/albums', [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
@@ -600,7 +600,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should succeed
 
-            $this->assertEquals($user->getId(), $result['result'][0]['id']);
+            $this->assertEquals($user->getId(), $result['id']);
             $update = [
                 'params'=>[
                     [
@@ -665,7 +665,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should succeed
 
-            $this->assertArrayHasKey('id', $result[0]);
+            $this->assertArrayHasKey('id', $result);
 
             $delete = [
                 'params'=>[
@@ -719,7 +719,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should succeed*/
 
-            $this->assertArrayHasKey('id', $result[0]);
+            $this->assertArrayHasKey('id', $result);
 
             $this->refreshApplication();
             $conn->rollBack();
