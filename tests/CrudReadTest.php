@@ -713,6 +713,117 @@ class CrudReadTest extends CrudTestBaseAbstract
         }
     }
 
+    /**
+     * @group CrudReadOnly
+     * @throws Exception
+     */
+    public function testSqlQueryFunctionality () {
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $arrayHelper = $this->makeArrayHelper();
+            /** @var ArtistRepository $artistRepo */
+            $artistRepo = $this->em->getRepository(Artist::class);
+            $artistRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+            $userRepo->init($arrayHelper, ['testing'], ['testing']);
+            /** @var User[] $users */
+            $users = $userRepo->create($this->createRobAndBobData());
+
+            $userIds = [];
+            /** @var User $user */
+            foreach ($users as $user) {
+                $userIds[] = $user->getId();
+            }
+
+            /** @var Artist[] $result */
+            $artistRepo->create($this->createArtistChainData($userIds));
+            $artistRepo->init($arrayHelper, ['testSqlQuery'], ['testing']);
+
+            $frontEndQuery = $this->makeTestFrontEndQueryArtist3();
+            $frontEndOptions = $this->makeFrontEndQueryOptions();
+            $frontEndOptions['offset'] = 0;
+            $optionsOverrides = [
+                'hydrate'=>false,
+                'paginate'=>false,
+                'hydrationType'=>null,
+                'placeholders'=>[
+                    'placeholderTest3'=>[
+                        'value'=>'some stuff3',
+                    ],
+                    'placeholderTest2'=>[
+                        'value'=>'some stuff',
+                    ]
+                ],
+            ];
+            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+
+            $optionsOverrides['hydrate'] = true;
+
+            /** @var  \Doctrine\ORM\QueryBuilder $qb */
+            /** @var \Doctrine\ORM\Query $query */
+            $qb = $result['qb'];
+
+            /** @var Doctrine\ORM\Query\Parameter[] $placeholders */
+            $placeholders = $qb->getParameters();
+            $sql = $qb->getSQL();
+
+            $this->assertInstanceOf(\Doctrine\DBAL\Query\QueryBuilder::class, $qb);
+
+            $this->assertEquals('SELECT * FROM artists t INNER JOIN albums a ON a.artist_id = t.id LEFT JOIN albums a2 ON a.artist_id = t.id WHERE (1 = 1) AND ((:placeholderTest2 = \'some stuff\') AND (:placeholderTest = \'some stuff2\') AND (:frontEndTestPlaceholder = 777) AND (:frontEndTestPlaceholder2 = \'stuff2\') AND (:placeholderTest3 = \'some stuff3\')) AND ((t.name <> :placeholder2ed1f0f3fe3b000e) AND (t.name <> :placeholdere7646f6929cc4da1) AND (t.name = :placeholdere8252331af095c5b)) AND ((t.name <> :placeholder13d2d6a6067273d1) AND (t.name <> :placeholderd0c2158016a373e3)) AND (t.name <> :placeholder7689c193d2472a87) HAVING (1 = 1) OR (t.id <> :placeholdercfcd208495d565ef) OR (t.id <> :placeholdercfcd208495d565ef) LIMIT 1 OFFSET 0', $sql);
+            $placeholderKeysToTest = ['placeholderTest2', 'placeholderTest', 'frontEndTestPlaceholder', 'frontEndTestPlaceholder2', 'placeholderTest3'];
+            $placeholderValuesToTest = [
+                'some stuff',
+                'some stuff3',
+                777,
+                'stuff2',
+                'some stuff3',
+                0,
+                0,
+                'Gossepi the squid',
+                'Khaaan!!',
+                'Urethra Franklin',
+                'Bob Marley',
+                'BEETHOVEN',
+            ];
+
+            $existingKeys = [];
+            $existingValues = [];
+            $simplePlaceholderReference = [];
+
+            foreach ($placeholders as $key => $value) {
+                $existingKeys[] = $key;
+                $existingValues[] = $value;
+                $simplePlaceholderReference[$key] = $value;
+            }
+
+            foreach ($placeholderKeysToTest as $key) {
+                $this->assertContains($key, $existingKeys);
+            }
+
+            foreach ($placeholderValuesToTest as $value) {
+                $this->assertContains($value, $existingValues);
+            }
+
+            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+
+            $this->assertEquals($result['result'][0]['name'], 'Brahms: Complete Edition');
+
+            $artistRepo->init($arrayHelper, ['testSqlQueryNoCache'], ['testing']);
+            $result = $artistRepo->read($frontEndQuery, $frontEndOptions, $optionsOverrides);
+
+            $this->assertEquals($result['result'][0]['name'], 'Brahms: Complete Edition');
+
+            $conn->rollBack();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+
 
 
     /**
