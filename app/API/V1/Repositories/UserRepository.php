@@ -62,15 +62,6 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                             'onlyCurrentUser'=>null
                         ],
                     ],
-                    'permissions'=>[
-                        'where'=>[
-                            'fields'=>[
-                                'password'=>[
-                                    'permissive'=>true
-                                ]
-                            ]
-                        ]
-                    ]
                 ],
             ],
             // Below here is for testing purposes only
