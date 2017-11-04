@@ -9,9 +9,9 @@ use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use TempestTools\AclMiddleware\Http\Middleware\AclMiddleware;
+use TempestTools\Moat\Http\Middleware\AclMiddleware;
 use TempestTools\Common\Laravel\Http\Middleware\BasicDataExtractorMiddleware;
-use TempestTools\Crud\Laravel\Http\Middleware\PrimeControllerMiddleware;
+use TempestTools\Scribe\Laravel\Http\Middleware\PrimeControllerMiddleware;
 
 class Kernel extends HttpKernel
 {

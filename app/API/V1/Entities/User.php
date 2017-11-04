@@ -6,16 +6,16 @@ use App\Entities\Traits\Deletable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping AS ORM;
-use TempestTools\AclMiddleware\Contracts\HasRolesContract;
-use TempestTools\AclMiddleware\Contracts\HasIdContract;
-use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
+use TempestTools\Moat\Contracts\HasRolesContract;
+use TempestTools\Moat\Contracts\HasIdContract;
+use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use App\Entities\Traits\Authenticatable;
-use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
-use TempestTools\AclMiddleware\Contracts\HasPermissionsContract;
+use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
+use TempestTools\Moat\Contracts\HasPermissionsContract;
 
 /** @noinspection LongInheritanceChainInspection */
 

@@ -7,7 +7,7 @@ use Doctrine\ORM\Query\Expr;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ArrayHelperContract;
-use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
+use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
 

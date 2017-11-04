@@ -3,7 +3,7 @@
 use App\API\V1\Entities\Role;
 use Faker\Factory;
 use App\API\V1\Entities\User;
-use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
+use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 class AclMiddlewareTest extends CrudTestBaseAbstract
 {

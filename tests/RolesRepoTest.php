@@ -2,7 +2,7 @@
 
 use App\API\V1\Entities\Role;
 use App\API\V1\Repositories\ArtistRepository;
-use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
+use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 class RolesRepoTest extends CrudTestBaseAbstract
 {

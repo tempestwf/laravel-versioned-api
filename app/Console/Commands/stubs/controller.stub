@@ -3,8 +3,8 @@
 namespace NamespaceRoot\Controllers;
 
 use NamespaceRoot\Repositories\DummyRepo;
-use TempestTools\Crud\Contracts\Events\SimpleEventContract;
-use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
+use TempestTools\Scribe\Contracts\Events\SimpleEventContract;
+use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
 class DummyClass extends APIControllerAbstract

@@ -3,17 +3,17 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use TempestTools\Crud\Laravel\Events\Controller\Init;
-use TempestTools\Crud\Laravel\Events\Controller\PreIndex;
-use TempestTools\Crud\Laravel\Events\Controller\PostIndex;
-use TempestTools\Crud\Laravel\Events\Controller\PreStore;
-use TempestTools\Crud\Laravel\Events\Controller\PostStore;
-use TempestTools\Crud\Laravel\Events\Controller\PreShow;
-use TempestTools\Crud\Laravel\Events\Controller\PostShow;
-use TempestTools\Crud\Laravel\Events\Controller\PreUpdate;
-use TempestTools\Crud\Laravel\Events\Controller\PostUpdate;
-use TempestTools\Crud\Laravel\Events\Controller\PreDestroy;
-use TempestTools\Crud\Laravel\Events\Controller\PostDestroy;
+use TempestTools\Scribe\Laravel\Events\Controller\Init;
+use TempestTools\Scribe\Laravel\Events\Controller\PreIndex;
+use TempestTools\Scribe\Laravel\Events\Controller\PostIndex;
+use TempestTools\Scribe\Laravel\Events\Controller\PreStore;
+use TempestTools\Scribe\Laravel\Events\Controller\PostStore;
+use TempestTools\Scribe\Laravel\Events\Controller\PreShow;
+use TempestTools\Scribe\Laravel\Events\Controller\PostShow;
+use TempestTools\Scribe\Laravel\Events\Controller\PreUpdate;
+use TempestTools\Scribe\Laravel\Events\Controller\PostUpdate;
+use TempestTools\Scribe\Laravel\Events\Controller\PreDestroy;
+use TempestTools\Scribe\Laravel\Events\Controller\PostDestroy;
 
 class EventServiceProvider extends ServiceProvider
 {

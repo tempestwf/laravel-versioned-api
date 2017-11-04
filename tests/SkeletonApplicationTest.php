@@ -6,7 +6,7 @@ use App\API\V1\Entities\Permission;
 use App\API\V1\Entities\Role;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\UserRepository;
-use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
+use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 
 class SkeletonApplicationTest extends CrudTestBaseAbstract

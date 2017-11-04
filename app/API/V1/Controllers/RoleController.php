@@ -3,8 +3,8 @@
 namespace App\API\V1\Controllers;
 
 use App\API\V1\Repositories\RoleRepository;
-use TempestTools\Crud\Contracts\Events\SimpleEventContract;
-use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
+use TempestTools\Scribe\Contracts\Events\SimpleEventContract;
+use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
 class RoleController extends APIControllerAbstract

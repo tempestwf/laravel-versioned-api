@@ -7,7 +7,7 @@ use App\Repositories\Repository;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
-use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
+use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 use Doctrine\ORM\Query\Expr;
 
 /** @noinspection LongInheritanceChainInspection */

@@ -4,7 +4,7 @@ namespace App\API\V1\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use TempestTools\Crud\Exceptions\Laravel\Controller\ControllerException;
+use TempestTools\Scribe\Exceptions\Laravel\Controller\ControllerException;
 use Config;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -27,7 +27,7 @@ class ContextController extends APIControllerAbstract
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws \TempestTools\Crud\Exceptions\Laravel\Controller\ControllerException
+     * @throws \TempestTools\Scribe\Exceptions\Laravel\Controller\ControllerException
      */
     public function store(Request $request): JsonResponse
     {
@@ -52,7 +52,7 @@ class ContextController extends APIControllerAbstract
      * @param Request $request
      * @param null $id
      * @return JsonResponse
-     * @throws \TempestTools\Crud\Exceptions\Laravel\Controller\ControllerException
+     * @throws \TempestTools\Scribe\Exceptions\Laravel\Controller\ControllerException
      */
     public function update(Request $request, $id=null): JsonResponse
     {
@@ -64,7 +64,7 @@ class ContextController extends APIControllerAbstract
      * @param Request $request
      * @param null $id
      * @return JsonResponse
-     * @throws \TempestTools\Crud\Exceptions\Laravel\Controller\ControllerException
+     * @throws \TempestTools\Scribe\Exceptions\Laravel\Controller\ControllerException
      */
     public function destroy(Request $request, $id = null): JsonResponse
     {

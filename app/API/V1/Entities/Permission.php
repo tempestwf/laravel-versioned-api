@@ -5,8 +5,8 @@ namespace App\API\V1\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use TempestTools\AclMiddleware\Contracts\PermissionContract;
-use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
+use TempestTools\Moat\Contracts\PermissionContract;
+use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\PermissionRepository")

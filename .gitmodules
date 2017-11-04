@@ -1,10 +1,10 @@
-[submodule "packages/tempesttools/acl-middleware"]
-	path = packages/tempesttools/acl-middleware
-	url = https://tempestwf@github.com/tempestwf/tempest-tools-acl-middleware.git
+[submodule "packages/tempesttools/moat"]
+	path = packages/tempesttools/moat
+	url = https://tempestwf@github.com/tempestwf/tempest-tools-moat.git
 [submodule "packages/tempesttools/common"]
 	path = packages/tempesttools/common
 	url = https://tempestwf@github.com/tempestwf/tempest-tools-common.git
-[submodule "packages/tempesttools/crud"]
-        path = packages/tempesttools/crud
-        url = https://tempestwf@github.com/tempestwf/tempest-tools-crud.git
+[submodule "packages/tempesttools/scribe"]
+        path = packages/tempesttools/scribe
+        url = https://tempestwf@github.com/tempestwf/tempest-tools-scribe.git
 

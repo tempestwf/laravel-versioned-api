@@ -34,7 +34,7 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
 ## What’s currently included in v1.0.0 (1st Party)
 1. https://github.com/tempestwf/tempest-tools-common
   a. Contains common libraries used by other Tempest Tools packages.
-2. https://github.com/tempestwf/tempest-tools-acl-middleware
+2. https://github.com/tempestwf/tempest-tools-moat
   a. Contains easily configurable middleware that can be applied to any route restrict access to it based on a templating system that allows developers to easily define which permissions (stored in the database VIA;  https://packagist.org/packages/laravel-doctrine/acl) are required to access it.
 
 ## What’s currently in development
@@ -134,7 +134,7 @@ If your changes to an entity modify its database structure, you can persist this
 ## Routes
 Routes for your versions are available by looking at the [routes file](https://github.com/mitchdav/laravel-versioned-api/blob/master/app/Http/routes.php).
 
-See: tempest-tools-acl (https://github.com/tempestwf/tempest-tools-acl-middleware) for information on adding acl middleware to your routes.
+See: tempest-tools-moat (https://github.com/tempestwf/tempest-tools-moat) for information on adding acl middleware to your routes.
 
 ## Adding New Versions
 The important files are all contained in the ```app/API``` folder. The project has 3 different versions of the same API, which is kept very simple to be as extendable as possible.

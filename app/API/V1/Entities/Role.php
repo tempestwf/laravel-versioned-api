@@ -4,10 +4,10 @@ namespace App\API\V1\Entities;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping AS ORM;
-use TempestTools\AclMiddleware\Contracts\RoleContract;
+use TempestTools\Moat\Contracts\RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
-use TempestTools\AclMiddleware\Entity\HasPermissionsOptimizedTrait;
-use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
+use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
+use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\RoleRepository")

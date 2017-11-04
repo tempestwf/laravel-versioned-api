@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use Doctrine\Common\Proxy\Proxy;
 use League\Fractal\TransformerAbstract;
-use TempestTools\Crud\Contracts\Orm\EntityContract;
+use TempestTools\Scribe\Contracts\Orm\EntityContract;
 
 class Transformer extends TransformerAbstract
 {

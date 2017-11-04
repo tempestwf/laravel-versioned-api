@@ -4,7 +4,7 @@ namespace App\API\V1\Controllers;
 
 use App\API\V1\Repositories\UserRepository;
 use App\API\V1\Transformers\UserTransformer;
-use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
+use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
 class UserController extends APIControllerAbstract

@@ -5,8 +5,8 @@ namespace App\API\V1\Repositories;
 use App\API\V1\Entities\User;
 use App\Repositories\Repository;
 use Doctrine\ORM\Query\Expr;
-use TempestTools\AclMiddleware\Contracts\RepoHasPermissionsContract;
-use TempestTools\AclMiddleware\Repository\HasPermissionsQueryTrait;
+use TempestTools\Moat\Contracts\RepoHasPermissionsContract;
+use TempestTools\Moat\Repository\HasPermissionsQueryTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 
 /** @noinspection LongInheritanceChainInspection */

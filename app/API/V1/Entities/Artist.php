@@ -5,8 +5,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
-use TempestTools\Crud\Doctrine\Events\GenericEventArgs;
-use TempestTools\Crud\Laravel\Doctrine\EntityAbstract;
+use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
+use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 
 /** @noinspection LongInheritanceChainInspection */
 

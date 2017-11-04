@@ -8,7 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use TempestTools\AclMiddleware\Contracts\HasIdContract;
+use TempestTools\Moat\Contracts\HasIdContract;
 use TempestTools\Common\Contracts\HasUserContract;
 use TempestTools\Common\Laravel\Controller\BaseControllerAbstract;
 

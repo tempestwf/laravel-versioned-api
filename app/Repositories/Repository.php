@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use Doctrine\ORM\EntityManager;
-use TempestTools\Crud\Doctrine\RepositoryAbstract;
+use TempestTools\Scribe\Doctrine\RepositoryAbstract;
 
 class Repository extends RepositoryAbstract
 {

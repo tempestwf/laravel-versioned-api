@@ -6,12 +6,12 @@ use App\API\V1\Entities\User;
 use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
-use TempestTools\Crud\Constants\EntityEventsConstants;
-use TempestTools\Crud\Constants\RepositoryEventsConstants;
-use TempestTools\Crud\Exceptions\Orm\EntityException;
-use TempestTools\Crud\Exceptions\Orm\Helper\DataBindHelperException;
-use TempestTools\Crud\Exceptions\Orm\Helper\EntityArrayHelperException;
-use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
+use TempestTools\Scribe\Constants\EntityEventsConstants;
+use TempestTools\Scribe\Constants\RepositoryEventsConstants;
+use TempestTools\Scribe\Exceptions\Orm\EntityException;
+use TempestTools\Scribe\Exceptions\Orm\Helper\DataBindHelperException;
+use TempestTools\Scribe\Exceptions\Orm\Helper\EntityArrayHelperException;
+use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 
 class CudTest extends CrudTestBaseAbstract

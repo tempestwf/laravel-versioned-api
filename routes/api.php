@@ -21,7 +21,7 @@ use App\API\V1\Controllers\AlbumController;
 
 use App\API\V1\Controllers\ArtistController;
 use App\API\V1\Controllers\UserController;
-use TempestTools\AclMiddleware\Constants\PermissionsTemplatesConstants;
+use TempestTools\Moat\Constants\PermissionsTemplatesConstants;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 
 $api = app(Router::class);

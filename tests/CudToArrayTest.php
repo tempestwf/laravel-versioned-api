@@ -4,8 +4,8 @@ use App\API\V1\Entities\Artist;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
-use TempestTools\Crud\Orm\Transformers\ToArrayTransformer;
-use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
+use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
+use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 
 class CudToArrayTest extends CrudTestBaseAbstract

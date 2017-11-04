@@ -7,8 +7,8 @@ use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
-use TempestTools\Crud\Orm\Helper\DataBindHelper;
-use TempestTools\Crud\PHPUnit\CrudTestBaseAbstract;
+use TempestTools\Scribe\Orm\Helper\DataBindHelper;
+use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 
 class CudPrePopulateTest extends CrudTestBaseAbstract
