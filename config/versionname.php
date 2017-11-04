@@ -2,7 +2,7 @@
 
 return [
 
-    'version_name'=>'aa-rc2',
-    'version_number'=>'v1.0.0'
+    'version_name'=>'auspicious-beethoven-alpha',
+    'version_number'=>'v2.0.0-alpha'
 
 ];

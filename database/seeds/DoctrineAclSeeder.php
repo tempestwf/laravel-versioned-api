@@ -2,8 +2,7 @@
 
 use App\API\V1\Entities\Role;
 use App\API\V1\Entities\User;
-use Doctrine\Common\Collections\ArrayCollection;
-use LaravelDoctrine\ACL\Permissions\Permission;
+use App\API\V1\Entities\Permission;
 
 class DoctrineAclSeeder extends DatabaseSeeder
 {
@@ -35,20 +34,30 @@ class DoctrineAclSeeder extends DatabaseSeeder
         $this->em->getConnection()->exec($rawSql);
         $this->command->comment('Seeded Doctrine ACL Fixture Data');*/
 
-        $authenticatePerm = new Permission('auth/authenticate:POST');
-        $refreshPerm = new Permission('auth/refresh:GET');
-        $mePerm = new Permission('auth/me:GET');
+        $authenticatePerm = new Permission();
+        $authenticatePerm->setName('auth/authenticate:POST');
+        $refreshPerm = new Permission();
+        $refreshPerm->setName('auth/refresh:GET');
+        $mePerm = new Permission();
+        $mePerm->setName('auth/me:GET');
 
         $userRole = new Role();
         $userRole->setName('user');
-        $userRole->setPermissions(new ArrayCollection([$refreshPerm, $mePerm]));
+        $userRole->addPermission($refreshPerm);
+        $userRole->addPermission($mePerm);
+        //$userRole->setPermissions(new ArrayCollection([$refreshPerm, $mePerm]));
         $adminRole = new Role();
         $adminRole->setName('admin');
         $superAdminRole = new Role();
         $superAdminRole->setName('super-admin');
 
+        /** @var User $baseUser */
         $baseUser = $this->em->getRepository(User::class)->find(1);
-        $baseUser->setRoles(new ArrayCollection([$userRole, $adminRole, $superAdminRole]));
+        $baseUser->addRole($userRole);
+        $baseUser->addRole($adminRole);
+        $baseUser->addRole($superAdminRole);
+
+        //$baseUser->setRoles(new ArrayCollection([$userRole, $adminRole, $superAdminRole]));
 
 
         $this->em->persist($authenticatePerm);
