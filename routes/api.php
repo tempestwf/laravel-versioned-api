@@ -26,43 +26,6 @@ use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 
 $api = app(Router::class);
 
-// For testing:
-$api->version(
-    'V1',
-    [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
-        'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
-        'additionalExtractors' =>[ArrayExpressionBuilder::closure(function ($params) {
-            /** @var UserController $controller */
-            $controller = $params['controller'];
-            return $controller->getUser();
-        })]
-    ],
-    function () use ($api)
-    {
-        $api->resources([
-            'fail/user'=> UserController::class
-        ]);
-    }
-);
-
-$api->version(
-    'V1',
-    [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
-        'provider'   => 'V1',
-        'permissionClosures' =>[ArrayExpressionBuilder::closure(function () {
-            return false;
-        })]
-    ],
-    function () use ($api)
-    {
-        $api->resources([
-            'fail2/user'=> UserController::class
-        ]);
-    }
-);
 // Came with original skeleton
 
 $api->version(
@@ -106,10 +69,6 @@ $api->version(
     {
         $api->get('/contexts', ContextController::class . '@index');
         $api->get('/contexts/{context}', ContextController::class . '@show');
-        $api->get('/contexts/guest/albums', AlbumController::class . '@index');
-        $api->get('/contexts/guest/artists', ArtistController::class . '@index');
-        $api->get('/contexts/guest/albums/{id}', AlbumController::class . '@show');
-        $api->get('/contexts/guest/artists/{id}', ArtistController::class . '@show');
     }
 );
 
@@ -127,61 +86,11 @@ $api->version(
     function () use ($api)
     {
         $api->resources([
-            '/contexts/user/albums'=> AlbumController::class,
-            '/contexts/user/artists'=>ArtistController::class,
             '/contexts/user/users'=> UserController::class
         ]);
     }
 );
 
-$api->version(
-    'V1',
-    [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
-        'provider'   => 'V1',
-        // For reasons I can not figure out dingo with laravel doesn't always put a slash at the front of a uri internally. It's unreliable so I made this template to compensate
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_FORCE_FIRST_SLASH)],
-        'ttPath'=>['user/users'],
-        'ttFallback'=>['default'],
-        'configOverrides'=>[],
-    ],
-    function () use ($api)
-    {
-        $api->get('/contexts/user/users/{user}/albums', AlbumController::class . '@index');
-    }
-);
-
-$api->version(
-    'V1',
-    [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
-        'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_FORCE_FIRST_SLASH)],
-        'ttPath'=>['admin/users'],
-        'ttFallback'=>['default'],
-        'configOverrides'=>[],
-    ],
-    function () use ($api)
-    {
-        $api->get('/contexts/admin/users/{user}/albums', AlbumController::class . '@index');
-    }
-);
-
-$api->version(
-    'V1',
-    [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
-        'provider'   => 'V1',
-        'permissions' => [],
-        'ttPath'=>['guest/artists'],
-        'ttFallback'=>['default'],
-        'configOverrides'=>[],
-    ],
-    function () use ($api)
-    {
-        $api->get('/contexts/guest/artists/{artist}/albums', AlbumController::class . '@index');
-    }
-);
 
 $api->version(
     'V1',
@@ -196,8 +105,6 @@ $api->version(
     function () use ($api)
     {
         $api->resources([
-            '/contexts/admin/albums'=>AlbumController::class,
-            '/contexts/admin/artists'=>ArtistController::class,
             '/contexts/admin/users'=>UserController::class,
         ]);
     }
