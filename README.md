@@ -88,7 +88,6 @@ This will setup the project's dependencies, however you will still need to setup
 
 To then setup the database we use Doctrine's helper command to build our schema and proxies.
 
-	php artisan doctrine:schema:create
 	php artisan doctrine:migrations:migrate
 	php artisan doctrine:generate:proxies
 	
