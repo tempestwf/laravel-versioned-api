@@ -93,7 +93,7 @@ To then setup the database we use Doctrine's helper command to build our schema 
 The system is now ready to receive requests made against it, however we don't have any users to login to the API with. To generate a test user, run the following command:
 
 	php artisan db:seed
-php artisan make:seeder DoctrineAclSeeder
+	php artisan make:seeder DoctrineAclSeeder
 
 This will output an email address and password you can use to login.
 
