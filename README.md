@@ -73,6 +73,8 @@ You have two options to get the Skeleton setup:
 
 		git clone https://github.com/tempestwf/tempest-tools-skeleton
 		cd laravel-versioned-api
+		git submodule init
+        git submodule update
 		composer install
 		php -r "copy('.env.example', '.env');"
 		php artisan key:generate
