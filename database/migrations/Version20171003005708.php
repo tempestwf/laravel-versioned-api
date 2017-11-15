@@ -27,9 +27,9 @@ class Version20171003005708 extends AbstractMigration
 
         $user = new User();
         $user
-            ->setEmail($generator->safeEmail)
-            ->setPassword('password')
-            ->setName($generator->name)
+            ->setEmail(env('BASE_USER_EMAIL'))
+            ->setPassword(env('BASE_USER_EMAIL'))
+            ->setName(env('BASE_USER_NAME'))
             ->setJob($generator->jobTitle)
             ->setAddress($generator->address);
 
