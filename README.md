@@ -151,6 +151,7 @@ This will not be necessary unless you modify the entities as their proxies are a
 If your changes to an entity modify its database structure, you can create a migration based on change by running the following command:
 
 	php artisan doctrine:migrations:diff
+	php artisan doctrine:migrations:migrate
 
 ## Routes
 Routes for your versions are available by looking at the [routes file].
@@ -172,6 +173,7 @@ When you would like to add a new version, you will need to follow this process:
 
     php artisan doctrine:generate:proxies
     php artisan doctrine:migrations:diff
+    php artisan doctrine:migrations:migrate
 
 8. Add routes to any new endpoints in the routes file
 
