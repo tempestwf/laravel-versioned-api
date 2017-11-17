@@ -67,10 +67,11 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
 
 You may fork the repo first and then update the git clone command below. Or you may optionally save the cloned repo into your own repository.
 
+Note: Make sure to turn off xdebug before running composer install as it can cause it to hang indefinitely (setting xdebug: "xdebug.remote_autostart= 0" should fix the problem).
 Clone the repo manually by running the following commands in the terminal. We do a manual clone so we can run the sub module commands:
 
-    git clone https://github.com/tempestwf/tempest-tools-skeleton
-    cd laravel-versioned-api
+    git clone https://github.com/tempestwf/tempest-tools-skeleton {name of directory to clone into}
+    cd {name of directory to clone into}
     git submodule init
     git submodule update
     composer install
