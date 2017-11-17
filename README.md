@@ -99,6 +99,11 @@ Give your API a name in the .env
 
     API_NAME="{API Name}"
 
+Set your additional information in the .env file
+
+    APP_URL=http://{site url}
+    API_DOMAIN=P{domain}
+
 If at this point you would like to save your modified repo into it's own repository you may do so with the following command.
 
     git push https://{username}:{password}@github.com/{your github user}/{your repo} +{branch of the skeleton you want to copy}:master
