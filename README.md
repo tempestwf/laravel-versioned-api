@@ -95,9 +95,17 @@ Also in the .env file you must set up a base user. This user will be added to th
     BASE_USER_EMAIL={email}
     BASE_USER_PASSWORD={password}
 
+Give your API a name in the .env
+
+    API_NAME="{API Name}"
+
 If at this point you would like to save your modified repo into it's own repository you may do so with the following command.
 
     git push https://{username}:{password}@github.com/{your github user}/{your repo} +{branch of the skeleton you want to copy}:master
+
+Set the origin of your repo to the new location you pushed it too
+
+     git remote set-url origin https://{username}:{password}@github.com/{your github user}/{your repo}
 
 To then setup the database we use Doctrine's helper command to build our schema and proxies.
 
@@ -107,6 +115,8 @@ To then setup the database we use Doctrine's helper command to build our schema 
 In \tests\TestCase.php update the base url to the url you are using for your app:
 
     protected $baseUrl = 'http://{your url here}/';
+
+Remember to also set up the host on your system before testing as well.
 
 ## Logging In
 Make a POST request to ```/auth/authenticate``` with ```Content-Type``` set to ```application/json```. The JSON structure should look like the following:
@@ -138,12 +148,12 @@ As you make changes to the entities, you need to generate proxies for your entit
 
 This will not be necessary unless you modify the entities as their proxies are already generated and committed.
 
-If your changes to an entity modify its database structure, you can persist this to the database by running the following command in the terminal:
+If your changes to an entity modify its database structure, you can create a migration based on change by running the following command:
 
-	php artisan doctrine:schema:update
+	php artisan doctrine:migrations:diff
 
 ## Routes
-Routes for your versions are available by looking at the [routes file](https://github.com/mitchdav/laravel-versioned-api/blob/master/app/Http/routes.php).
+Routes for your versions are available by looking at the [routes file].
 
 See: tempest-tools-moat (https://github.com/tempestwf/tempest-tools-moat) for information on adding acl middleware to your routes.
 
@@ -161,7 +171,7 @@ When you would like to add a new version, you will need to follow this process:
 7. Run the following commands to update the database schema and proxies
 
     php artisan doctrine:generate:proxies
-    php artisan doctrine:schema:update
+    php artisan doctrine:migrations:diff
 
 8. Add routes to any new endpoints in the routes file
 
