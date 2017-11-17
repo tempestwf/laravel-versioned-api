@@ -63,36 +63,36 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
 * A database (MySQL, or any others supported by Laravel and Doctrine)
 * [Composer](https://getcomposer.org/).
 
-## Dependencies
+## Installation
 
 You may fork the repo first and then update the git clone command below. Or you may optionally save the cloned repo into your own repository.
 
 Clone the repo manually by running the following commands in the terminal. We do a manual clone so we can run the sub module commands:
 
-		git clone https://github.com/tempestwf/tempest-tools-skeleton
-		cd laravel-versioned-api
-		git submodule init
-        git submodule update
-		composer install
-		php -r "copy('.env.example', '.env');"
-		php artisan key:generate
-		php artisan jwt:generate
+    git clone https://github.com/tempestwf/tempest-tools-skeleton
+    cd laravel-versioned-api
+    git submodule init
+    git submodule update
+    composer install
+    php -r "copy('.env.example', '.env');"
+    php artisan key:generate
+    php artisan jwt:generate
 
 If you want a vanilla implementation that does not include the albums and artists and tests related to them you may switch to the vanilla branch.
 
-        git checkout 2.0.1-vanilla
+    git checkout 2.0.1-vanilla
 
 This will setup the project's dependencies, however you will still need to setup the database. You must first create a MySQL database, and then store its details in the .env file like so:
 
-	    DB_DATABASE={database}
-    	DB_USERNAME={username}
-    	DB_PASSWORD={password}
+    DB_DATABASE={database}
+    DB_USERNAME={username}
+    DB_PASSWORD={password}
 
 Also in the .env file you must set up a base user. This user will be added to the DB, and the test cases that require a user will run using this users
 
-        BASE_USER_NAME="{name}"
-        BASE_USER_EMAIL={email}
-        BASE_USER_PASSWORD={password}
+    BASE_USER_NAME="{name}"
+    BASE_USER_EMAIL={email}
+    BASE_USER_PASSWORD={password}
 
 If at this point you would like to save your modified repo into it's own repository you may do so with the following command.
 
@@ -100,8 +100,8 @@ If at this point you would like to save your modified repo into it's own reposit
 
 To then setup the database we use Doctrine's helper command to build our schema and proxies.
 
-	php artisan doctrine:migrations:migrate
-	php artisan doctrine:generate:proxies
+    php artisan doctrine:migrations:migrate
+    php artisan doctrine:generate:proxies
 
 In \tests\TestCase.php update the base url to the url you are using for your app:
 
@@ -159,8 +159,9 @@ When you would like to add a new version, you will need to follow this process:
 6. Make your changes to the API's new version (for example, add a new entity, or a field to an existing entity)
 7. Run the following commands to update the database schema and proxies
 
-		php artisan doctrine:generate:proxies
-		php artisan doctrine:schema:update
+    php artisan doctrine:generate:proxies
+    php artisan doctrine:schema:update
+
 8. Add routes to any new endpoints in the routes file
 
 ## Removing Versions
