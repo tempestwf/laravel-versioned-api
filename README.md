@@ -63,46 +63,72 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
 * A database (MySQL, or any others supported by Laravel and Doctrine)
 * [Composer](https://getcomposer.org/).
 
-## Dependencies
-You have two options to get the Skeleton setup:
+## Installation
 
-1. Utilise Composer's create-project command by running the following command in the terminal:
+You may fork the repo first and then update the git clone command below. Or you may optionally save the cloned repo into your own repository.
 
-		composer create-project tempestwf/tempest-tools-skeleton
-1. Or clone the repo manually by running the following commands in the terminal:
+Note: Make sure to turn off xdebug before running composer install as it can cause it to hang indefinitely (setting xdebug: "xdebug.remote_autostart= 0" should fix the problem).
+Clone the repo manually by running the following commands in the terminal. We do a manual clone so we can run the sub module commands:
 
-		git clone https://github.com/tempestwf/tempest-tools-skeleton
-		cd laravel-versioned-api
-		composer install
-		php -r "copy('.env.example', '.env');"
-		php artisan key:generate
-		php artisan jwt:generate
+    git clone https://github.com/tempestwf/tempest-tools-skeleton {name of directory to clone into}
+    cd {name of directory to clone into}
+    git submodule init
+    git submodule update
+    composer install
+    php -r "copy('.env.example', '.env');"
+    php artisan key:generate
+    php artisan jwt:generate
+
+If you want a vanilla implementation that does not include the albums and artists and tests related to them you may switch to the vanilla branch.
+
+    git checkout 2.0.1-vanilla
 
 This will setup the project's dependencies, however you will still need to setup the database. You must first create a MySQL database, and then store its details in the .env file like so:
 
-	    DB_DATABASE=mydatabase
-    	DB_USERNAME=root
-    	DB_PASSWORD=
+    DB_DATABASE={database}
+    DB_USERNAME={username}
+    DB_PASSWORD={password}
+
+Also in the .env file you must set up a base user. This user will be added to the DB, and the test cases that require a user will run using this users
+
+    BASE_USER_NAME="{name}"
+    BASE_USER_EMAIL={email}
+    BASE_USER_PASSWORD={password}
+
+Give your API a name in the .env
+
+    API_NAME="{API Name}"
+
+Set your additional information in the .env file
+
+    APP_URL=http://{site url}
+    API_DOMAIN=P{domain}
+
+If at this point you would like to save your modified repo into it's own repository you may do so with the following command.
+
+    git push https://{username}:{password}@github.com/{your github user}/{your repo} +{branch of the skeleton you want to copy}:master
+
+Set the origin of your repo to the new location you pushed it too
+
+     git remote set-url origin https://{username}:{password}@github.com/{your github user}/{your repo}
 
 To then setup the database we use Doctrine's helper command to build our schema and proxies.
 
-	php artisan doctrine:schema:create
-	php artisan doctrine:migrations:migrate
-	php artisan doctrine:generate:proxies
-	
-The system is now ready to receive requests made against it, however we don't have any users to login to the API with. To generate a test user, run the following command:
+    php artisan doctrine:migrations:migrate
+    php artisan doctrine:generate:proxies
 
-	php artisan db:seed
-php artisan make:seeder DoctrineAclSeeder
+In \tests\TestCase.php update the base url to the url you are using for your app:
 
-This will output an email address and password you can use to login.
+    protected $baseUrl = 'http://{your url here}/';
+
+Remember to also set up the host on your system before testing as well.
 
 ## Logging In
 Make a POST request to ```/auth/authenticate``` with ```Content-Type``` set to ```application/json```. The JSON structure should look like the following:
 	
 	{
-	    "email": "{email address from previous command}",
-	    "password": "{password from previous command}"
+	    "email": "{email address from env}",
+	    "password": "{email address from env}"
 	}
 
 If the response is successful, you will receive a token which you can use to make subsequent requests to the server, while remaining authenticated as the given user. To send through the token value send it in the ```Authorization``` header as follows:
@@ -127,12 +153,13 @@ As you make changes to the entities, you need to generate proxies for your entit
 
 This will not be necessary unless you modify the entities as their proxies are already generated and committed.
 
-If your changes to an entity modify its database structure, you can persist this to the database by running the following command in the terminal:
+If your changes to an entity modify its database structure, you can create a migration based on change by running the following command:
 
-	php artisan doctrine:schema:update
+	php artisan doctrine:migrations:diff
+	php artisan doctrine:migrations:migrate
 
 ## Routes
-Routes for your versions are available by looking at the [routes file](https://github.com/mitchdav/laravel-versioned-api/blob/master/app/Http/routes.php).
+Routes for your versions are available by looking at the [routes file].
 
 See: tempest-tools-moat (https://github.com/tempestwf/tempest-tools-moat) for information on adding acl middleware to your routes.
 
@@ -149,8 +176,10 @@ When you would like to add a new version, you will need to follow this process:
 6. Make your changes to the API's new version (for example, add a new entity, or a field to an existing entity)
 7. Run the following commands to update the database schema and proxies
 
-		php artisan doctrine:generate:proxies
-		php artisan doctrine:schema:update
+    php artisan doctrine:generate:proxies
+    php artisan doctrine:migrations:diff
+    php artisan doctrine:migrations:migrate
+
 8. Add routes to any new endpoints in the routes file
 
 ## Removing Versions

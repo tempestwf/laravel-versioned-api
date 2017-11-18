@@ -13,7 +13,16 @@ class Version20170428030234 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
+        $this->addSql('CREATE TABLE `users` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `job` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+          `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+          `time_deleted` datetime DEFAULT NULL,
+          `deleted` tinyint(1) NOT NULL DEFAULT \'0\',
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
         $this->addSql('CREATE TABLE permissions (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE organisations (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE roles (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
