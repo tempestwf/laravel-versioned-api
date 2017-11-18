@@ -26,21 +26,6 @@ class Version20171019024517 extends AbstractMigration
         $conn->beginTransaction();
         try {
             $permissionRepo =  $this->em()->getRepository(Permission::class);
-            $perm = $permissionRepo->findOneBy(['name'=>'album']);
-            $perm->setName('/contexts/user/albums');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'album/{album}']);
-            $perm->setName('/contexts/user/albums/{album}');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'artist']);
-            $perm->setName('/contexts/user/artists');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'artist/{artist}']);
-            $perm->setName('/contexts/user/artists/{artist}');
-            $this->em()->persist($perm);
 
             $perm = $permissionRepo->findOneBy(['name'=>'user']);
             $perm->setName('/contexts/user/users');
@@ -70,21 +55,6 @@ class Version20171019024517 extends AbstractMigration
         $conn->beginTransaction();
         try {
             $permissionRepo =  $this->em()->getRepository(Permission::class);
-            $perm = $permissionRepo->findOneBy(['name'=>'/contexts/user/albums']);
-            $perm->setName('album');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/contexts/user/albums/{album}']);
-            $perm->setName('album/{album}');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/contexts/user/artists']);
-            $perm->setName('artist');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/contexts/user/artists/{artist}']);
-            $perm->setName('artist/{artist}');
-            $this->em()->persist($perm);
 
             $perm = $permissionRepo->findOneBy(['name'=>'/contexts/user/users']);
             $perm->setName('user');

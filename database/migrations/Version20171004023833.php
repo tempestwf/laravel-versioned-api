@@ -26,21 +26,6 @@ class Version20171004023833 extends AbstractMigration
         $conn->beginTransaction();
         try {
             $permissionRepo =  $this->em()->getRepository(Permission::class);
-            $perm = $permissionRepo->findOneBy(['name'=>'admin/album']);
-            $perm->setName('/admin/album');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'admin/album/{album}']);
-            $perm->setName('/admin/album/{album}');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'admin/artist']);
-            $perm->setName('/admin/artist');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'admin/artist/{artist}']);
-            $perm->setName('/admin/artist/{artist}');
-            $this->em()->persist($perm);
 
             $perm = $permissionRepo->findOneBy(['name'=>'admin/user']);
             $perm->setName('/admin/user');
@@ -77,21 +62,6 @@ class Version20171004023833 extends AbstractMigration
         $conn->beginTransaction();
         try {
             $permissionRepo =  $this->em()->getRepository(Permission::class);
-            $perm = $permissionRepo->findOneBy(['name'=>'/admin/album']);
-            $perm->setName('admin/album');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/admin/album/{album}']);
-            $perm->setName('admin/album/{album}');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/admin/artist']);
-            $perm->setName('admin/artist');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/admin/artist/{artist}']);
-            $perm->setName('admin/artist/{artist}');
-            $this->em()->persist($perm);
 
             $perm = $permissionRepo->findOneBy(['name'=>'/admin/user']);
             $perm->setName('admin/user');

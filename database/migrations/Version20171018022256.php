@@ -26,21 +26,6 @@ class Version20171018022256 extends AbstractMigration
         $conn->beginTransaction();
         try {
             $permissionRepo =  $this->em()->getRepository(Permission::class);
-            $perm = $permissionRepo->findOneBy(['name'=>'/admin/album']);
-            $perm->setName('/contexts/admin/albums');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/admin/album/{album}']);
-            $perm->setName('/contexts/admin/albums/{album}');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/admin/artist']);
-            $perm->setName('/contexts/admin/artists');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/admin/artist/{artist}']);
-            $perm->setName('/contexts/admin/artists/{artist}');
-            $this->em()->persist($perm);
 
             $perm = $permissionRepo->findOneBy(['name'=>'/admin/user']);
             $perm->setName('/contexts/admin/users');
@@ -77,21 +62,6 @@ class Version20171018022256 extends AbstractMigration
         $conn->beginTransaction();
         try {
             $permissionRepo =  $this->em()->getRepository(Permission::class);
-            $perm = $permissionRepo->findOneBy(['name'=>'/contexts/admin/albums']);
-            $perm->setName('/admin/album');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/contexts/admin/albums/{album}']);
-            $perm->setName('/admin/album/{album}');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/contexts/admin/artists']);
-            $perm->setName('/admin/artist');
-            $this->em()->persist($perm);
-
-            $perm = $permissionRepo->findOneBy(['name'=>'/contexts/admin/artists/{artist}']);
-            $perm->setName('/admin/artist/{artist}');
-            $this->em()->persist($perm);
 
             $perm = $permissionRepo->findOneBy(['name'=>'/contexts/admin/users']);
             $perm->setName('/admin/user');
