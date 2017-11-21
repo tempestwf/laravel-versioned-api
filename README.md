@@ -81,7 +81,7 @@ Clone the repo manually by running the following commands in the terminal. We do
 
 If you want a vanilla implementation that does not include the albums and artists and tests related to them you may switch to the vanilla branch.
 
-    git checkout 2.0.1-vanilla
+    git checkout 2.0.2-vanilla
 
 This will setup the project's dependencies, however you will still need to setup the database. You must first create a MySQL database, and then store its details in the .env file like so:
 
@@ -116,10 +116,6 @@ To then setup the database we use Doctrine's helper command to build our schema 
 
     php artisan doctrine:migrations:migrate
     php artisan doctrine:generate:proxies
-
-In \tests\TestCase.php update the base url to the url you are using for your app:
-
-    protected $baseUrl = 'http://{your url here}/';
 
 Remember to also set up the host on your system before testing as well.
 
