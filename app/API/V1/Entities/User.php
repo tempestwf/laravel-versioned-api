@@ -377,25 +377,30 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 'read'=>true
                             ]
                         ],
-                        'name'=>[ // Users can update their name
+                        'name'=>[ // name allowed
                             'permissive'=>true,
                         ],
-                        'job'=>[ // Users can update their job
+                        'job'=>[ // job allowed
                             'permissive'=>true,
                         ],
-                        'address'=>[ // Users can update their address
+                        'address'=>[ // address allowed
                             'permissive'=>true,
                         ],
-                        'email'=>[ // Users can update their address
+                        'email'=>[ // email allowed
                             'permissive'=>true,
                         ],
-                        'password'=>[ // Users can update their address
+                        'password'=>[ // password allowed
                             'permissive'=>true,
                         ]
                     ],
                 ],
                 'update'=>[
                     'extends'=>[':user:create'], // inherits all of user create, but turns on the allowed flag so now a user can update them selves
+                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'email'=>[ // Users can't update their email
+                            'permissive'=>false,
+                        ],
+                    ],
                     'allowed'=>true
                 ],
                 'delete'=>[
