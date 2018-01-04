@@ -26,13 +26,16 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
         $expr = new Expr();
         /** @noinspection NullPointerExceptionInspection */
         return [
+            // Default context that most requests fall back too, and other contexts inherit from.
             'default'=>[
                 'read'=>[
                     'query'=>[
+                        // Get just the id, name, address, job fields for read actions default.
                         'select'=>[
                             'standardSelect'=>'partial u.{id, name, address, job}'
                         ],
                         'where'=>[
+                            // Only retrieve data about the currently logged in user by default.
                             'onlyCurrentUser'=>[
                                 'type'=>'and',
                                 'value'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']))
@@ -58,6 +61,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                 'extends'=>[':default'],
                 'read'=>[
                     'query'=>[
+                        // When in admin context, no longer only return info about the currently logged in user.
                         'where'=>[
                             'onlyCurrentUser'=>null
                         ],
