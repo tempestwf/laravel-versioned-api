@@ -95,6 +95,10 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
         return $this;
     }
 
+    /**
+     * Used by BasicDataExtractorMiddleware to retrieve the information about the currently logged in user.
+     * @return array
+     */
     public function extractValues() : array
     {
         return [
@@ -252,6 +256,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     {
         /** @noinspection NullPointerExceptionInspection */
         return [
+            // Default context is the one that we fall back too, and other context inherit from.
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
@@ -266,6 +271,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'customAttributes'=>NULL,
                         ],
                     ],
+                    // When converted to an array, the following fields can be returned
                     'toArray'=> [
                         'id'=>[],
                         'name'=>[],
@@ -279,8 +285,10 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 'update'=>[
                     'extends'=>[':default:create'],
                     'settings'=>[
-                        'validate'=>[ // Validates name and email and inherited by the rest of the config
+                        'validate'=>[ // The fields here are not required when doing an update, so change them to not required.
                             'rules'=>[
+                                'name'=>'min:2',
+                                'email'=>'email',
                                 'password'=>'min:8'
                             ],
                         ],
@@ -293,36 +301,43 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'extends'=>[':default:update']
                 ],
             ],
+            // Configuration for when in user context. Extends default.
             'user'=>[
                 'create'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>false,
                     'permissive'=>false,
                     'settings'=>[
+                        // If you are in user context, then you should only be able to alter your self. We enforce that the userId match with currently logged in user.
                         'enforce'=>[
-                            'id'=>$this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']) // If you are a user, then you should only be able to alter your self
+                            'id'=>$this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id'])
                         ],
                     ],
                     'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
                         'name'=>[ // Users can update their name
                             'permissive'=>true,
                         ],
-                        'job'=>[ // Users can update their job
+                        'job'=>[ // job allowed
                             'permissive'=>true,
                         ],
-                        'address'=>[ // Users can update their address
+                        'address'=>[ // address allowed
                             'permissive'=>true,
                         ],
-                        'email'=>[ // Users can update their address
+                        'email'=>[ // email allowed
                             'permissive'=>true,
                         ],
-                        'password'=>[ // Users can update their address
+                        'password'=>[ // password allowed
                             'permissive'=>true,
                         ]
                     ],
                 ],
                 'update'=>[
                     'extends'=>[':user:create'], // inherits all of user create, but turns on the allowed flag so now a user can update them selves
+                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'email'=>[ // Users can't update their email
+                            'permissive'=>false,
+                        ],
+                    ],
                     'allowed'=>true
                 ],
                 'delete'=>[
@@ -336,6 +351,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'admin'=>[ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
                 'create'=>[
                     'extends'=>[':user:create'],
+                    // We override the enforce to null so it is no longer enforced for admins.
                     'settings'=>[
                         'enforce'=>null
                     ],
