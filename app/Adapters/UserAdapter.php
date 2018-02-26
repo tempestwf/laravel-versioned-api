@@ -18,12 +18,12 @@ class UserAdapter implements UserInterface
 	/**
 	 * @param AuthManager $auth
 	 */
-	public function __construct(User $user, AuthManager $auth)
+	public function __construct(User $user)
 	{
 		/** @var JWTGuard $guard */
-		$guard = $auth->guard('api');
-		
-		$this->provider = $guard->getProvider();
+		/*$guard = $auth->guard('api');
+
+		$this->provider = $guard->getProvider();*/
 	}
 	
 	/**

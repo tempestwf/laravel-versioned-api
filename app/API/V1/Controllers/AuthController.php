@@ -2,6 +2,8 @@
 
 namespace App\API\V1\Controllers;
 
+use App;
+use App\API\V1\Repositories\UserRepository;
 use Dingo\Api\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -9,21 +11,25 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\JWTAuth;
 
-use App;
-
 class AuthController extends APIControllerAbstract
 {
 
     /** @var JWTAuth $auth */
 	protected  /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $auth;
 
-	public function __construct()
+    public function __construct()
 	{
 		parent::__construct();
 
 		$this->auth = App::make(JWTAuth::class);
 	}
 
+    /**
+     * User Login
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
 	public function authenticate(Request $request)
 	{
 		$credentials = $request->only('email', 'password');
@@ -41,7 +47,12 @@ class AuthController extends APIControllerAbstract
 		
 		return response()->json(compact('token'));
 	}
-	
+
+    /**
+     * Refresh Tocken
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
 	public function refresh()
 	{
 		if($this->auth->getToken() === FALSE)

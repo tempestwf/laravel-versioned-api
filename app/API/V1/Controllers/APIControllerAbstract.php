@@ -6,6 +6,8 @@ use Dingo\Api\Exception\ValidationHttpException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
+use LaravelDoctrine\Extensions\GedmoExtension;
+use LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use TempestTools\Moat\Contracts\HasIdContract;
@@ -18,6 +20,12 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\IpTraceable\IpTraceableListener;
+use Doctrine\ORM\EntityManager;
+use LaravelDoctrine\Extensions\ResolveUserDecorator;
+use Doctrine\Common\EventManager;
+
 abstract class APIControllerAbstract extends BaseControllerAbstract implements HasUserContract
 {
 	use Helpers, ValidatesRequests;
@@ -29,6 +37,20 @@ abstract class APIControllerAbstract extends BaseControllerAbstract implements H
 	{
 		App::register(App\API\V1\Providers\APIServiceProvider::class);
 		parent::__construct();
+
+        /** @var EntityManager $em */
+        /*$em = app('em');
+        $eventManager = $em->getEventManager();
+        $listeners = $em->getEventManager()->getListeners();
+        foreach ($listeners as $listenerActions) {
+            foreach ($listenerActions as $listener) {
+                if(get_class($listener) === ResolveUserDecorator::class) {
+                    //var_dump($listener->wrapped->setUserValue($this->getUser()));
+                    //var_dump($listener->_call('setUsername', $this->getUser()));
+                }
+            }
+        }
+        var_dump($this->getUser()); die;*/
 	}
 
     /**

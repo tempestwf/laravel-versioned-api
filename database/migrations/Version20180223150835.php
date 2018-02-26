@@ -5,7 +5,7 @@ namespace Database\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema as Schema;
 
-class Version20171007045806 extends AbstractMigration
+class Version20180223150835 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -14,7 +14,7 @@ class Version20171007045806 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        //$this->addSql('CREATE UNIQUE INDEX UNIQ_F4E2474F5E237E06 ON albums (name)');
+        $this->addSql('ALTER TABLE email_verification ADD user VARCHAR(255) NOT NULL');
     }
 
     /**
@@ -24,6 +24,6 @@ class Version20171007045806 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        //$this->addSql('DROP INDEX UNIQ_F4E2474F5E237E06 ON albums');
+        $this->addSql('ALTER TABLE email_verification DROP user');
     }
 }

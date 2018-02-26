@@ -147,26 +147,30 @@ return [
 		Illuminate\Translation\TranslationServiceProvider::class,
 		Illuminate\Validation\ValidationServiceProvider::class,
 		Illuminate\View\ViewServiceProvider::class,
-		
-		/*
-		 * Application Service Providers...
-		 */
-		App\Providers\AppServiceProvider::class,
-		App\Providers\AuthServiceProvider::class,
-		App\Providers\EventServiceProvider::class,
-		App\Providers\RouteServiceProvider::class,
+
+        /**
+         * Laravel Doctrine
+         */
+        LaravelDoctrine\ORM\DoctrineServiceProvider::class,
 
         /*
 		 * Additional Extensions...
 		 */
-		LaravelDoctrine\ORM\DoctrineServiceProvider::class,
-		Dingo\Api\Provider\LaravelServiceProvider::class,
-		Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider::class,
         LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
         LaravelDoctrine\Migrations\MigrationsServiceProvider::class,
+		Dingo\Api\Provider\LaravelServiceProvider::class,
         //LaravelDoctrine\ACL\AclServiceProvider::class,
-	
+
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+        App\API\V1\Providers\APIServiceProvider::class,
 	],
 	
 	/*
@@ -212,10 +216,18 @@ return [
 		'URL'       => Illuminate\Support\Facades\URL::class,
 		'Validator' => Illuminate\Support\Facades\Validator::class,
 		'View'      => Illuminate\Support\Facades\View::class,
-		
+
+        /**
+         * Laravel Doctrine
+         */
 		'EntityManager' => LaravelDoctrine\ORM\Facades\EntityManager::class,
+        'Registry' => LaravelDoctrine\ORM\Facades\Registry::class,
+        'Doctrine' => LaravelDoctrine\ORM\Facades\Doctrine::class,
+
+        /**
+         * JWT Auth
+         */
 		'JWTAuth'       => Tymon\JWTAuth\Facades\JWTAuth::class,
-	
 	],
 
 ];
