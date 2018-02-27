@@ -115,7 +115,7 @@ class EmailVerification extends EntityAbstract
     /**
      * @return \App\API\V1\Entities\User|null
      */
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }

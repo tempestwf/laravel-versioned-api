@@ -14,10 +14,11 @@ class UserAdapter implements UserInterface
 	 * @var UserInterface $provider
 	 */
 	protected $provider;
-	
-	/**
-	 * @param AuthManager $auth
-	 */
+
+    /**
+     * UserAdapter constructor.
+     * @param User $user
+     */
 	public function __construct(User $user)
 	{
 	}

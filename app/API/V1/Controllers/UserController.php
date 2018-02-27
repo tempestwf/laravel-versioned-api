@@ -4,6 +4,7 @@ namespace App\API\V1\Controllers;
 
 use App\API\V1\Entities\EmailVerification;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\Repositories\RoleRepository;
 use App\API\V1\Transformers\UserTransformer;
 use TempestTools\Scribe\Contracts\Events\SimpleEventContract;
 use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
@@ -42,28 +43,36 @@ class UserController extends APIControllerAbstract
     /**
      * @param SimpleEventContract $event
      */
-    public function onPostStore (SimpleEventContract $event):void
+    public function onPreStore(SimpleEventContract $event):void
     {
+        var_dump($event);
+    }
+
+
+    /**
+     * @param SimpleEventContract $event
+     */
+    public function onPostStore(SimpleEventContract $event):void
+    {
+        $result = $event->getEventArgs()['result'];
+
         if ($event->getEventArgs()['frontEndOptions']['email'] === true) {
-            $result = $event->getEventArgs()['result'];
-            $query = $event->getEventArgs()['params'];
+        $em = app('em');
 
-            $em = app('em');
+        /** @var UserRepository $userRepo */
+        $userRepo = $this->getRepo();
+        $user = $userRepo->findOneBy(['id'=>$result['id']]);
 
-            /** @var UserRepository $userRepo */
-            $userRepo = $this->getRepo();
-            $user = $userRepo->findOneBy(['id'=>$result['id']]);
+        $verification_code = str_random(env('AUTH_PASSWORD_LENGTH', 30));
+        $emailVerification = new EmailVerification();
+        $emailVerification->setVerificationCode($verification_code);
+        $emailVerification->setUser($user);
+        $em->persist($emailVerification);
+        $em->flush();
 
-            $verification_code = str_random(env('AUTH_PASSWORD_LENGTH', 30));
-            $emailVerification = new EmailVerification();
-            $emailVerification->setVerificationCode($verification_code);
-            $emailVerification->setUser($user);
-            $em->persist($emailVerification);
-            $em->flush();
-
-            $user->setEmailVerification($emailVerification);
-            $em->persist($user);
-            $em->flush();
+        $user->setEmailVerification($emailVerification);
+        $em->persist($user);
+        $em->flush();
 
             Mail::send(
                 'emails.activation',
@@ -71,7 +80,7 @@ class UserController extends APIControllerAbstract
                     'user_name' => $result['name'],
                     'verification_code' => $emailVerification->getVerificationCode(),
                     'email' => $result['email'],
-                    'host_name' => env('APP_URL', $_SERVER['HTTP_HOST']),
+                    'host_name' => env('API_DOMAIN', $_SERVER['HTTP_HOST']),
                     'code' => base64_encode($result['email'] . '_' . $emailVerification->getVerificationCode())
                 ],
                 function ($m) use ($result) {
