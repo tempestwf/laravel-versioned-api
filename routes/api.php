@@ -90,6 +90,7 @@ $api->version(
     function () use ($api)
     {
         $api->post('/contexts/guest/users', UserController::class . '@store');
+        $api->get('/activate/{code}', UserController::class . '@activate');
     }
 );
 

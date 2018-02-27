@@ -75,9 +75,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
 	private $roles;
 
     /**
-     * @ORM\Column(type="string", nullable=true, name="email_verification")
-     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification")
-     * @ORM\JoinColumn(name="email_verification", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
      */
     private $emailVerification;
 
@@ -311,12 +309,12 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
-     * @param int $id
+     * @param EmailVerification $emailVerification
      * @return User
      */
-    public function setEmailVerification(int $id): User
+    public function setEmailVerification(EmailVerification $emailVerification): User
     {
-        $this->emailVerification = $id;
+        $this->emailVerification = $emailVerification;
         return $this;
     }
 

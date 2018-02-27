@@ -263,7 +263,7 @@
                             <h1>Hello <?php echo $user_name; ?></h1>
                             <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et.</p>
 
-                            <p><img src="./ZURBemails_files/600x300"></p>
+                            <p><img src=""></p>
                             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
                         </td>
                     </tr>
@@ -273,7 +273,7 @@
             <div class="content">
                 <table bgcolor="">
                     <tbody><tr>
-                        <td class="small" width="20%" style="vertical-align: top; padding-right:10px;"><img src="./ZURBemails_files/75x75"></td>
+                        <td class="small" width="20%" style="vertical-align: top; padding-right:10px;"><img src=""></td>
                         <td>
                             <h4><?php echo $verification_code; ?> <small>This is a note.</small></h4>
                             <p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
@@ -285,7 +285,7 @@
 
             <div class="content"><table bgcolor="">
                     <tbody><tr>
-                        <td class="small" width="20%" style="vertical-align: top; padding-right:10px;"><img src="./ZURBemails_files/75x75"></td>
+                        <td class="small" width="20%" style="vertical-align: top; padding-right:10px;"><img src=""></td>
                         <td>
                             <h4>Title Ipsum <small>This is a note.</small></h4>
                             <p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
@@ -298,14 +298,14 @@
                     <tbody><tr>
                         <td>
 
-                            <p class="callout">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt. <a href="https://zurb.com/playground/projects/responsive-email-templates/newsletter.html#">Do it Now! »</a> </p>
+                            <p class="callout">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt. <a href="">Do it Now! »</a> </p>
                         </td>
                     </tr>
                     </tbody></table></div>
 
             <div class="content"><table bgcolor="">
                     <tbody><tr>
-                        <td class="small" width="20%" style="vertical-align: top; padding-right:10px;"><img src="./ZURBemails_files/75x75"></td>
+                        <td class="small" width="20%" style="vertical-align: top; padding-right:10px;"><img src=""></td>
                         <td>
                             <h4>Title Ipsum <small>This is a note.</small></h4>
                             <p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
@@ -316,7 +316,7 @@
 
             <div class="content"><table bgcolor="">
                     <tbody><tr>
-                        <td class="small" width="20%" style="vertical-align: top; padding-right:10px;"><img src="./ZURBemails_files/75x75"></td>
+                        <td class="small" width="20%" style="vertical-align: top; padding-right:10px;"><img src=""></td>
                         <td>
                             <h4>Title Ipsum <small>This is a note.</small></h4>
                             <p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
@@ -339,7 +339,7 @@
                                                 <tbody><tr>
                                                     <td>
                                                         <h5 class="">Connect with Us:</h5>
-                                                        <p class=""><a href="https://zurb.com/playground/projects/responsive-email-templates/newsletter.html#" class="soc-btn fb">Facebook</a> <a href="https://zurb.com/playground/projects/responsive-email-templates/newsletter.html#" class="soc-btn tw">Twitter</a> <a href="https://zurb.com/playground/projects/responsive-email-templates/newsletter.html#" class="soc-btn gp">Google+</a></p>
+                                                        <p class=""><a href="" class="soc-btn fb">Facebook</a> <a href="" class="soc-btn tw">Twitter</a> <a href="" class="soc-btn gp">Google+</a></p>
                                                     </td>
                                                 </tr>
                                                 </tbody></table>
@@ -351,7 +351,7 @@
                                                     <td>
                                                         <h5 class="">Contact Info:</h5>
                                                         <p>Phone: <strong>408.341.0600</strong><br>
-                                                            Email: <strong><a href="emailto:hseldon@trantor.com">hseldon@trantor.com</a></strong></p>
+                                                            Email: <strong><a href="">mailme@mail.me</a></strong></p>
                                                     </td>
                                                 </tr>
                                                 </tbody></table>
@@ -379,9 +379,9 @@
                     <tbody><tr>
                         <td align="center">
                             <p>
-                                <a href="https://zurb.com/playground/projects/responsive-email-templates/newsletter.html#">Terms</a> |
-                                <a href="https://zurb.com/playground/projects/responsive-email-templates/newsletter.html#">Privacy</a> |
-                                <a href="https://zurb.com/playground/projects/responsive-email-templates/newsletter.html#"><unsubscribe>Unsubscribe</unsubscribe></a>
+                                <a href="">Terms</a> |
+                                <a href="">Privacy</a> |
+                                <a href=""><unsubscribe>Unsubscribe</unsubscribe></a>
                             </p>
                         </td>
                     </tr>

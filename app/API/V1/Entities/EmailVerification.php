@@ -45,8 +45,7 @@ class EmailVerification extends EntityAbstract
     private $verified = false;
 
     /**
-     * @ORM\Column(type="string", nullable=false, name="user")
-     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\User")
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\User", inversedBy="email_verification")
      * @ORM\JoinColumn(name="user", referencedColumnName="id")
      */
     private $user;
@@ -96,9 +95,9 @@ class EmailVerification extends EntityAbstract
     }
 
     /**
-     * @return boolean|NULL
+     * @return bool|null
      */
-    public function getVerified(): ?boolean
+    public function getVerified(): ?bool
     {
         return $this->verified;
     }
@@ -107,7 +106,7 @@ class EmailVerification extends EntityAbstract
      * @param bool $verified
      * @return EmailVerification
      */
-    public function verify(boolean $verified): EmailVerification
+    public function verify(bool $verified): EmailVerification
     {
         $this->verified = $verified;
         return $this;
@@ -122,12 +121,12 @@ class EmailVerification extends EntityAbstract
     }
 
     /**
-     * @param string $id
+     * @param User $user
      * @return EmailVerification
      */
-    public function setUser(string $id): EmailVerification
+    public function setUser(User $user): EmailVerification
     {
-        $this->user = $id;
+        $this->user = $user;
         return $this;
     }
 

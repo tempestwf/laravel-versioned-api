@@ -37,20 +37,6 @@ abstract class APIControllerAbstract extends BaseControllerAbstract implements H
 	{
 		App::register(App\API\V1\Providers\APIServiceProvider::class);
 		parent::__construct();
-
-        /** @var EntityManager $em */
-        /*$em = app('em');
-        $eventManager = $em->getEventManager();
-        $listeners = $em->getEventManager()->getListeners();
-        foreach ($listeners as $listenerActions) {
-            foreach ($listenerActions as $listener) {
-                if(get_class($listener) === ResolveUserDecorator::class) {
-                    //var_dump($listener->wrapped->setUserValue($this->getUser()));
-                    //var_dump($listener->_call('setUsername', $this->getUser()));
-                }
-            }
-        }
-        var_dump($this->getUser()); die;*/
 	}
 
     /**

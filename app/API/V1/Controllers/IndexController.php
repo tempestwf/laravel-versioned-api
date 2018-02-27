@@ -13,15 +13,10 @@ use App;
 
 class IndexController extends APIControllerAbstract
 {
-
-    /** @var JWTAuth $auth */
-    protected  /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $auth;
-
     public function __construct()
     {
         parent::__construct();
 
-        $this->auth = App::make(JWTAuth::class);
     }
 
     public function about(Request $request)
@@ -30,7 +25,7 @@ class IndexController extends APIControllerAbstract
             'success' => true,
             'health' => 'Up and running',
             'version' => 'v1',
-            'message' => 'Welcome to AKI API!'
+            'message' => 'Welcome to Tempest Tools Skeleton!'
         ];
         return response()->json(compact('data'));
     }

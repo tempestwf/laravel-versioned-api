@@ -228,30 +228,31 @@
         }
     </style>
 </head>
-<body bgcolor="#FFFFFF" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
-
-<table class="head-wrap" bgcolor="#999999">
-    <tbody><tr>
-        <td></td>
-        <td class="header container" align="">
-            <div class="content">
-                <table bgcolor="#999999">
-                    <tbody>
-                        <tr>
-                            <td><img src="./ZURBemails_files/saved_resource"></td>
-                            <td align="right"><h6 class="collapse">SweetSpotMotion.com</h6></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </td>
-        <td></td>
-    </tr>
-    </tbody></table>
-        <table class="body-wrap" bgcolor="">
+    <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+        <table class="head-wrap" bgcolor="#999999">
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td class="header container"">
+                        <div class="content">
+                            <table bgcolor="#999999">
+                                <tbody>
+                                    <tr>
+                                        <td><img src="" title="logo placeholder"></td>
+                                        <td align="right"><h6 class="collapse">yourCompany.com</h6></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="body-wrap">
             <tbody><tr>
                 <td></td>
-                <td class="container" align="" bgcolor="#FFFFFF">
+                <td class="container" bgcolor="#FFFFFF">
                     <div class="content">
                         <table>
                             <tbody>
@@ -259,19 +260,19 @@
                                     <td>
                                         <h1>Hello <?php echo $user_name; ?></h1>
                                         <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-                                        <p><img src="./ZURBemails_files/600x300"></p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+                                        <p><img src="" title="image placeholder"></p>
+                                        <p>Your verification code is: <?php echo $verification_code; ?></p>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="content">
-                        <table bgcolor="">
+                        <table>
                             <tbody>
                                 <tr>
                                     <td>
-                                        <p class="callout">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt. <a href="">Activate Now! »</a> </p>
+                                        <p class="callout">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt. <a href="http://<?php echo $host_name?>/activate/<?php echo $code?>">Activate Now!</a> </p>
                                     </td>
                                 </tr>
                             </tbody>
