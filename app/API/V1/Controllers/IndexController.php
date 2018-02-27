@@ -24,8 +24,8 @@ class IndexController extends APIControllerAbstract
         $data = [
             'success' => true,
             'health' => 'Up and running',
-            'version' => 'v1',
-            'message' => 'Welcome to Tempest Tools Skeleton!'
+            'version' => env('APP_VESION', 'v1'),
+            'message' => env('APP_DESCRIPTION', 'Welcome to Tempest Tools Skeleton!')
         ];
         return response()->json(compact('data'));
     }
