@@ -2,9 +2,10 @@
 
 namespace App\API\V1\Controllers;
 
-use App\API\V1\Entities\EmailVerification;
+use App\API\V1\Entities\User;
 use App\API\V1\Repositories\UserRepository;
 use App\API\V1\Repositories\RoleRepository;
+use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Transformers\UserTransformer;
 use TempestTools\Scribe\Contracts\Events\SimpleEventContract;
 use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
@@ -15,19 +16,20 @@ use Mail;
 /** @noinspection LongInheritanceChainInspection */
 class UserController extends APIControllerAbstract
 {
+    /** @var RoleRepository **/
+    private $roleRepo;
 
-    /**
-     * @var RoleRepository
-     */
-    private $role;
+    /** @var EmailVerificationRepository **/
+    private $emailVerificationRepo;
 
-    public function __construct(UserRepository $repo, ToArrayTransformer $arrayTransformer, RoleRepository $role)
+    public function __construct(UserRepository $repo, ToArrayTransformer $arrayTransformer, RoleRepository $roleRepo, EmailVerificationRepository $emailVerificationRepo)
     {
         $this->setRepo($repo);
         $this->setTransformer($arrayTransformer);
         parent::__construct();
 
-        $this->role = $role;
+        $this->roleRepo = $roleRepo;
+        $this->emailVerificationRepo = $emailVerificationRepo;
     }
     /** @noinspection SenselessMethodDuplicationInspection */
 
@@ -49,41 +51,27 @@ class UserController extends APIControllerAbstract
 
     /**
      * @param SimpleEventContract $event
-     */
-    public function onPreStore(SimpleEventContract $event):void
-    {
-        var_dump($event);
-    }
-
-
-    /**
-     * @param SimpleEventContract $event
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function onPostStore(SimpleEventContract $event):void
     {
         $result = $event->getEventArgs()['result'];
 
-        if ($event->getEventArgs()['frontEndOptions']['email'] === true) {
-        $em = app('em');
-
-        /** @var UserRepository $userRepo */
+        /** @var UserRepository $userRepo **/
         $userRepo = $this->getRepo();
+        /** @var User $user **/
         $user = $userRepo->findOneBy(['id'=>$result['id']]);
 
-        $verification_code = str_random(env('AUTH_PASSWORD_LENGTH', 30));
-        $emailVerification = new EmailVerification();
-        $emailVerification->setVerificationCode($verification_code);
-        $emailVerification->setUser($user);
-        $em->persist($emailVerification);
-        $em->flush();
+        /** Set user's default role **/
+        $this->roleRepo->setUserPermissions($user);
 
-        $role = $this->role->findOneBy(['name' => 'user']);
+        /** Create the email verification code **/
+        $emailVerification = $this->emailVerificationRepo->createEmailVerificationCode($user);
 
-        $user->setEmailVerification($emailVerification);
-        $user->addRole($role);
-        $em->persist($user);
-        $em->flush();
-
+        /**
+         * TODO: get this into an email queue
+         */
+        if ($event->getEventArgs()['frontEndOptions']['email'] === true) {
             Mail::send(
                 'emails.activation',
                 [

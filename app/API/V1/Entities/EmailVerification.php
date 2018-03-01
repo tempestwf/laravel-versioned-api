@@ -46,7 +46,7 @@ class EmailVerification extends EntityAbstract
 
     /**
      * @ORM\OneToOne(targetEntity="App\API\V1\Entities\User", inversedBy="email_verification")
-     * @ORM\JoinColumn(name="user", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
 

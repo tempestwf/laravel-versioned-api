@@ -4,6 +4,7 @@ namespace App\API\V1\Repositories;
 
 use App\API\V1\Entities\Permission;
 use App\API\V1\Entities\Role;
+use App\API\V1\Entities\User;
 use App\Repositories\Repository;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -47,13 +48,13 @@ class RoleRepository extends Repository
 
     /**
      * A convenience method to add permissions to a role
-     *
      * @param array $rolePermissions example:
-     * [
+     * * [
      *  'name'=>'user',
      *  'permissions'=>['/user']
      * ]
      * @param bool $delete
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function removePermissions(array $rolePermissions, bool $delete=false):void
     {
@@ -83,6 +84,29 @@ class RoleRepository extends Repository
         }
     }
 
+    /**
+     * Set user's default role
+     *
+     * @param User $user
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function setUserPermissions(User $user):void
+    {
+        $em = $this->getEntityManager();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        try {
+            /** @var Role $role **/
+            $role = $this->findOneBy(['name' => 'user']);
+            if ($role) {
+                $user->addRole($role);
+                $em->persist($user);
+                $em->flush();
+            }
+        } catch (\Exception $e) {
+            $conn->rollBack();
+        }
+    }
 
     /**
      * @return array
