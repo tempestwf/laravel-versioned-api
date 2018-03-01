@@ -16,11 +16,18 @@ use Mail;
 class UserController extends APIControllerAbstract
 {
 
-    public function __construct(UserRepository $repo, ToArrayTransformer $arrayTransformer)
+    /**
+     * @var RoleRepository
+     */
+    private $role;
+
+    public function __construct(UserRepository $repo, ToArrayTransformer $arrayTransformer, RoleRepository $role)
     {
         $this->setRepo($repo);
         $this->setTransformer($arrayTransformer);
         parent::__construct();
+
+        $this->role = $role;
     }
     /** @noinspection SenselessMethodDuplicationInspection */
 
@@ -70,7 +77,10 @@ class UserController extends APIControllerAbstract
         $em->persist($emailVerification);
         $em->flush();
 
+        $role = $this->role->findOneBy(['name' => 'user']);
+
         $user->setEmailVerification($emailVerification);
+        $user->addRole($role);
         $em->persist($user);
         $em->flush();
 
@@ -92,6 +102,10 @@ class UserController extends APIControllerAbstract
         }
     }
 
+    /**
+     * @param $code
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function activate($code)
     {
         if ($code) {
