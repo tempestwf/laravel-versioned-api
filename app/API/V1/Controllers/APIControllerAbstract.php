@@ -14,7 +14,7 @@ use TempestTools\Moat\Contracts\HasIdContract;
 use TempestTools\Common\Contracts\HasUserContract;
 use TempestTools\Common\Laravel\Controller\BaseControllerAbstract;
 
-use App;
+use App, Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
@@ -37,6 +37,12 @@ abstract class APIControllerAbstract extends BaseControllerAbstract implements H
 	{
 		App::register(App\API\V1\Providers\APIServiceProvider::class);
 		parent::__construct();
+
+        $this->middleware(function ($request, $next) {
+            $this->user = Auth::user();
+
+            return $next($request);
+        });
 	}
 
     /**

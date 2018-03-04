@@ -89,11 +89,10 @@ $api->version(
     ],
     function () use ($api)
     {
-        $api->resources([
-            '/contexts/guest/users'=> UserController::class
-        ]);
-        //$api->post('/contexts/guest/users', UserController::class . '@store');
+        $api->post('/contexts/guest/users', UserController::class . '@store');
         $api->get('/activate/{code}', UserController::class . '@activate');
+        $api->get('/auth/authenticate/{provider}', AuthController::class . '@getSocialAuth');
+        $api->get('/auth/authenticate/callback/{provider}', AuthController::class . '@getSocialAuthCallback');
     }
 );
 

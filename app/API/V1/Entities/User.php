@@ -4,6 +4,7 @@ namespace App\API\V1\Entities;
 
 use App\Entities\Traits\Authenticatable;
 use App\API\V1\Entities\EmailVerification;
+use App\API\V1\Entities\SocializeUser;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -76,9 +77,14 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
 
     /**
      * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
+     * @var EmailVerification $emailVerification
      */
     private $emailVerification;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\SocializeUser", mappedBy="user")
+     */
+    private $socialize;
 
     /**
      * @ORM\Id
@@ -324,6 +330,32 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     public function getEmailVerification(): EmailVerification
     {
         return $this->emailVerification;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActivated(): bool
+    {
+        return $this->emailVerification->getVerified();
+    }
+
+    /**
+     * @param \App\API\V1\Entities\SocializeUser $socialize
+     * @return User
+     */
+    public function setSocialize(SocializeUser $socialize): User
+    {
+        $this->socialize = $socialize;
+        return $this;
+    }
+
+    /**
+     * @return \App\API\V1\Entities\SocializeUser
+     */
+    public function getSocialize(): SocializeUser
+    {
+        return $this->socialize;
     }
 
     /**

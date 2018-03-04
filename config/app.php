@@ -171,7 +171,12 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\API\V1\Providers\APIServiceProvider::class,
-	],
+
+        /*
+         * Socialite
+         */
+        Laravel\Socialite\SocialiteServiceProvider::class
+    ],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -228,6 +233,12 @@ return [
          * JWT Auth
          */
 		'JWTAuth'       => Tymon\JWTAuth\Facades\JWTAuth::class,
+
+
+        /**
+         * Socialite
+         */
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class
 	],
 
 ];

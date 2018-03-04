@@ -23,7 +23,7 @@ class Kernel extends HttpKernel
 	 * @var array
 	 */
 	protected $middleware = [
-		CheckForMaintenanceMode::class,
+		CheckForMaintenanceMode::class
 	];
 	
 	/**
@@ -35,7 +35,7 @@ class Kernel extends HttpKernel
 		'web' => [
 			AddQueuedCookiesToResponse::class,
 			StartSession::class,
-			ShareErrorsFromSession::class,
+			ShareErrorsFromSession::class
 		],
 		
 		'api' => [

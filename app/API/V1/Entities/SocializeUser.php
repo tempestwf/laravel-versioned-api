@@ -13,11 +13,11 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 /** @noinspection LongInheritanceChainInspection */
 
 /**
- * @ORM\Entity(repositoryClass="App\API\V1\Repositories\EmailVerificationRepository")
- * @ORM\Table(name="email_verification")
+ * @ORM\Entity(repositoryClass="App\API\V1\Repositories\SocializeUserRepository")
+ * @ORM\Table(name="socialize_user")
  * @ORM\HasLifecycleCallbacks
  */
-class EmailVerification extends EntityAbstract
+class SocializeUser extends EntityAbstract
 {
     use Blameable, Deletable, IpTraceable, Timestampable;
 
@@ -29,23 +29,58 @@ class EmailVerification extends EntityAbstract
     private $id;
 
     /**
+     * @ORM\Column(name="socialize_id", type="string", nullable=true)
+     */
+    private $socializeId;
+
+    /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $verificationCode;
+    private $nickname;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $verified = false;
+    private $avatar;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", inversedBy="email_verification")
+     * @ORM\Column(name="avatar_original", type="string", nullable=true)
+     */
+    private $avatarOriginal;
+
+    /**
+     * @ORM\Column(name="profile_url", type="string", nullable=true)
+     */
+    private $profileUrl;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $type;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $token;
+
+    /**
+     * @ORM\Column(name="refresh_token", type="string", nullable=true)
+     */
+    private $refreshToken;
+
+    /**
+     * @ORM\Column(name="expires_in", type="integer", nullable=true)
+     */
+    private $expiresIn;
+
+    /**
+     * @ORM\OneToOne(targetEntity="User", inversedBy="socialize")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
 
     /**
-     * EmailVerification constructor.
+     * SocializeUser constructor.
      */
     public function __construct()
     {
@@ -62,48 +97,156 @@ class EmailVerification extends EntityAbstract
 
     /**
      * @param int $id
-     * @return EmailVerification
+     * @return SocializeUser
      */
-    public function setId(int $id): EmailVerification
+    public function setId(int $id): SocializeUser
     {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * @return string|NULL
+     * @return mixed
      */
-    public function getVerificationCode(): ?string
+    public function getSocializeId()
     {
-        return $this->verificationCode;
+        return $this->socializeId;
     }
 
     /**
-     * @param string $verificationCode
-     * @return EmailVerification
+     * @param mixed $socializeId
      */
-    public function setVerificationCode(string $verificationCode): EmailVerification
+    public function setSocializeId($socializeId): void
     {
-        $this->verificationCode = $verificationCode;
-        return $this;
+        $this->socializeId = $socializeId;
     }
 
     /**
-     * @return bool|null
+     * @return mixed
      */
-    public function getVerified(): ?bool
+    public function getNickname()
     {
-        return $this->verified;
+        return $this->nickname;
     }
 
     /**
-     * @param bool $verified
-     * @return EmailVerification
+     * @param mixed $nickname
      */
-    public function verify(bool $verified): EmailVerification
+    public function setNickname($nickname): void
     {
-        $this->verified = $verified;
-        return $this;
+        $this->nickname = $nickname;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param mixed $avatar
+     */
+    public function setAvatar($avatar): void
+    {
+        $this->avatar = $avatar;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAvatarOriginal()
+    {
+        return $this->avatarOriginal;
+    }
+
+    /**
+     * @param mixed $avatarOriginal
+     */
+    public function setAvatarOriginal($avatarOriginal): void
+    {
+        $this->avatarOriginal = $avatarOriginal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProfileUrl()
+    {
+        return $this->profileUrl;
+    }
+
+    /**
+     * @param mixed $profileUrl
+     */
+    public function setProfileUrl($profileUrl): void
+    {
+        $this->profileUrl = $profileUrl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token): void
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
+    }
+
+    /**
+     * @param mixed $refreshToken
+     */
+    public function setRefreshToken($refreshToken): void
+    {
+        $this->refreshToken = $refreshToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpiresIn()
+    {
+        return $this->expiresIn;
+    }
+
+    /**
+     * @param mixed $expiresIn
+     */
+    public function setExpiresIn($expiresIn): void
+    {
+        $this->expiresIn = $expiresIn;
     }
 
     /**
@@ -115,10 +258,10 @@ class EmailVerification extends EntityAbstract
     }
 
     /**
-     * @param User $user
-     * @return EmailVerification
+     * @param \App\API\V1\Entities\User $user
+     * @return SocializeUser
      */
-    public function setUser(User $user): EmailVerification
+    public function setUser(User $user): SocializeUser
     {
         $this->user = $user;
         return $this;

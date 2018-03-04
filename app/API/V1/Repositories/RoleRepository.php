@@ -103,6 +103,7 @@ class RoleRepository extends Repository
                 $em->persist($user);
                 $em->flush();
             }
+            $conn->commit();
         } catch (\Exception $e) {
             $conn->rollBack();
         }

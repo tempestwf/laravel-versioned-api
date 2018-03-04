@@ -32,7 +32,6 @@ class EmailVerificationRepository extends Repository
             $em->persist($emailVerification);
             $em->flush();
             $conn->commit();
-            $conn->commit(); /* i do not know why this one needs 2 $conn->commit()s */
         } catch (\Exception $e) {
             $conn->rollBack();
         }
