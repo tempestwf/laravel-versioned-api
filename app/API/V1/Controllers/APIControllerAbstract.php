@@ -6,6 +6,8 @@ use Dingo\Api\Exception\ValidationHttpException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
+use LaravelDoctrine\Extensions\GedmoExtension;
+use LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use TempestTools\Moat\Contracts\HasIdContract;
@@ -17,6 +19,12 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\IpTraceable\IpTraceableListener;
+use Doctrine\ORM\EntityManager;
+use LaravelDoctrine\Extensions\ResolveUserDecorator;
+use Doctrine\Common\EventManager;
 
 abstract class APIControllerAbstract extends BaseControllerAbstract implements HasUserContract
 {

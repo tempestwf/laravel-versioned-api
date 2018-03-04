@@ -11,6 +11,8 @@
 |
 */
 
+use App\API\V1\Controllers\IndexController;
+use App\API\V1\Controllers\AuthController;
 use App\API\V1\Controllers\ContextController;
 use App\API\V1\Controllers\PermissionController;
 use App\API\V1\Controllers\RoleController;
@@ -72,9 +74,27 @@ $api->version(
 	],
 	function () use ($api)
 	{
-		$api->post('auth/authenticate', 'App\API\V1\Controllers\AuthController@authenticate');
-		$api->get('auth/refresh', 'App\API\V1\Controllers\AuthController@refresh');
+        $api->get('/', IndexController::class . '@about');
+		$api->post('auth/authenticate', AuthController::class . '@authenticate');
+		$api->get('auth/refresh',  AuthController::class . '@refresh');
 	}
+);
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['prime.controller'],
+        'provider'   => 'V1',
+        'ttPath'=>['guest'],
+    ],
+    function () use ($api)
+    {
+        $api->resources([
+            '/contexts/guest/users'=> UserController::class
+        ]);
+        //$api->post('/contexts/guest/users', UserController::class . '@store');
+        $api->get('/activate/{code}', UserController::class . '@activate');
+    }
 );
 
 $api->version(
@@ -86,7 +106,12 @@ $api->version(
 	],
 	function () use ($api)
 	{
-		$api->get('auth/me', 'App\API\V1\Controllers\UserController@me');
+        $api->resources([
+            '/contexts/user/albums'=> AlbumController::class,
+            '/contexts/user/artists'=>ArtistController::class,
+            '/contexts/user/users'=> UserController::class
+        ]);
+		$api->get('auth/me', UserController::class . '@me');
 	}
 );
 

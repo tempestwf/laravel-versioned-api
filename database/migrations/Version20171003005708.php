@@ -144,5 +144,7 @@ class Version20171003005708 extends AbstractMigration
         $em->remove($adminRole);
         $superAdminRole = $this->em->getRepository(Role::class)->findBy(['name'=>'super-admin']);
         $em->remove($superAdminRole);
+
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
     }
 }
