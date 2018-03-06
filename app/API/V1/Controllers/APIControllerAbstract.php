@@ -6,8 +6,6 @@ use Dingo\Api\Exception\ValidationHttpException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use LaravelDoctrine\Extensions\GedmoExtension;
-use LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use TempestTools\Moat\Contracts\HasIdContract;
@@ -19,12 +17,6 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
-use Gedmo\Blameable\BlameableListener;
-use Gedmo\IpTraceable\IpTraceableListener;
-use Doctrine\ORM\EntityManager;
-use LaravelDoctrine\Extensions\ResolveUserDecorator;
-use Doctrine\Common\EventManager;
 
 abstract class APIControllerAbstract extends BaseControllerAbstract implements HasUserContract
 {
@@ -40,7 +32,6 @@ abstract class APIControllerAbstract extends BaseControllerAbstract implements H
 
         $this->middleware(function ($request, $next) {
             $this->user = Auth::user();
-
             return $next($request);
         });
 	}
@@ -56,17 +47,17 @@ abstract class APIControllerAbstract extends BaseControllerAbstract implements H
 		{
 			if(($user = JWTAuth::parseToken()->authenticate()) === FALSE)
 			{
-				throw new UnauthorizedHttpException('user_not_found');
+				throw new UnauthorizedHttpException('user_not_found', trans('auth.user_not_found'));
 			}
 		} catch(TokenExpiredException $e)
 		{
-			throw new UnauthorizedHttpException('token_expired');
+			throw new UnauthorizedHttpException('token_expired', trans('auth.user_not_found'));
 		} catch(TokenInvalidException $e)
 		{
-			throw new UnauthorizedHttpException('token_invalid');
+			throw new UnauthorizedHttpException('token_invalid', trans('auth.user_not_found'));
 		} catch(JWTException $e)
 		{
-			throw new BadRequestHttpException('token_absent');
+			throw new BadRequestHttpException(trans('auth.user_not_found'));
 		}
 		
 		return $user;

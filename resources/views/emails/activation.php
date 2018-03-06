@@ -8,7 +8,7 @@
     <style type="text/css">
         /* -------------------------------------
 		GLOBAL
-------------------------------------- */
+        ------------------------------------- */
         * {
             margin:0;
             padding:0;
@@ -259,9 +259,9 @@
                                 <tr>
                                     <td>
                                         <h1>Hello <?php echo $user_name; ?></h1>
-                                        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+                                        <p class="lead"><?php echo trans('email.body_account_activation'); ?></p>
                                         <p><img src="" title="image placeholder"></p>
-                                        <p>Your verification code is: <?php echo $verification_code; ?></p>
+                                        <p><?php echo trans('email.your_verification_code'); ?>: <?php echo $verification_code; ?></p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -272,7 +272,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <p class="callout">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt. <a href="http://<?php echo $host_name?>/activate/<?php echo $code?>">Activate Now!</a> </p>
+                                        <p class="callout"><?php echo trans('email.verification_instruction'); ?> <a href="http://<?php echo $host_name?>/activate/<?php echo $code?>"><?php echo trans('email.activate_now'); ?></a></p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -295,9 +295,9 @@
                                     <tr>
                                         <td align="center">
                                             <p>
-                                                <a href="">Terms</a> |
-                                                <a href="">Privacy</a> |
-                                                <a href=""><unsubscribe>Unsubscribe</unsubscribe></a>
+                                                <a href=""><?php echo trans('email.terms'); ?></a> |
+                                                <a href=""><?php echo trans('email.privacy'); ?></a> |
+                                                <a href=""><unsubscribe><?php echo trans('email.unsubscribe'); ?></unsubscribe></a>
                                             </p>
                                         </td>
                                     </tr>

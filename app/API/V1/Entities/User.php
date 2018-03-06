@@ -48,6 +48,12 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      */
     protected $address;
 
+    /**
+     * @ORM\Column(type="string", nullable=false, name="locale", options={"default"="en"})
+     * @var string $locale
+     */
+    protected $locale;
+
 	/**
 	 * @ORM\Column(type="string", nullable=true, name="job")
 	 * @var string $job
@@ -218,6 +224,24 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
+     * @param string $locale
+     * @return User
+     */
+    public function setLocale(string $locale): User
+    {
+        $this->locale = $locale;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    /**
      * @return Collection|NULL
      */
     public function getAlbums(): ?Collection
@@ -376,6 +400,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 'name' => 'required|max:255',
                                 'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
                                 'password' => 'required|min:6',
+                                'locale' => 'required',
                             ],
                             'messages'=>NULL,
                             'customAttributes'=>NULL,

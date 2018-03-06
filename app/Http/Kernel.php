@@ -11,7 +11,9 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use TempestTools\Moat\Http\Middleware\AclMiddleware;
 use TempestTools\Common\Laravel\Http\Middleware\BasicDataExtractorMiddleware;
+use TempestTools\Common\Laravel\Http\Middleware\LocalizationMiddleware;
 use TempestTools\Scribe\Laravel\Http\Middleware\PrimeControllerMiddleware;
+
 
 class Kernel extends HttpKernel
 {
@@ -55,6 +57,7 @@ class Kernel extends HttpKernel
 		'throttle'   => ThrottleRequests::class,
         'acl' => AclMiddleware::class,
         'basic.extractor' => BasicDataExtractorMiddleware::class,
-        'prime.controller' => PrimeControllerMiddleware::class
+        'prime.controller' => PrimeControllerMiddleware::class,
+        'localization' => LocalizationMiddleware::class
 	];
 }

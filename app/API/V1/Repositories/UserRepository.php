@@ -36,6 +36,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
             $user = new User();
             $user->setName($socialiteUser->name);
             $user->setEmail($socialiteUser->email);
+            $user->setLocale('en');
             $user->setPassword(Hash::make($socialiteUser->token));
 
             $socializeUser = new SocializeUser();

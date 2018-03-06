@@ -26,6 +26,7 @@ use App\API\V1\Controllers\UserController;
 use TempestTools\Moat\Constants\PermissionsTemplatesConstants;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 
+
 $api = app(Router::class);
 
 // For testing:
@@ -99,7 +100,7 @@ $api->version(
 $api->version(
 	'V1',
 	[
-		'middleware' => ['api.auth', 'basic.extractor', 'acl'],
+		'middleware' => ['api.auth', 'basic.extractor', 'acl', 'localization'],
 		'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)]
 	],
@@ -119,7 +120,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
         'provider'   => 'V1',
         'permissions' => [],
         'ttPath'=>['guest'],
@@ -141,7 +142,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['user'],
@@ -161,7 +162,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
         'provider'   => 'V1',
         // For reasons I can not figure out dingo with laravel doesn't always put a slash at the front of a uri internally. It's unreliable so I made this template to compensate
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_FORCE_FIRST_SLASH)],
@@ -178,7 +179,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_FORCE_FIRST_SLASH)],
         'ttPath'=>['admin/users'],
@@ -194,7 +195,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
         'provider'   => 'V1',
         'permissions' => [],
         'ttPath'=>['guest/artists'],
@@ -210,7 +211,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['admin'],
@@ -230,7 +231,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['superAdmin'],

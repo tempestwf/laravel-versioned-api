@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e12081740d286507b0ad12629e778964",
+    "content-hash": "1c1a423b16c4b2633f579a936022c6b5",
     "packages": [
+        {
+            "name": "ageras/laravel-onesky",
+            "version": "v0.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ageras-com/laravel-onesky.git",
+                "reference": "f1532543d13efb986872fe7f87e7dc999b401f3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ageras-com/laravel-onesky/zipball/f1532543d13efb986872fe7f87e7dc999b401f3e",
+                "reference": "f1532543d13efb986872fe7f87e7dc999b401f3e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^5.2",
+                "illuminate/support": "^5.2",
+                "onesky/api-library-php5": "^1.0",
+                "vlucas/phpdotenv": "^2.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.1",
+                "phpspec/phpspec": "^2.5",
+                "phpunit/phpunit": "^5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ageras\\LaravelOneSky\\": "src/",
+                    "Ageras\\LaravelOneSky\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolai Østby",
+                    "email": "nicolaiostby@gmail.com"
+                }
+            ],
+            "description": "Use artisan commands to keep track of your onesky translations",
+            "time": "2016-05-12T14:04:01+00:00"
+        },
         {
             "name": "beberlei/DoctrineExtensions",
             "version": "v1.0.21",
@@ -1515,16 +1560,16 @@
         },
         {
             "name": "laravel-doctrine/extensions",
-            "version": "1.0.13",
+            "version": "1.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-doctrine/extensions.git",
-                "reference": "92af7843a83bc4841b956746d06f97cf320a1b74"
+                "reference": "a2e7896100559ecc64504252dbc74ec18ad59813"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel-doctrine/extensions/zipball/92af7843a83bc4841b956746d06f97cf320a1b74",
-                "reference": "92af7843a83bc4841b956746d06f97cf320a1b74",
+                "url": "https://api.github.com/repos/laravel-doctrine/extensions/zipball/a2e7896100559ecc64504252dbc74ec18ad59813",
+                "reference": "a2e7896100559ecc64504252dbc74ec18ad59813",
                 "shasum": ""
             },
             "require": {
@@ -1572,7 +1617,7 @@
                 "laravel",
                 "orm"
             ],
-            "time": "2018-02-28T12:35:17+00:00"
+            "time": "2018-03-01T17:07:28+00:00"
         },
         {
             "name": "laravel-doctrine/migrations",
@@ -2502,6 +2547,41 @@
             "time": "2017-05-04T11:12:50+00:00"
         },
         {
+            "name": "onesky/api-library-php5",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/onesky/api-library-php5.git",
+                "reference": "0b2907a4c62def5fc7590af467d8ec7574494b5a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/onesky/api-library-php5/zipball/0b2907a4c62def5fc7590af467d8ec7574494b5a",
+                "reference": "0b2907a4c62def5fc7590af467d8ec7574494b5a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Onesky\\Api\\": "src/Onesky/Api/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP interface for OneSky Platform API",
+            "homepage": "https://github.com/onesky/api-library-php5",
+            "time": "2015-06-09T02:00:31+00:00"
+        },
+        {
             "name": "paragonie/random_compat",
             "version": "v2.0.11",
             "source": {
@@ -3224,16 +3304,16 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v3.4.4",
+            "version": "v3.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "26b87b6bca8f8f797331a30b76fdae5342dc26ca"
+                "reference": "58990682ac3fdc1f563b7e705452921372aad11d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/26b87b6bca8f8f797331a30b76fdae5342dc26ca",
-                "reference": "26b87b6bca8f8f797331a30b76fdae5342dc26ca",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/58990682ac3fdc1f563b7e705452921372aad11d",
+                "reference": "58990682ac3fdc1f563b7e705452921372aad11d",
                 "shasum": ""
             },
             "require": {
@@ -3283,7 +3363,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-03T07:37:34+00:00"
+            "time": "2018-02-14T10:03:57+00:00"
         },
         {
             "name": "symfony/finder",
@@ -3818,16 +3898,16 @@
         },
         {
             "name": "symfony/serializer",
-            "version": "v2.8.34",
+            "version": "v2.8.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/serializer.git",
-                "reference": "0af616fd41c3d28858866670e6a96861c023a015"
+                "reference": "c3cfcfcdd154d7465895ba4b425de0a2a6f4326c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/serializer/zipball/0af616fd41c3d28858866670e6a96861c023a015",
-                "reference": "0af616fd41c3d28858866670e6a96861c023a015",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/c3cfcfcdd154d7465895ba4b425de0a2a6f4326c",
+                "reference": "c3cfcfcdd154d7465895ba4b425de0a2a6f4326c",
                 "shasum": ""
             },
             "require": {
@@ -3878,7 +3958,7 @@
             ],
             "description": "Symfony Serializer Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-10T11:05:18+00:00"
+            "time": "2018-02-14T13:58:24+00:00"
         },
         {
             "name": "symfony/translation",

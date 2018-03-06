@@ -85,7 +85,7 @@ class UserController extends APIControllerAbstract
                     $m
                         ->from('jerome@sweetspotmotion.com', 'SweetSpotMotion')
                         ->to($result['email'], $result['name'])
-                        ->subject('Account Activation');
+                        ->subject(trans('email.subject_account_activation'));
             });
         }
     }
@@ -106,7 +106,7 @@ class UserController extends APIControllerAbstract
             $emailVerification = $user->getEmailVerification();
             if ($emailVerification->getVerified())
             {
-                return response()->json(['error' => 'already_activated'], 401);
+                return response()->json(['error' => trans('user.activate_already_activated')], 401);
             }
             else if ($emailVerification->getVerificationCode() === $verification[1])
             {
@@ -114,17 +114,17 @@ class UserController extends APIControllerAbstract
                 $emailVerification->verify(true);
                 $em->persist($emailVerification);
                 $em->flush();
-                $response = ['success' => true, 'message' => 'validated_email_success'];
+                $response = ['success' => true, 'message' => trans('user.activate_validated_email_success')];
                 return response()->json(compact('response'));
             }
             else
             {
-                return response()->json(['error' => 'invalid_credentials'], 401);
+                return response()->json(['error' => trans('user.activate_invalid_credentials')], 401);
             }
         }
         else
         {
-            throw new BadRequestHttpException('verification_code_needed.');
+            throw new BadRequestHttpException(trans('user.activate_verification_code_needed'));
         }
     }
 

@@ -57,21 +57,21 @@ class AuthController extends APIControllerAbstract
         /** @var User $user */
 		$user = $this->userRepo->findOneBy(['email'=>$credentials['email']]);
         if (!Hash::check($credentials['password'], $user->getPassword())) {
-            return response()->json(['error' => 'invalid_credentials'], 422);
+            return response()->json(['error' => trans('auth.invalid_credentials')], 422);
         }
 
         if ($user->isActivated() === false) {
-            return response()->json(['error' => 'email_not_activated'], 403);
+            return response()->json(['error' => trans('auth.email_not_activated')], 403);
         }
 
         try {
 			if(($token = $this->auth->attempt($credentials)) === false) {
-				return response()->json(['error' => 'invalid_credentials'], 401);
+				return response()->json(['error' => trans('auth.invalid_credentials')], 401);
 			}
 		} catch(JWTException $e) {
-			return response()->json(['error' => 'could_not_create_token'], 500);
+			return response()->json(['error' => trans('auth.could_not_create_token')], 500);
 		}
-		
+
 		return response()->json(compact('token'));
 	}
 
@@ -83,13 +83,13 @@ class AuthController extends APIControllerAbstract
 	public function refresh()
 	{
 		if($this->auth->getToken() === FALSE) {
-			throw new BadRequestHttpException('token_absent');
+			throw new BadRequestHttpException(trans('auth.token_absent'));
 		}
 		
 		try {
 			$token = $this->auth->refresh();
 		} catch(TokenInvalidException $e) {
-			throw new UnauthorizedHttpException('token_invalid');
+			throw new UnauthorizedHttpException(trans('auth.token_invalid'));
 		}
 		
 		return response()->json(compact('token'));
@@ -102,7 +102,7 @@ class AuthController extends APIControllerAbstract
     public function getSocialAuth(string $provider)
     {
         if(!config("services.$provider"))
-            throw new BadRequestHttpException('no_such_provider');
+            throw new BadRequestHttpException(trans('auth.no_such_provider'));
 
         /** @var \Laravel\Socialite\Two\FacebookProvider $redirect */
         $redirect = $this->socialite->driver($provider)->stateless();
@@ -139,14 +139,14 @@ class AuthController extends APIControllerAbstract
             if ($user) {
                 try {
                     if(($token = $this->auth->attempt($credentials)) === FALSE) {
-                        return response()->json(['error' => 'invalid_credentials'], 401);
+                        return response()->json(['error' => trans('auth.invalid_credentials')], 401);
                     }
                 } catch(JWTException $e) {
-                    return response()->json(['error' => 'could_not_create_token'], 500);
+                    return response()->json(['error' => trans('auth.could_not_create_token')], 500);
                 }
             }
         } else {
-            throw new BadRequestHttpException('something_went_wrong');
+            throw new BadRequestHttpException(trans('auth.something_went_wrong'));
         }
 
         return response()->json(compact('token'));
@@ -160,11 +160,11 @@ class AuthController extends APIControllerAbstract
         /** @var User $user */
         $user = $this->userRepo->findOneBy(['email'=>$credentials['email']]);
         if (!$user) {
-            return response()->json(['error' => 'invalid_email_credentials'], 422);
+            return response()->json(['error' => trans('auth.invalid_email_credentials')], 422);
         }
 
         if ($user->isActivated() === false) {
-            return response()->json(['error' => 'email_not_activated'], 403);
+            return response()->json(['error' => trans('auth.email_not_activated')], 403);
         }
 
 
