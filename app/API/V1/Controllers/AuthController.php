@@ -127,9 +127,10 @@ class AuthController extends APIControllerAbstract
             if (!$user) {
                 /** Generate the user based on the socialite data **/
                 $this->userRepo->registerSocializeUser($provider, $socializeUser);
+                /** @var User $user */
                 $user = $this->userRepo->findOneBy(['email' => $socializeUser->email]);
                 /** Set user's default role **/
-                $this->roleRepo->setUserPermissions($user);
+                $this->roleRepo->addUserRoles($user);
             }
 
             $credentials = [
