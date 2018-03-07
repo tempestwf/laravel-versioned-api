@@ -83,7 +83,7 @@ class UserController extends APIControllerAbstract
                 ],
                 function ($m) use ($result) {
                     $m
-                        ->from('jerome@sweetspotmotion.com', 'SweetSpotMotion')
+                        ->from(env('MAIL_FROM_EMAIL', 'from@name.com'), env('MAIL_FROM_NAME', 'from name'))
                         ->to($result['email'], $result['name'])
                         ->subject(trans('email.subject_account_activation'));
             });
