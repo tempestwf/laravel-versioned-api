@@ -63,7 +63,7 @@ class UserController extends APIControllerAbstract
         $user = $userRepo->findOneBy(['id'=>$result['id']]);
 
         /** Set user's default role **/
-        $this->roleRepo->setUserPermissions($user);
+        $this->roleRepo->addUserRoles($user);
 
         /** Create the email verification code **/
         $emailVerification = $this->emailVerificationRepo->createEmailVerificationCode($user);

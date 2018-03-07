@@ -88,17 +88,17 @@ class RoleRepository extends Repository
      * Set user's default role
      *
      * @param User $user
+     * @param array $roles
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function setUserPermissions(User $user):void
+    public function addUserRoles(User $user, array $roles = ['user']):void
     {
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
         $conn->beginTransaction();
         try {
-            /** @var Role $role **/
-            $role = $this->findOneBy(['name' => 'user']);
-            if ($role) {
+            $roles = $this->findIn('name', $roles);
+            foreach ($roles as $role) {
                 $user->addRole($role);
                 $em->persist($user);
                 $em->flush();
