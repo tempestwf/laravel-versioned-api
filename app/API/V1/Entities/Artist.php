@@ -22,6 +22,7 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\ArtistRepository")
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="name_unq", columns={"name"})})
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Artist extends EntityAbstract
@@ -36,6 +37,7 @@ class Artist extends EntityAbstract
     private $id;
 
     /**
+     * @Gedmo\Versioned
      * @ORM\Column(type="string", nullable=true, unique=true)
      */
     private $name;

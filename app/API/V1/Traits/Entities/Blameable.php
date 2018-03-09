@@ -17,7 +17,7 @@ trait Blameable
     /**
      * @var User
      * @Gedmo\Blameable(on="create")
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", cascade={"all"}, fetch="EAGER")
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      */
     protected $createdBy;
@@ -25,7 +25,7 @@ trait Blameable
     /**
      * @var User
      * @Gedmo\Blameable(on="update")
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", cascade={"all"}, fetch="EAGER")
      * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
      */
     protected $updatedBy;

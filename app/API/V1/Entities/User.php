@@ -101,15 +101,16 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
 	private $roles;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\SocializeUser", mappedBy="user")
+     * @var SocializeUser $socialize
+     */
+    private $socialize;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
      * @var EmailVerification $emailVerification
      */
     private $emailVerification;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\SocializeUser", mappedBy="user")
-     */
-    private $socialize;
 
     /**
      * User constructor.

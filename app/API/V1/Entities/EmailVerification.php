@@ -42,7 +42,7 @@ class EmailVerification extends EntityAbstract
     private $verified = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", inversedBy="email_verification")
+     * @ORM\OneToOne(targetEntity="User", inversedBy="emailVerification")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
