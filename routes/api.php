@@ -100,7 +100,7 @@ $api->version(
 $api->version(
 	'V1',
 	[
-		'middleware' => ['api.auth', 'basic.extractor', 'acl', 'localization'],
+		'middleware' => ['jwt.auth', 'api.auth', 'basic.extractor', 'acl', 'localization'],
 		'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)]
 	],
@@ -142,7 +142,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
+        'middleware' => ['jwt.auth', 'basic.extractor', 'prime.controller', 'acl', 'localization'],
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['user'],

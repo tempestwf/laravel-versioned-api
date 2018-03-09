@@ -3,7 +3,7 @@
 namespace App\Entities;
 
 use App\Entities\Traits\Authenticatable;
-use TempestTools\Common\Entities\Traits\Deletable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
 use TempestTools\Common\Entities\Traits\Blameable;
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
@@ -12,7 +12,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 class User extends Entity implements AuthenticatableContract
 {
-	use Authenticatable, Blameable, Deletable, IpTraceable, Timestampable;
+	use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable;
 	
 	/**
 	 * @ORM\Id
