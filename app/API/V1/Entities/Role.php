@@ -4,8 +4,13 @@ namespace App\API\V1\Entities;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping AS ORM;
-use TempestTools\Moat\Contracts\RoleContract;
 use Doctrine\Common\Collections\ArrayCollection;
+
+use TempestTools\Common\Entities\Traits\Deletable;
+use TempestTools\Common\Entities\Traits\Blameable;
+use TempestTools\Common\Entities\Traits\IpTraceable;
+use TempestTools\Common\Entities\Traits\Timestampable;
+use TempestTools\Moat\Contracts\RoleContract;
 use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 
@@ -16,7 +21,7 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  */
 class Role extends EntityAbstract implements RoleContract
 {
-    use HasPermissionsOptimizedTrait;
+    use HasPermissionsOptimizedTrait, Blameable, Deletable, IpTraceable, Timestampable;
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

@@ -221,5 +221,4 @@ return [
 		'json' => Dingo\Api\Http\Response\Format\Json::class,
 	
 	],
-
 ];

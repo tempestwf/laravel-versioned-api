@@ -1,9 +1,15 @@
 <?php
 namespace App\API\V1\Entities;
+
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
+use TempestTools\Common\Entities\Traits\Deletable;
+use TempestTools\Common\Entities\Traits\Blameable;
+use TempestTools\Common\Entities\Traits\IpTraceable;
+use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
@@ -17,6 +23,8 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  */
 class Album extends EntityAbstract
 {
+    use Blameable, Deletable, IpTraceable, Timestampable;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

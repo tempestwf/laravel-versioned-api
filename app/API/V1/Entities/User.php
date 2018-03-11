@@ -2,20 +2,28 @@
 
 namespace App\API\V1\Entities;
 
-use App\Entities\Traits\Deletable;
+use App\Entities\Traits\Authenticatable;
+use App\API\V1\Entities\EmailVerification;
+use App\API\V1\Entities\SocializeUser;
+
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping AS ORM;
+
+use TempestTools\Common\Entities\Traits\Deletable;
+use TempestTools\Common\Entities\Traits\Blameable;
+use TempestTools\Common\Entities\Traits\IpTraceable;
+use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Moat\Contracts\HasRolesContract;
 use TempestTools\Moat\Contracts\HasIdContract;
 use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use App\Entities\Traits\Authenticatable;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 use TempestTools\Moat\Contracts\HasPermissionsContract;
+
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -26,7 +34,7 @@ use TempestTools\Moat\Contracts\HasPermissionsContract;
  */
 class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, HasIdContract, ExtractableContract, AuthenticatableContract
 {
-    use Authenticatable, HasPermissionsOptimizedTrait, Deletable, ExtractorOptionsTrait;
+    use Authenticatable, Blameable, Deletable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait;
 	
 	/**
 	 * @ORM\Column(type="string", nullable=true, name="name")
@@ -39,6 +47,12 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      * @var string $name
      */
     protected $address;
+
+    /**
+     * @ORM\Column(type="string", nullable=false, name="locale", options={"default"="en"})
+     * @var string $locale
+     */
+    protected $locale;
 
 	/**
 	 * @ORM\Column(type="string", nullable=true, name="job")
@@ -67,6 +81,16 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
 	 */
 	private $roles;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
+     * @var EmailVerification $emailVerification
+     */
+    private $emailVerification;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\SocializeUser", mappedBy="user")
+     */
+    private $socialize;
 
     /**
      * @ORM\Id
@@ -181,7 +205,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
         return $this->permissions;
     }
 
-
     /**
      * @param string $address
      * @return User
@@ -198,6 +221,24 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     public function getAddress(): ?string
     {
         return $this->address;
+    }
+
+    /**
+     * @param string $locale
+     * @return User
+     */
+    public function setLocale(string $locale): User
+    {
+        $this->locale = $locale;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale(): ?string
+    {
+        return $this->locale;
     }
 
     /**
@@ -297,6 +338,49 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
         return $this;
     }
 
+    /**
+     * @param EmailVerification $emailVerification
+     * @return User
+     */
+    public function setEmailVerification(EmailVerification $emailVerification): User
+    {
+        $this->emailVerification = $emailVerification;
+        return $this;
+    }
+
+    /**
+     * @return \App\API\V1\Entities\EmailVerification
+     */
+    public function getEmailVerification(): EmailVerification
+    {
+        return $this->emailVerification;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActivated(): bool
+    {
+        return $this->emailVerification->getVerified();
+    }
+
+    /**
+     * @param \App\API\V1\Entities\SocializeUser $socialize
+     * @return User
+     */
+    public function setSocialize(SocializeUser $socialize): User
+    {
+        $this->socialize = $socialize;
+        return $this;
+    }
+
+    /**
+     * @return \App\API\V1\Entities\SocializeUser
+     */
+    public function getSocialize(): SocializeUser
+    {
+        return $this->socialize;
+    }
 
     /**
      * @return array
@@ -313,9 +397,10 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'settings'=>[
                         'validate'=>[ // Validates name and email and inherited by the rest of the config
                             'rules'=>[
-                                'name'=>'required|min:2',
-                                'email'=>'required|email',
-                                'password'=>'required|min:8'
+                                'name' => 'required|max:255',
+                                'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
+                                'password' => 'required|min:6',
+                                'locale' => 'required',
                             ],
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
@@ -338,9 +423,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'settings'=>[
                         'validate'=>[ // The fields here are not required when doing an update, so change them to not required.
                             'rules'=>[
-                                'name'=>'min:2',
-                                'email'=>'email',
-                                'password'=>'min:8'
+                                'name' => 'required|max:255',
+                                'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
+                                'password' => 'required|min:6',
                             ],
                         ],
                     ],
@@ -459,6 +544,24 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 ],
                 'read'=>[ // Same as default create
                     'extends'=>[':superAdmin:create']
+                ],
+            ],
+            'guest'=>[
+                'create'=>[
+                    'allowed'=>true,
+                    'extends'=>[':default:create'],
+                ],
+                'update'=>[
+                    'allowed'=>false,
+                    'extends'=>[':default:create'],
+                ],
+                'delete'=>[
+                    'allowed'=>false,
+                    'extends'=>[':default:create'],
+                ],
+                'read'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>false,
                 ],
             ],
             // Below here is for testing purposes only
