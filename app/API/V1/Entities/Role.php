@@ -3,11 +3,13 @@
 namespace App\API\V1\Entities;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping AS ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-use TempestTools\Common\Entities\Traits\Deletable;
-use TempestTools\Common\Entities\Traits\Blameable;
+use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
+
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Moat\Contracts\RoleContract;
@@ -18,10 +20,11 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\RoleRepository")
  * @ORM\Table(name="roles")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Role extends EntityAbstract implements RoleContract
 {
-    use HasPermissionsOptimizedTrait, Blameable, Deletable, IpTraceable, Timestampable;
+    use HasPermissionsOptimizedTrait, Blameable, SoftDeleteable, IpTraceable, Timestampable;
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

@@ -2,10 +2,12 @@
 namespace App\API\V1\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\API\V1\Entities\User;
-use TempestTools\Common\Entities\Traits\Deletable;
-use TempestTools\Common\Entities\Traits\Blameable;
+use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
+
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
@@ -16,10 +18,11 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\EmailVerificationRepository")
  * @ORM\Table(name="email_verification")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class EmailVerification extends EntityAbstract
 {
-    use Blameable, Deletable, IpTraceable, Timestampable;
+    use Blameable, SoftDeleteable, IpTraceable, Timestampable;
 
     /**
      * @ORM\Id
@@ -39,7 +42,7 @@ class EmailVerification extends EntityAbstract
     private $verified = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", inversedBy="email_verification")
+     * @ORM\OneToOne(targetEntity="User", inversedBy="emailVerification")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;

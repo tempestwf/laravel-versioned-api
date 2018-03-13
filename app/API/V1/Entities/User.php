@@ -10,11 +10,13 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping AS ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-use TempestTools\Common\Entities\Traits\Deletable;
-use TempestTools\Common\Entities\Traits\Blameable;
+use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
+
 use TempestTools\Moat\Contracts\HasRolesContract;
 use TempestTools\Moat\Contracts\HasIdContract;
 use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
@@ -31,16 +33,33 @@ use TempestTools\Moat\Contracts\HasPermissionsContract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\UserRepository")
  * @ORM\Table(name="users")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, HasIdContract, ExtractableContract, AuthenticatableContract
 {
-    use Authenticatable, Blameable, Deletable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait;
-	
-	/**
+    use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait;
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer", name="id")
+     * @var int $id
+     */
+    public $id;
+
+    /**
 	 * @ORM\Column(type="string", nullable=true, name="name")
 	 * @var string $name
+     * @Gedmo\Versioned
 	 */
 	protected $name;
+
+    /**
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(type="string", unique=true)
+     */
+    protected $slug;
 
     /**
      * @ORM\Column(type="string", nullable=true, name="address")
@@ -82,23 +101,16 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
 	private $roles;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
-     * @var EmailVerification $emailVerification
-     */
-    private $emailVerification;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\API\V1\Entities\SocializeUser", mappedBy="user")
+     * @var SocializeUser $socialize
      */
     private $socialize;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer", name="id")
-     * @var int $id
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
+     * @var EmailVerification $emailVerification
      */
-    public $id;
+    private $emailVerification;
 
     /**
      * User constructor.
@@ -144,7 +156,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 'job'=>$this->getJob(),
                 'password'=>$this->getPassword(),
                 'email'=>$this->getEmail(),
-                'timeDeleted'=>$this->getTimeDeleted()
+                'deletedAt'=>$this->getDeletedAt()
             ]
         ];
     }
@@ -168,7 +180,26 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
 		
 		return $this;
 	}
-	
+
+    /**
+     * @return null|String
+     */
+    public function getSlug():?String
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     * @return User
+     */
+    public function setSlug(string $slug):User
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
 	/**
 	 * @return string
 	 */

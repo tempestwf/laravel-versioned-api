@@ -13,7 +13,7 @@ use TempestTools\Moat\Http\Middleware\AclMiddleware;
 use TempestTools\Common\Laravel\Http\Middleware\BasicDataExtractorMiddleware;
 use TempestTools\Common\Laravel\Http\Middleware\LocalizationMiddleware;
 use TempestTools\Scribe\Laravel\Http\Middleware\PrimeControllerMiddleware;
-
+use Tymon\JWTAuth\Middleware\GetUserFromToken;
 
 class Kernel extends HttpKernel
 {
@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
         'acl' => AclMiddleware::class,
         'basic.extractor' => BasicDataExtractorMiddleware::class,
         'prime.controller' => PrimeControllerMiddleware::class,
-        'localization' => LocalizationMiddleware::class
+        'localization' => LocalizationMiddleware::class,
+        'jwt.auth' => GetUserFromToken::class
 	];
 }

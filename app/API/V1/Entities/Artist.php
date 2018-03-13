@@ -5,9 +5,11 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-use TempestTools\Common\Entities\Traits\Deletable;
-use TempestTools\Common\Entities\Traits\Blameable;
+use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
+
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
@@ -20,10 +22,12 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\ArtistRepository")
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="name_unq", columns={"name"})})
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Artist extends EntityAbstract
 {
-    use Blameable, Deletable, IpTraceable, Timestampable;
+    use Blameable, SoftDeleteable, IpTraceable, Timestampable;
 
     /**
      * @ORM\Id
@@ -33,6 +37,7 @@ class Artist extends EntityAbstract
     private $id;
 
     /**
+     * @Gedmo\Versioned
      * @ORM\Column(type="string", nullable=true, unique=true)
      */
     private $name;
@@ -146,7 +151,7 @@ class Artist extends EntityAbstract
                     'settings'=>[
                         'validate'=>[ // the only thing we enforce on artists is the validator
                             'rules'=>[
-                                'name'=>'required|min:2',
+                                'name'=>'required|min:2|unique:App\API\V1\Entities\Artist',
                             ],
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
@@ -168,7 +173,7 @@ class Artist extends EntityAbstract
                     'extends'=>[':default:create']
                 ],
             ],
-            'admin'=>[ // can do everything in default, and is allowed to do it when a super admin
+            'user'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true
