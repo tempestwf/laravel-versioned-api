@@ -16,7 +16,7 @@ use Tymon\JWTAuth\Providers\User\UserInterface;
 class AuthServiceProvider extends Authorization implements AuthInterface, UserProvider, UserInterface
 {
 	use AuthServiceProviderTrait;
-	
+
 	/**
 	 * Authenticate a user via the id.
 	 *
@@ -28,12 +28,10 @@ class AuthServiceProvider extends Authorization implements AuthInterface, UserPr
 	{
 		/** @var User $user */
 		$user = \App::make(UserRepository::class)->find($id);
-		
 		$this->user = $user;
-		
 		return ($user == NULL) ? (FALSE) : ($user);
 	}
-	
+
 	/**
 	 * Authenticate a user via the given key and value.
 	 *
@@ -50,12 +48,12 @@ class AuthServiceProvider extends Authorization implements AuthInterface, UserPr
 				$key => $value,
 			)
 		);
-		
+
 		$this->user = $user;
-		
+
 		return ($user == NULL) ? (FALSE) : ($user);
 	}
-	
+
 	/**
 	 * Check a user's credentials.
 	 *
@@ -71,12 +69,12 @@ class AuthServiceProvider extends Authorization implements AuthInterface, UserPr
 				'email' => $credentials['email'],
 			)
 		);
-		
+
 		$this->user = $user;
-		
+
 		return ($user == NULL) ? (FALSE) : ($user);
 	}
-	
+
 	/**
 	 * @param Authenticatable|User $user
 	 * @param array                $credentials
@@ -89,7 +87,7 @@ class AuthServiceProvider extends Authorization implements AuthInterface, UserPr
 		{
 			return $user->matchesPassword($credentials['password']);
 		}
-		
+
 		else
 		{
 			return $user->getAuthPassword() == $credentials['password'];

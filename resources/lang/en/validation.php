@@ -21,12 +21,10 @@ return [
     'alpha_num'            => 'The :attribute may only contain letters and numbers.',
     'array'                => 'The :attribute must be an array.',
     'before'               => 'The :attribute must be a date before :date.',
-    'between'              => [
-        'numeric' => 'The :attribute must be between :min and :max.',
-        'file'    => 'The :attribute must be between :min and :max kilobytes.',
-        'string'  => 'The :attribute must be between :min and :max characters.',
-        'array'   => 'The :attribute must have between :min and :max items.',
-    ],
+    'between_numeric'      => 'The :attribute must be between :min and :max.',
+    'between_file'         => 'The :attribute must be between :min and :max kilobytes.',
+    'between_string'       => 'The :attribute must be between :min and :max characters.',
+    'between_array'        => 'The :attribute must have between :min and :max items.',
     'boolean'              => 'The :attribute field must be true or false.',
     'confirmed'            => 'The :attribute confirmation does not match.',
     'date'                 => 'The :attribute is not a valid date.',
@@ -44,19 +42,15 @@ return [
     'integer'              => 'The :attribute must be an integer.',
     'ip'                   => 'The :attribute must be a valid IP address.',
     'json'                 => 'The :attribute must be a valid JSON string.',
-    'max'                  => [
-        'numeric' => 'The :attribute may not be greater than :max.',
-        'file'    => 'The :attribute may not be greater than :max kilobytes.',
-        'string'  => 'The :attribute may not be greater than :max characters.',
-        'array'   => 'The :attribute may not have more than :max items.',
-    ],
+    'max_numeric'          => 'The :attribute may not be greater than :max.',
+    'max_file'             => 'The :attribute may not be greater than :max kilobytes.',
+    'max_string'           => 'The :attribute may not be greater than :max characters.',
+    'max_array'            => 'The :attribute may not have more than :max items.',
     'mimes'                => 'The :attribute must be a file of type: :values.',
-    'min'                  => [
-        'numeric' => 'The :attribute must be at least :min.',
-        'file'    => 'The :attribute must be at least :min kilobytes.',
-        'string'  => 'The :attribute must be at least :min characters.',
-        'array'   => 'The :attribute must have at least :min items.',
-    ],
+    'min_numeric'          => 'The :attribute must be at least :min.',
+    'min_file'             => 'The :attribute must be at least :min kilobytes.',
+    'min_string'           => 'The :attribute must be at least :min characters.',
+    'min_array'            => 'The :attribute must have at least :min items.',
     'not_in'               => 'The selected :attribute is invalid.',
     'numeric'              => 'The :attribute must be a number.',
     'present'              => 'The :attribute field must be present.',
@@ -69,12 +63,10 @@ return [
     'required_without'     => 'The :attribute field is required when :values is not present.',
     'required_without_all' => 'The :attribute field is required when none of :values are present.',
     'same'                 => 'The :attribute and :other must match.',
-    'size'                 => [
-        'numeric' => 'The :attribute must be :size.',
-        'file'    => 'The :attribute must be :size kilobytes.',
-        'string'  => 'The :attribute must be :size characters.',
-        'array'   => 'The :attribute must contain :size items.',
-    ],
+    'size_numeric'         => 'The :attribute must be :size.',
+    'size_file'            => 'The :attribute must be :size kilobytes.',
+    'size_string'          => 'The :attribute must be :size characters.',
+    'size_array'           => 'The :attribute must contain :size items.',
     'string'               => 'The :attribute must be a string.',
     'timezone'             => 'The :attribute must be a valid zone.',
     'unique'               => 'The :attribute has already been taken.',
@@ -91,11 +83,7 @@ return [
     |
     */
 
-    'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
-        ],
-    ],
+    'custom_attribute-name_rule-name' => 'custom-message',
 
     /*
     |--------------------------------------------------------------------------
@@ -108,6 +96,6 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => '',
 
 ];

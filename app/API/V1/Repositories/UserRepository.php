@@ -3,11 +3,14 @@
 namespace App\API\V1\Repositories;
 
 use App\API\V1\Entities\User;
+use App\API\V1\Entities\SocializeUser;
 use App\Repositories\Repository;
 use Doctrine\ORM\Query\Expr;
 use TempestTools\Moat\Contracts\RepoHasPermissionsContract;
 use TempestTools\Moat\Repository\HasPermissionsQueryTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
+use Laravel\Socialite\Two\User as SocialiteUser;
+use Hash;
 
 /** @noinspection LongInheritanceChainInspection */
 class UserRepository extends Repository implements RepoHasPermissionsContract
@@ -16,6 +19,51 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
 
 	protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
         $entity = User::class;
+
+    /**
+     * @param string $socializeType
+     * @param SocialiteUser $socialiteUser
+     * @return User|null
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function registerSocializeUser(string $socializeType, SocialiteUser $socialiteUser)
+    {
+        $em = $this->getEntityManager();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
+        $user = null;
+        try {
+            $user = new User();
+            $user->setName($socialiteUser->name);
+            $user->setEmail($socialiteUser->email);
+            $user->setLocale('en');
+            $user->setPassword(Hash::make($socialiteUser->token));
+
+            $socializeUser = new SocializeUser();
+            $socializeUser->setUser($user);
+            $socializeUser->setAvatar($socialiteUser->avatar);
+            $socializeUser->setAvatarOriginal($socialiteUser->avatar_original);
+            $socializeUser->setExpiresIn($socialiteUser->expiresIn);
+            $socializeUser->setNickname($socialiteUser->nickname);
+            if (strtolower($socializeType) === 'facebook') {
+                $socializeUser->setProfileUrl($socialiteUser->profileUrl);
+            }
+            $socializeUser->setRefreshToken($socialiteUser->refreshToken);
+            $socializeUser->setSocializeId($socialiteUser->id);
+            $socializeUser->setToken($socialiteUser->token);
+            $socializeUser->setType($socializeType);
+
+            $em->persist($user);
+            $em->persist($socializeUser);
+            $em->flush();
+            $conn->commit();
+        } catch (\Exception $e) {
+            var_dump($e);
+            $conn->rollBack();
+        }
+
+        return $user;
+    }
 
     /**
      * @return array
@@ -32,7 +80,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                     'query'=>[
                         // Get just the id, name, address, job fields for read actions default.
                         'select'=>[
-                            'standardSelect'=>'partial u.{id, name, address, job}'
+                            'standardSelect'=>'partial u.{id, name, address, job, createdAt, updatedAt}'
                         ],
                         'where'=>[
                             // Only retrieve data about the currently logged in user by default.

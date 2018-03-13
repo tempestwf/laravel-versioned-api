@@ -14,7 +14,7 @@ class Version20171007045806 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_F4E2474F5E237E06 ON albums (name)');
+        //$this->addSql('CREATE UNIQUE INDEX UNIQ_F4E2474F5E237E06 ON albums (name)');
     }
 
     /**
@@ -24,6 +24,6 @@ class Version20171007045806 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_F4E2474F5E237E06 ON albums');
+        //$this->addSql('DROP INDEX UNIQ_F4E2474F5E237E06 ON albums');
     }
 }

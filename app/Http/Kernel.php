@@ -11,7 +11,9 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use TempestTools\Moat\Http\Middleware\AclMiddleware;
 use TempestTools\Common\Laravel\Http\Middleware\BasicDataExtractorMiddleware;
+use TempestTools\Common\Laravel\Http\Middleware\LocalizationMiddleware;
 use TempestTools\Scribe\Laravel\Http\Middleware\PrimeControllerMiddleware;
+use Tymon\JWTAuth\Middleware\GetUserFromToken;
 
 class Kernel extends HttpKernel
 {
@@ -23,7 +25,7 @@ class Kernel extends HttpKernel
 	 * @var array
 	 */
 	protected $middleware = [
-		CheckForMaintenanceMode::class,
+		CheckForMaintenanceMode::class
 	];
 	
 	/**
@@ -35,7 +37,7 @@ class Kernel extends HttpKernel
 		'web' => [
 			AddQueuedCookiesToResponse::class,
 			StartSession::class,
-			ShareErrorsFromSession::class,
+			ShareErrorsFromSession::class
 		],
 		
 		'api' => [
@@ -55,6 +57,8 @@ class Kernel extends HttpKernel
 		'throttle'   => ThrottleRequests::class,
         'acl' => AclMiddleware::class,
         'basic.extractor' => BasicDataExtractorMiddleware::class,
-        'prime.controller' => PrimeControllerMiddleware::class
+        'prime.controller' => PrimeControllerMiddleware::class,
+        'localization' => LocalizationMiddleware::class,
+        'jwt.auth' => GetUserFromToken::class
 	];
 }
