@@ -7,8 +7,9 @@
 [submodule "packages/tempesttools/scribe"]
         path = packages/tempesttools/scribe
         url = https://tempestwf@github.com/tempestwf/tempest-tools-scribe.git
-[submodule "packages/tempesttools/doctrine/gedmo"]
-	
+[submodule "packages/tempesttools/doctrine/gedmo"]	
 	path = packages/tempesttools/doctrine/gedmo
-	
 	url = https://github.com/tempestwf/DoctrineExtensions.git
+[submodule "packages/tempesttools/raven"]
+	path = packages/tempesttools/raven
+	url = https://tempestwf@github.com/tempestwf/tempest-tools-raven.git
