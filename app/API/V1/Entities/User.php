@@ -392,7 +392,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      */
     public function isActivated(): bool
     {
-        return $this->emailVerification->getVerified();
+        return $this->emailVerification ? $this->emailVerification->getVerified() : false;
     }
 
     /**
@@ -444,6 +444,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         'email'=>[],
                         'address'=>[],
                         'job'=>[],
+                        'locale'=>[],
                         'albums'=>[],
                         'permissions'=>[],
                         'roles'=>[],
@@ -457,6 +458,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 'name' => 'required|max:255',
                                 'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
                                 'password' => 'required|min:6',
+                                'locale' => 'required',
                             ],
                         ],
                     ],
@@ -472,8 +474,8 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'user'=>[
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>false,
-                    'permissive'=>false,
+                    'allowed'=>true,
+                    'permissive'=>true,
                     'settings'=>[
                         // If you are in user context, then you should only be able to alter your self. We enforce that the userId match with currently logged in user.
                         'enforce'=>[
@@ -506,6 +508,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'permissive'=>true,
                         ],
                         'password'=>[ // password allowed
+                            'permissive'=>true,
+                        ],
+                        'locale'=>[ // locale allowed
                             'permissive'=>true,
                         ]
                     ],

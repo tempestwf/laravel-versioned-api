@@ -5,6 +5,7 @@ namespace Database\Migrations;
 use App\API\V1\Entities\Permission;
 use App\API\V1\Entities\Role;
 use App\API\V1\Entities\User;
+use App\API\V1\Entities\EmailVerification;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema as Schema;
 use TempestTools\Common\Doctrine\Utility\MakeEmTrait;
@@ -28,12 +29,21 @@ class Version20171003005708 extends AbstractMigration
         $user = new User();
         $user
             ->setEmail(env('BASE_USER_EMAIL'))
-            ->setPassword(env('BASE_USER_EMAIL'))
+            ->setPassword(env('BASE_USER_PASSWORD'))
             ->setName(env('BASE_USER_NAME'))
             ->setJob($generator->jobTitle)
+            ->setLocale('en')
             ->setAddress($generator->address);
 
         $this->em->persist($user);
+
+        $emailVerification = new EmailVerification();
+        $emailVerification
+            ->setUser($user)
+            ->setVerificationCode('sampleverificationcode')
+            ->verify(true);
+
+        $this->em->persist($emailVerification);
 
         $this->em->flush();
 

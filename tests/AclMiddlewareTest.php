@@ -3,6 +3,7 @@
 use App\API\V1\Entities\Role;
 use Faker\Factory;
 use App\API\V1\Entities\User;
+use App\API\V1\Entities\EmailVerification;
 use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 class AclMiddlewareTest extends CrudTestBaseAbstract
@@ -20,6 +21,7 @@ class AclMiddlewareTest extends CrudTestBaseAbstract
             ->setPassword('password')
             ->setName($generator->name)
             ->setJob($generator->jobTitle)
+            ->setLocale('en')
             ->setAddress($generator->address);
         return $user;
     }
@@ -40,33 +42,40 @@ class AclMiddlewareTest extends CrudTestBaseAbstract
             $repo = $this->em->getRepository(Role::class);
             /** @var Role $userRole */
             $userRole = $repo->findOneBy(['name' => 'user']);
-
             $user = $this->makeUser();
-
             $user->addRole($userRole);
-
             $em->persist($user);
-
             $em->flush();
 
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => $user->getPassword()]);
-            $result = $response->decodeResponseJson();
-            //$auth = App::make(JWTAuth::class);
-            //$result = $auth->attempt(['email' => $user->getEmail(), 'password' => $user->getPassword()]);
-
-            $token = $result['token'];
-            // This would not work with out storing to the db and then removing it after
+            $emailVerification = new EmailVerification();
+            $emailVerification
+                ->setVerificationCode('SampleVerificationCode')
+                ->setUser($user)
+                ->verify(true);
+            $em->persist($emailVerification);
+            $em->flush();
             $conn->commit();
+
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => 'password']);
+            $result = $response->decodeResponseJson();
+
             $this->refreshApplication();
-            $conn->beginTransaction();
-            $response = $this->json('GET', '/auth/me', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+
+            $response = $this->json('GET', '/auth/me', ['token' => $result['token']], ['HTTP_AUTHORIZATION'=>'Bearer ' . $result['token']]);
+            $result1 = $response->decodeResponseJson();
+            $this->assertEquals($result1['email'], $user->getEmail());
+
+            $this->refreshApplication();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+
+        $conn->beginTransaction();
+        try {
             $em->remove($user);
             $em->flush();
             $conn->commit();
-            $result = $response->decodeResponseJson();
-            $this->assertEquals($result['email'], $user->getEmail());
-
-            $this->refreshApplication();
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
@@ -87,26 +96,35 @@ class AclMiddlewareTest extends CrudTestBaseAbstract
         $conn->beginTransaction();
         try {
             $user = $this->makeUser();
-
             $em->persist($user);
-
             $em->flush();
 
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => $user->getPassword()]);
+            $emailVerification = new EmailVerification();
+            $emailVerification
+                ->setVerificationCode('SampleVerificationCode')
+                ->setUser($user)
+                ->verify(true);
+            $em->persist($emailVerification);
+            $em->flush();
+            $conn->commit();
+
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => 'password']);
             $result = $response->decodeResponseJson();
 
-            $token = $result['token'];
             // This would not work with out storing to the db and then removing it after
-            $conn->commit();
             $this->refreshApplication();
-            $conn->beginTransaction();
-            $response = $this->json('GET', '/auth/me', ['token'=>$token], ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
+            $response = $this->json('GET', '/auth/me', ['token' => $result['token']], ['HTTP_AUTHORIZATION'=>'Bearer ' . $result['token']]);
+            $response->assertResponseStatus(403);
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+
+        $conn->beginTransaction();
+        try {
             $em->remove($user);
             $em->flush();
             $conn->commit();
-            $response->assertResponseStatus(403);
-
-
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;

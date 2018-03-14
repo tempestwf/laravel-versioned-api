@@ -173,7 +173,7 @@ class Artist extends EntityAbstract
                     'extends'=>[':default:create']
                 ],
             ],
-            'user'=>[ // can do everything in default, and is allowed to do it when a super admin
+            'admin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true

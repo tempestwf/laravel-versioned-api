@@ -30,10 +30,11 @@ abstract class APIControllerAbstract extends BaseControllerAbstract implements H
 		App::register(App\API\V1\Providers\APIServiceProvider::class);
 		parent::__construct();
 
-        $this->middleware(function ($request, $next) {
-            $this->user = Auth::user();
+        $this->user = Auth::user();
+        /*$this->middleware(function ($request, $next) {
+
             return $next($request);
-        });
+        });*/
 	}
 
     /**

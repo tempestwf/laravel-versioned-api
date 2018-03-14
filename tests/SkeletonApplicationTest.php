@@ -499,6 +499,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                         'job'=>'doing stuff!',
                         'address'=>'my home!',
                         'password'=>'zipityzapity',
+                        'locale'=>'en',
                         'albums'=>[
                             [
                                 'name'=>'Test Album',
@@ -551,7 +552,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             //Assert should succeed, with out permissions and roles it should work
 
-            $this->assertArrayHasKey('id', $result[0]);
+            $this->assertArrayHasKey('id', $result);
 
             $create = [
                 'params'=>[
@@ -739,7 +740,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         $userRepo = $em->getRepository(User::class);
         $testUser = $userRepo->findOneBy(['id'=>1]);
 
-        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => $testUser->getPassword()]);
+        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => 'password']);
         $result = $response->decodeResponseJson();
 
         /** @var string $token */
