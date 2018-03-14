@@ -52,7 +52,8 @@
       "TempestTools\\Moat\\": "packages/tempesttools/moat/src",
       "TempestTools\\Common\\": "packages/tempesttools/common/src",
       "TempestTools\\Scribe\\": "packages/tempesttools/scribe/src",
-      "Gedmo\\": "packages/tempesttools/doctrine/gedmo/lib/Gedmo"
+      "Gedmo\\": "packages/tempesttools/doctrine/gedmo/lib/Gedmo",
+      "TempestTools\\Raven\\": "packages/tempesttools/scribe/src"
     },
     "files": [
       "app/helpers.php"
