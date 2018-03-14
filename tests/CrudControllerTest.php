@@ -32,7 +32,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
         return $artist;
     }
     /**
-     * @group CrudController
+     * @group CrudControllerWhatsup
      * @throws Exception
      */
     public function testCreateUpdateDelete () {
@@ -143,6 +143,7 @@ class CrudControllerTest extends CrudTestBaseAbstract
 
             $this->assertEquals('Test Artist Updated Again And Again', $result5['name']);
 
+            $this->refreshApplication();
             $delete = [
                 'token'=>$token,
                 'params'=>[
