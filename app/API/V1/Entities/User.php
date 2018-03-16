@@ -474,8 +474,8 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'user'=>[
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true,
-                    'permissive'=>true,
+                    'allowed'=>false,
+                    'permissive'=>false,
                     'settings'=>[
                         // If you are in user context, then you should only be able to alter your self. We enforce that the userId match with currently logged in user.
                         'enforce'=>[
@@ -535,6 +535,8 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'admin'=>[ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
                 'create'=>[
                     'extends'=>[':user:create'],
+                    'allowed'=>true,
+                    'permissive'=>true,
                     // We override the enforce to null so it is no longer enforced for admins.
                     'settings'=>[
                         'enforce'=>null
