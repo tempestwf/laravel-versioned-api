@@ -111,7 +111,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                     'query'=>[
                         // When in admin context, no longer only return info about the currently logged in user.
                         'where'=>[
-                            'onlyCurrentUser'=>null
+                            'onlyCurrentUser' => null
                         ],
                     ],
                 ],

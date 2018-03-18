@@ -185,3 +185,10 @@ To remove a version follow this process:
 10. Remove the routes for the removed version from the routes file
 11. Remove the ```auth``` entry in the ```config/api.php``` file
 12. Check that the ```.env``` file's ```API_VERSION``` variable is not set to the removed version
+
+
+php artisan config:cache
+php artisan route:cache
+
+php artisan db:seed
+php artisan db:seed --class=SampleRecordsSeeder

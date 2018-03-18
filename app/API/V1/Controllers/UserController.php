@@ -55,38 +55,45 @@ class UserController extends APIControllerAbstract
      */
     public function onPostStore(SimpleEventContract $event):void
     {
-        $result = $event->getEventArgs()['result'];
+        $results = $event->getEventArgs()['result'];
 
-        /** @var UserRepository $userRepo **/
-        $userRepo = $this->getRepo();
-        /** @var User $user **/
-        $user = $userRepo->findOneBy(['id'=>$result['id']]);
+        if( !is_array($results)) {
+            $results = [$results];
+        }
 
-        /** Set user's default role **/
-        $this->roleRepo->addUserRoles($user);
+        foreach ($results as $result) {
+            /** @var UserRepository $userRepo **/
+            $userRepo = $this->getRepo();
+            /** @var User $user **/
+            $user = $userRepo->findOneBy(['id'=>$result['id']]);
+            if ($user) {
+                /** Set user's default role **/
+                $this->roleRepo->addUserRoles($user);
 
-        /** Create the email verification code **/
-        $emailVerification = $this->emailVerificationRepo->createEmailVerificationCode($user);
+                /** Create the email verification code **/
+                $emailVerification = $this->emailVerificationRepo->createEmailVerificationCode($user);
 
-        /**
-         * TODO: get this into an email queue
-         */
-        if ($event->getEventArgs()['frontEndOptions']['email'] === true) {
-            Mail::send(
-                'emails.activation',
-                [
-                    'user_name' => $result['name'],
-                    'verification_code' => $emailVerification->getVerificationCode(),
-                    'email' => $result['email'],
-                    'host_name' => env('API_DOMAIN', $_SERVER['HTTP_HOST']),
-                    'code' => base64_encode($result['email'] . '_' . $emailVerification->getVerificationCode())
-                ],
-                function ($m) use ($result) {
-                    $m
-                        ->from(env('MAIL_FROM_EMAIL', 'from@name.com'), env('MAIL_FROM_NAME', 'from name'))
-                        ->to($result['email'], $result['name'])
-                        ->subject(trans('email.subject_account_activation'));
-            });
+                /**
+                 * TODO: get this into an email queue
+                 */
+                if ($event->getEventArgs()['frontEndOptions']['email'] === true) {
+                    Mail::send(
+                        'emails.activation',
+                        [
+                            'user_name' => $result['name'],
+                            'verification_code' => $emailVerification->getVerificationCode(),
+                            'email' => $result['email'],
+                            'host_name' => env('API_DOMAIN', $_SERVER['HTTP_HOST']),
+                            'code' => base64_encode($result['email'] . '_' . $emailVerification->getVerificationCode())
+                        ],
+                        function ($m) use ($result) {
+                            $m
+                                ->from(env('MAIL_FROM_EMAIL', 'from@name.com'), env('MAIL_FROM_NAME', 'from name'))
+                                ->to($result['email'], $result['name'])
+                                ->subject(trans('email.subject_account_activation'));
+                        });
+                }
+            }
         }
     }
 
