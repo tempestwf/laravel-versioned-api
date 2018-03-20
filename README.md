@@ -23,7 +23,6 @@ Also note that the packages folder holds the 1st party components.
 Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://github.com/mitchdav/laravel-versioned-api
 
 ## What’s currently included in v1.0.0 (3rd Party)
-
 1. Everything that laravel-versioned-api ships with
 2. https://packagist.org/packages/laravel-doctrine/extensions
 3. https://packagist.org/packages/gedmo/doctrine-extensions
@@ -57,14 +56,14 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
 9. Improved localization features.
 
 ## Requirements
-
 * PHP >= 7.1.0
-
+* laravel/framework 5.3.*
+* laravel-doctrine/orm 1.2.*,
+* Cache system (Redis, Memcached, File cache)
 * A database (MySQL, or any others supported by Laravel and Doctrine)
 * [Composer](https://getcomposer.org/).
 
 ## Installation
-
 You may fork the repo first and then update the git clone command below. Or you may optionally save the cloned repo into your own repository.
 
 Note: Make sure to turn off xdebug before running composer install as it can cause it to hang indefinitely (setting xdebug: "xdebug.remote_autostart= 0" should fix the problem).
@@ -83,11 +82,14 @@ If you want a vanilla implementation that does not include the albums and artist
 
     git checkout 2.0.2-vanilla
 
-This will setup the project's dependencies, however you will still need to setup the database. You must first create a MySQL database, and then store its details in the .env file like so:
+Give your API a name in the .env
 
-    DB_DATABASE={database}
-    DB_USERNAME={username}
-    DB_PASSWORD={password}
+    API_NAME="{API Name}"
+
+Set your additional information in the .env file. Remember to also set up the host on your system before testing as well.
+
+    APP_URL=http://{site url}
+    API_DOMAIN={domain}
 
 Also in the .env file you must set up a base user. This user will be added to the DB, and the test cases that require a user will run using this users
 
@@ -95,14 +97,38 @@ Also in the .env file you must set up a base user. This user will be added to th
     BASE_USER_EMAIL={email}
     BASE_USER_PASSWORD={password}
 
-Give your API a name in the .env
+This will setup the project's dependencies, however you will still need to setup the database. You must first create a MySQL database, and then store its details in the .env file like so:
 
-    API_NAME="{API Name}"
+    DB_DATABASE={database}
+    DB_USERNAME={username}
+    DB_PASSWORD={password}
 
-Set your additional information in the .env file
+If you have cache drivers then add the following lines.
 
-    APP_URL=http://{site url}
-    API_DOMAIN=P{domain}
+    CACHE_DRIVER={cache driver name}
+    SESSION_DRIVER={cache driver name}
+    QUEUE_DRIVER={cache driver name}
+
+If the cache driver is redis you should specify the setting like the lines bellow.
+
+    REDIS_HOST={host}
+    REDIS_CLIENT={client}
+    REDIS_PASSWORD={password}
+    REDIS_PORT={port}
+
+As of now we have Facebook, Twitter and Google supported on the Socialite plugin. You can specify the account by adding the lines bellow.
+
+    FACEBOOK_KEY={key}
+    FACEBOOK_SECRET={secret}
+    FACEBOOK_REDIRECT_URI=http://api-dev.aki.com/auth/authenticate/callback/facebook
+    
+    TWITTER_KEY={key}
+    TWITTER_SECRET={secret}
+    TWITTER_REDIRECT_URI=http://api-dev.aki.com/auth/authenticate/callback/twitter
+    
+    GOOGLE_KEY={key}
+    GOOGLE_SECRET={secret}
+    GOOGLE_REDIRECT_URI=http://api-dev.aki.com/auth/authenticate/callback/google
 
 If at this point you would like to save your modified repo into it's own repository you may do so with the following command.
 
@@ -112,12 +138,16 @@ Set the origin of your repo to the new location you pushed it too
 
      git remote set-url origin https://{username}:{password}@github.com/{your github user}/{your repo}
 
-To then setup the database we use Doctrine's helper command to build our schema and proxies.
+To then setup the database we use Doctrine's helper command to build our schema and proxies. Migration files are located at ```./database/migrations``` which is currently blank right now. Do ```migrations:diff``` to generated the first migration file that will be derived from the entities. Then ```migrations:migrate``` to put it up to your database. As well as ```generate:proxies``` to create proxies for each entity available.
 
+    php artisan doctrine:migrations:diff
     php artisan doctrine:migrations:migrate
     php artisan doctrine:generate:proxies
 
-Remember to also set up the host on your system before testing as well.
+At this point your database is still empty. Please run the seeders to populate permissions and authentication essentials, add in your base user and some sample records. Seeder files are located at ```./database/seeds```.
+
+    php artisan db:seed
+    php artisan db:seed --class=SampleRecordsSeeder
 
 ## Logging In
 Make a POST request to ```/auth/authenticate``` with ```Content-Type``` set to ```application/json```. The JSON structure should look like the following:
@@ -172,23 +202,19 @@ When you would like to add a new version, you will need to follow this process:
 6. Make your changes to the API's new version (for example, add a new entity, or a field to an existing entity)
 7. Run the following commands to update the database schema and proxies
 
-    php artisan doctrine:generate:proxies
-    php artisan doctrine:migrations:diff
-    php artisan doctrine:migrations:migrate
+        php artisan doctrine:migrations:diff
+        php artisan doctrine:migrations:migrate
+        php artisan doctrine:generate:proxies
 
 8. Add routes to any new endpoints in the routes file
+9. Just in case that APP_URL is missing you can run the line bellow
+
+        php artisan config:clear
+
 
 ## Removing Versions
 To remove a version follow this process:
-
-9. Remove the version's folder inside the ```app/API``` folder
-10. Remove the routes for the removed version from the routes file
-11. Remove the ```auth``` entry in the ```config/api.php``` file
-12. Check that the ```.env``` file's ```API_VERSION``` variable is not set to the removed version
-
-
-php artisan config:cache
-php artisan route:cache
-
-php artisan db:seed
-php artisan db:seed --class=SampleRecordsSeeder
+1. Remove the version's folder inside the ```app/API``` folder
+2. Remove the routes for the removed version from the routes file
+3. Remove the ```auth``` entry in the ```config/api.php``` file
+4. Check that the ```.env``` file's ```API_VERSION``` variable is not set to the removed version
