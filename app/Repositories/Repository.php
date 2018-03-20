@@ -25,14 +25,14 @@ class Repository extends RepositoryAbstract
 	
 	public function excludeDeleted()
 	{
-		$this->getEntityManager()->getFilters()->enable('deletable');
+		//$this->getEntityManager()->getFilters()->enable('deletable');
 		
 		return $this;
 	}
 	
 	public function includeDeleted()
 	{
-		$this->getEntityManager()->getFilters()->disable('deletable');
+		//$this->getEntityManager()->getFilters()->disable('deletable');
 		
 		return $this;
 	}

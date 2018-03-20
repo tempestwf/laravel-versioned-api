@@ -3,8 +3,6 @@
 namespace App\API\V1\Entities;
 
 use App\Entities\Traits\Authenticatable;
-use App\API\V1\Entities\EmailVerification;
-use App\API\V1\Entities\SocializeUser;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,7 +16,6 @@ use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
 
 use TempestTools\Moat\Contracts\HasRolesContract;
-use TempestTools\Moat\Contracts\HasIdContract;
 use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
@@ -36,7 +33,7 @@ use TempestTools\Moat\Contracts\HasPermissionsContract;
  * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, HasIdContract, ExtractableContract, AuthenticatableContract
+class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, ExtractableContract, AuthenticatableContract
 {
     use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait;
 
@@ -392,7 +389,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      */
     public function isActivated(): bool
     {
-        return $this->emailVerification->getVerified();
+        return $this->emailVerification ? $this->emailVerification->getVerified() : false;
     }
 
     /**
@@ -444,10 +441,17 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         'email'=>[],
                         'address'=>[],
                         'job'=>[],
+                        'locale'=>[],
                         'albums'=>[],
                         'permissions'=>[],
                         'roles'=>[],
+                    ],
+                    'fields'=>[
+                        'password'=>[ // password allowed
+                            'permissive'=>true,
+                        ],
                     ]
+
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],
@@ -457,6 +461,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 'name' => 'required|max:255',
                                 'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
                                 'password' => 'required|min:6',
+                                'locale' => 'required',
                             ],
                         ],
                     ],
@@ -468,10 +473,28 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'extends'=>[':default:update']
                 ],
             ],
+            'guest'=>[
+                'create'=>[
+                    'allowed'=>true,
+                    'extends'=>[':default:create'],
+                ],
+                'update'=>[
+                    'allowed'=>false,
+                    'extends'=>[':default:create'],
+                ],
+                'delete'=>[
+                    'allowed'=>false,
+                    'extends'=>[':default:create'],
+                ],
+                'read'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>false,
+                ],
+            ],
             // Configuration for when in user context. Extends default.
             'user'=>[
                 'create'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':guest:create'],
                     'allowed'=>false,
                     'permissive'=>false,
                     'settings'=>[
@@ -507,6 +530,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         ],
                         'password'=>[ // password allowed
                             'permissive'=>true,
+                        ],
+                        'locale'=>[ // locale allowed
+                            'permissive'=>true,
                         ]
                     ],
                 ],
@@ -524,12 +550,14 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'allowed'=>false
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':guest:create']
                 ],
             ],
             'admin'=>[ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
                 'create'=>[
                     'extends'=>[':user:create'],
+                    'allowed'=>true,
+                    'permissive'=>false,
                     // We override the enforce to null so it is no longer enforced for admins.
                     'settings'=>[
                         'enforce'=>null
@@ -539,7 +567,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'permissive'=>true,
                         ]
                     ],
-                    'allowed'=>true,
                 ],
                 'update'=>[
                     'extends'=>[':admin:create'],
@@ -575,24 +602,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 ],
                 'read'=>[ // Same as default create
                     'extends'=>[':superAdmin:create']
-                ],
-            ],
-            'guest'=>[
-                'create'=>[
-                    'allowed'=>true,
-                    'extends'=>[':default:create'],
-                ],
-                'update'=>[
-                    'allowed'=>false,
-                    'extends'=>[':default:create'],
-                ],
-                'delete'=>[
-                    'allowed'=>false,
-                    'extends'=>[':default:create'],
-                ],
-                'read'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>false,
                 ],
             ],
             // Below here is for testing purposes only

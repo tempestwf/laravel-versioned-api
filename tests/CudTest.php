@@ -128,7 +128,7 @@ class CudTest extends CrudTestBaseAbstract
 
             /** @var Album[] $result */
             /** @noinspection NullPointerExceptionInspection */
-            $result = $albumRepo->delete([ // Test top level update
+            $result1 = $albumRepo->delete([ // Test top level update
                 [
                     'id'=>$result[0]->getId(),
                     'artist'=> [ // test nested updated in single relation
@@ -144,11 +144,11 @@ class CudTest extends CrudTestBaseAbstract
                 ],
             ], [], ['simplifiedParams'=>true]);
 
-            $users3 = $result[0]->getUsers();
+            $users3 = $result1[0]->getUsers();
             /** @noinspection NullPointerExceptionInspection */
-            $this->assertEquals($result[0]->getArtist()->getId(), null);
-            $this->assertEquals($result[0]->getId(), null);
-            $this->assertEquals($users3[0]->getId(), null);
+            $this->assertEquals($result1[0]->getArtist()->getId(), $result[0]->getArtist()->getId());
+            $this->assertEquals($result1[0]->getId(), $result[0]->getId());
+            $this->assertEquals($users3[0]->getId(), $users[0]->getId());
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -357,8 +357,8 @@ class CudTest extends CrudTestBaseAbstract
                 ]
             ]);
 
-            $this->assertNull($result2[0]->getId());
-            $this->assertNull($result2[1]->getId());
+            $this->assertEquals($result2[0]->getId(), $result[0]->getId());
+            $this->assertEquals($result2[1]->getId(), $result[1]->getId());
 
             /** @noinspection NullPointerExceptionInspection */
             $array = $artistRepo->getArrayHelper()->getArray()->getArrayCopy();

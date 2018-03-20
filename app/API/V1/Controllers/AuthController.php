@@ -56,6 +56,10 @@ class AuthController extends APIControllerAbstract
 
         /** @var User $user */
 		$user = $this->userRepo->findOneBy(['email'=>$credentials['email']]);
+		if (!$user) {
+            return response()->json(['error' => trans('auth.invalid_credentials')], 401);
+        }
+
         if (!Hash::check($credentials['password'], $user->getPassword())) {
             return response()->json(['error' => trans('auth.invalid_credentials')], 422);
         }

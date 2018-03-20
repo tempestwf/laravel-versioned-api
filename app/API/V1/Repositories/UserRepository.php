@@ -80,7 +80,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                     'query'=>[
                         // Get just the id, name, address, job fields for read actions default.
                         'select'=>[
-                            'standardSelect'=>'partial u.{id, name, address, job, createdAt, updatedAt}'
+                            'standardSelect'=>'partial u.{id, name, address, job, locale, createdAt, updatedAt}'
                         ],
                         'where'=>[
                             // Only retrieve data about the currently logged in user by default.
@@ -111,7 +111,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                     'query'=>[
                         // When in admin context, no longer only return info about the currently logged in user.
                         'where'=>[
-                            'onlyCurrentUser'=>null
+                            'onlyCurrentUser' => null
                         ],
                     ],
                 ],
