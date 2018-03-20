@@ -447,7 +447,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         'roles'=>[],
                     ],
                     'fields'=>[
-                        'password'=>[ // password not allowed
+                        'password'=>[ // password allowed
                             'permissive'=>true,
                         ],
                     ]
