@@ -81,6 +81,20 @@ $api->version(
 	}
 );
 
+
+$api->version(
+    'V1',
+    [
+        'middleware' => ['prime.controller', 'recaptcha'],
+        'provider'   => 'V1',
+        'ttPath'=>['guest'],
+    ],
+    function () use ($api)
+    {
+        $api->post('/contexts/guest/users', UserController::class . '@store');
+    }
+);
+
 $api->version(
     'V1',
     [
@@ -90,7 +104,6 @@ $api->version(
     ],
     function () use ($api)
     {
-        $api->post('/contexts/guest/users', UserController::class . '@store');
         $api->get('/activate/{code}', UserController::class . '@activate');
         $api->get('/auth/authenticate/{provider}', AuthController::class . '@getSocialAuth');
         $api->get('/auth/authenticate/callback/{provider}', AuthController::class . '@getSocialAuthCallback');

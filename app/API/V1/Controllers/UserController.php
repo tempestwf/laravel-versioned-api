@@ -65,31 +65,28 @@ class UserController extends APIControllerAbstract
             /** @var UserRepository $userRepo **/
             $userRepo = $this->getRepo();
             /** @var User $user **/
-            $user = $userRepo->findOneBy(['id'=>$result['id']]);
+            $user = $userRepo->findOneBy(['id'=>$result]);
             if ($user) {
                 /** Set user's default role **/
                 $this->roleRepo->addUserRoles($user);
-
                 /** Create the email verification code **/
                 $emailVerification = $this->emailVerificationRepo->createEmailVerificationCode($user);
 
-                /**
-                 * TODO: get this into an email queue
-                 */
+                /** TODO: get this into an email queue **/
                 if ($event->getEventArgs()['frontEndOptions']['email'] === true) {
                     Mail::send(
                         'emails.activation',
                         [
-                            'user_name' => $result['name'],
+                            'user_name' => $user->getName(),
                             'verification_code' => $emailVerification->getVerificationCode(),
-                            'email' => $result['email'],
+                            'email' => $user->getEmail(),
                             'host_name' => env('API_DOMAIN', $_SERVER['HTTP_HOST']),
-                            'code' => base64_encode($result['email'] . '_' . $emailVerification->getVerificationCode())
+                            'code' => base64_encode($user->getEmail() . '_' . $emailVerification->getVerificationCode())
                         ],
-                        function ($m) use ($result) {
+                        function ($m) use ($user) {
                             $m
                                 ->from(env('MAIL_FROM_EMAIL', 'from@name.com'), env('MAIL_FROM_NAME', 'from name'))
-                                ->to($result['email'], $result['name'])
+                                ->to($user->getEmail(), $user->getName())
                                 ->subject(trans('email.subject_account_activation'));
                         });
                 }
