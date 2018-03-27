@@ -527,8 +527,8 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             $response = $this->json('POST', '/contexts/admin/users', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
-            //Assert should succeed, with out permissions and roles it should work
-            $this->assertArrayHasKey('id', $result[0]);
+            //Assert should fail, with out permissions and roles it should work
+            $this->assertEquals( 500, $result['status_code']);
 
             $this->refreshApplication();
             $create = [
