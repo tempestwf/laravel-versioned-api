@@ -6,3 +6,4 @@ Homestead.yaml
 Homestead.json
 .env
 Thumbs.db
+/database/migrations/Version20180327015547.php
