@@ -4,7 +4,7 @@ class RecaptchaTest extends TestCase
 {
     public function testRecaptchaFail():void
     {
-        $response = $this->json('GET', '/contexts/guest/users',
+        $response = $this->json('POST', '/contexts/guest/users',
             [
                 "params" => [
                     "name" => "Jerome Erazo",
@@ -15,9 +15,9 @@ class RecaptchaTest extends TestCase
             ]
         );
         /** general_no_parameters **/
-        $response->assertResponseStatus(405);
+        $response->assertResponseStatus(400);
 
-        $response = $this->json('GET', '/contexts/guest/users',
+        $response = $this->json('POST', '/contexts/guest/users',
             [
                 "params" => [
                     "name" => "Jerome Erazo",
@@ -31,9 +31,9 @@ class RecaptchaTest extends TestCase
             ]
         );
         /** tempesttools_recaptcha_no_value **/
-        $response->assertResponseStatus(405);
+        $response->assertResponseStatus(400);
 
-        $response = $this->json('GET', '/contexts/guest/users',
+        $response = $this->json('POST', '/contexts/guest/users',
             [
                 "params" => [
                     "name" => "Jerome Erazo",
@@ -48,7 +48,7 @@ class RecaptchaTest extends TestCase
             ]
         );
         /** tempesttools_recaptcha_invalid **/
-        $response->assertResponseStatus(405);
+        $response->assertResponseStatus(400);
 
         /** Nothing comes next. We cannot spoof recaptcha. **/
     }
