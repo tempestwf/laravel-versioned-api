@@ -218,3 +218,38 @@ To remove a version follow this process:
 2. Remove the routes for the removed version from the routes file
 3. Remove the ```auth``` entry in the ```config/api.php``` file
 4. Check that the ```.env``` file's ```API_VERSION``` variable is not set to the removed version
+
+
+## Localization
+As default we are using ageras-com/laravel-onesky as the translation wrapper. This is a seamless integration of OneSky to the system. It runs with artisan and has pull and push functionality. Meaning we do not need to manually upload and download translations.
+1. Add in your ONESKY_API_KEY and ONESKY_SECRET to your .env file
+2. Create the base locale of your system. As of default we are with 'en' as default. The translation files are in the resources/lang folder and is separated by each local folder.
+3. When you are ready to translate your language files, use this simple artisan command to upload them to your OneSky account:
+```
+        php artisan onesky:push        
+```
+4. When your language files have been translated, use this command to download them directly into your project:
+   
+```
+        php artisan onesky:pull
+```
+5. If you only want certain languages to be pulled, you can use the --lang= flag:
+```
+        php artisan onesky:pull --lang=en,da,no
+```
+6. If you have multiple projects, you can use the --project= flag to specify the id:
+```
+        php artisan onesky:push --project=1337
+```
+
+Note: You can find the default locale fallback at the app.php config file. To translate you can use trans() to translate (example: echo trans('auth_failed');). For reference you can check https://packagist.org/packages/ageras/laravel-onesky    
+
+
+## Known irregularities 
+When adding libraries on the composer.json or adding values to .env file sometimes it does not reflect as it goes. If you experience this you might need to run the following:
+```
+    composer dump-autoload -o
+    php artisan config:clear
+    php artisan cache:clear   
+```
+
