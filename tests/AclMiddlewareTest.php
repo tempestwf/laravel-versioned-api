@@ -56,6 +56,11 @@ class AclMiddlewareTest extends CrudTestBaseAbstract
             $em->flush();
             $conn->commit();
 
+            $conn->beginTransaction();
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => 'wrong_password']);
+            $result = $response->decodeResponseJson();
+            $response->assertResponseStatus(422);
+
             $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => 'password']);
             $result = $response->decodeResponseJson();
 
@@ -66,6 +71,7 @@ class AclMiddlewareTest extends CrudTestBaseAbstract
             $this->assertEquals($result1['email'], $user->getEmail());
 
             $this->refreshApplication();
+            $conn->commit();
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
@@ -107,6 +113,9 @@ class AclMiddlewareTest extends CrudTestBaseAbstract
             $em->persist($emailVerification);
             $em->flush();
             $conn->commit();
+
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => 'wrong_password']);
+            $response->assertResponseStatus(422);
 
             $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => 'password']);
             $result = $response->decodeResponseJson();

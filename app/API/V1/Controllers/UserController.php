@@ -65,7 +65,7 @@ class UserController extends APIControllerAbstract
             /** @var UserRepository $userRepo **/
             $userRepo = $this->getRepo();
             /** @var User $user **/
-            $user = $userRepo->findOneBy(['id'=>$result]);
+            $user = $userRepo->findOneBy(['id'=>$result['id']]);
             if ($user) {
                 /** Set user's default role **/
                 $this->roleRepo->addUserRoles($user);

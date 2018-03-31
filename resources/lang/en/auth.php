@@ -13,6 +13,7 @@ return [
     |
     */
 
+    'test_entry' => 'These is a test entry.', /* do not delete : for unit test */
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'invalid_credentials' => 'Username or password invalid. Please check and try again.',
