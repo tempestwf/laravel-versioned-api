@@ -2,6 +2,7 @@
 
 namespace App\API\V1\Controllers;
 
+use App\API\V1\Entities\EmailVerification;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\UserRepository;
 use App\API\V1\Repositories\RoleRepository;
@@ -10,7 +11,6 @@ use App\API\V1\Transformers\UserTransformer;
 use TempestTools\Scribe\Contracts\Events\SimpleEventContract;
 use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Dingo\Api\Http\Request;
 use Mail;
 
 /** @noinspection LongInheritanceChainInspection */
