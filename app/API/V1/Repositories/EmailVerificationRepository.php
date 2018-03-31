@@ -3,7 +3,6 @@
 namespace App\API\V1\Repositories;
 
 use App\API\V1\Entities\User;
-use App\API\V1\Entities\Permission;
 use App\API\V1\Entities\EmailVerification;
 use App\Repositories\Repository;
 
@@ -17,8 +16,9 @@ class EmailVerificationRepository extends Repository
      * @param User $user
      * @return EmailVerification
      * @throws \Doctrine\DBAL\ConnectionException
+     * Deprecated
      */
-    public function createEmailVerificationCode(User $user): EmailVerification
+    /*public function createEmailVerificationCode(User $user): EmailVerification
     {
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
@@ -37,7 +37,7 @@ class EmailVerificationRepository extends Repository
         }
 
         return $emailVerification;
-    }
+    }*/
 
     /**
      * @return array
@@ -52,16 +52,26 @@ class EmailVerificationRepository extends Repository
                     ]
                 ]
             ],
-            'superAdmin'=>[
+            'guest'=>[
                 'extends'=>[':default'],
                 'read'=>[
                     'permissions'=>[
                         'allowed'=>true
+                    ],
+                    // TODO: Write test to make sure you can read the list and also an individual one
+                    'query'=>[
+                        'select'=>[
+                            'tokenAndUser'=>'e, u'
+                        ],
+                        'innerJoin'=>[
+                            'user'=>[
+                                'join'=>'e.user',
+                                'alias'=>'u',
+                            ]
+                        ]
                     ]
                 ]
             ],
-            // Below here is for testing purposes only
-            'testing'=>[]
         ];
     }
 
