@@ -3,8 +3,6 @@ namespace App\API\V1\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-
-use App\API\V1\Entities\User;
 use App\API\V1\Traits\Entities\Blameable;
 use TempestTools\Common\Entities\Traits\SoftDeleteable;
 
@@ -26,8 +24,9 @@ class EmailVerification extends EntityAbstract
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="string")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator")
      */
     private $id;
 
