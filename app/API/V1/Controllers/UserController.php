@@ -15,19 +15,25 @@ use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
 class UserController extends APIControllerAbstract
 {
     /** @var RoleRepository **/
-    private $roleRepo;
+    //private $roleRepo;
 
     /** @var EmailVerificationRepository **/
-    private $emailVerificationRepo;
+    //private $emailVerificationRepo;
 
-    public function __construct(UserRepository $repo, ToArrayTransformer $arrayTransformer, RoleRepository $roleRepo, EmailVerificationRepository $emailVerificationRepo)
+    /**
+     * UserController constructor.
+     *
+     * @param UserRepository $repo
+     * @param ToArrayTransformer $arrayTransformer
+     */
+    public function __construct(UserRepository $repo, ToArrayTransformer $arrayTransformer/*, RoleRepository $roleRepo, EmailVerificationRepository $emailVerificationRepo*/)
     {
         $this->setRepo($repo);
         $this->setTransformer($arrayTransformer);
         parent::__construct();
 
-        $this->roleRepo = $roleRepo;
-        $this->emailVerificationRepo = $emailVerificationRepo;
+        //$this->roleRepo = $roleRepo;
+        //$this->emailVerificationRepo = $emailVerificationRepo;
     }
     /** @noinspection SenselessMethodDuplicationInspection */
 
