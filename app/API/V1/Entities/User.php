@@ -487,6 +487,11 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 $entity->setEmailVerification($emailToken);
                             }
                         )
+                    ],
+                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
+                        'emailVerification'=>[
+
+                        ]
                     ]
                 ],
                 'update'=>[

@@ -10,8 +10,6 @@ use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Transformers\UserTransformer;
 use TempestTools\Scribe\Contracts\Events\SimpleEventContract;
 use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Mail;
 
 /** @noinspection LongInheritanceChainInspection */
 class UserController extends APIControllerAbstract
@@ -52,28 +50,29 @@ class UserController extends APIControllerAbstract
     /**
      * @param SimpleEventContract $event
      * @throws \Doctrine\DBAL\ConnectionException
+     * Deprecated
      */
-    public function onPostStore(SimpleEventContract $event):void
-    {
-        $results = $event->getEventArgs()['result'];
+    //public function onPostStore(SimpleEventContract $event):void
+    //{
+        /*$results = $event->getEventArgs()['result'];
 
         if( !is_array($results)) {
             $results = [$results];
         }
 
-        foreach ($results as $result) {
+        foreach ($results as $result) {*/
             /** @var UserRepository $userRepo **/
-            $userRepo = $this->getRepo();
+            //$userRepo = $this->getRepo();
             /** @var User $user **/
-            $user = $userRepo->findOneBy(['id'=>$result['id']]);
-            if ($user) {
+            //$user = $userRepo->findOneBy(['id'=>$result['id']]);
+            //if ($user) {
                 /** Set user's default role **/
-                $this->roleRepo->addUserRoles($user);
+                //$this->roleRepo->addUserRoles($user);
                 /** Create the email verification code **/
-                $emailVerification = $this->emailVerificationRepo->createEmailVerificationCode($user);
+                //$emailVerification = $this->emailVerificationRepo->createEmailVerificationCode($user);
 
                 /** TODO: get this into an email queue **/
-                if ($event->getEventArgs()['frontEndOptions']['email'] === true) {
+                /*if ($event->getEventArgs()['frontEndOptions']['email'] === true) {
                     Mail::send(
                         'emails.activation',
                         [
@@ -92,22 +91,22 @@ class UserController extends APIControllerAbstract
                 }
             }
         }
-    }
+    }*/
 
     /**
      * @param $code
      * @return \Illuminate\Http\JsonResponse
      */
-    public function activate($code)
+    /*public function activate($code)
     {
         if ($code) {
-            $verification = explode('_', base64_decode($code));
+            $verification = explode('_', base64_decode($code));*/
             /** @var UserRepository $userRepo */
-            $userRepo = $this->getRepo();
-            $user = $userRepo->findOneBy(['email'=>$verification[0]]);
+            /*$userRepo = $this->getRepo();
+            $user = $userRepo->findOneBy(['email'=>$verification[0]]);*/
 
             /** @var EmailVerification $emailVerification */
-            $emailVerification = $user->getEmailVerification();
+           /* $emailVerification = $user->getEmailVerification();
             if ($emailVerification->getVerified())
             {
                 return response()->json(['error' => trans('user.activate_already_activated')], 401);
@@ -130,7 +129,7 @@ class UserController extends APIControllerAbstract
         {
             throw new BadRequestHttpException(trans('user.activate_verification_code_needed'));
         }
-    }
+    }*/
 
     /**
      * Includes a special me action to get info about the currently logged in user (default functionality of the skeleton)
