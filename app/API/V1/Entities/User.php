@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping AS ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Common\Entities\Traits\SoftDeleteable;
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
@@ -477,6 +478,16 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 'create'=>[
                     'allowed'=>true,
                     'extends'=>[':default:create'],
+                    'settings'=>[
+                        // When a guest makes a new user we make a new email token for them. The id of the token is generated automatically is a unique randomly generated string
+                        'mutate'=>ArrayExpressionBuilder::closure(
+                            function (array $params) {
+                                $entity = $params['self'];
+                                $emailToken = new EmailVerification();
+                                $entity->setEmailVerification($emailToken);
+                            }
+                        )
+                    ]
                 ],
                 'update'=>[
                     'allowed'=>false,
