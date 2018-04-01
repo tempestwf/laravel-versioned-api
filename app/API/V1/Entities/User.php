@@ -21,6 +21,7 @@ use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
+use TempestTools\Raven\Laravel\Orm\Notification\EmailVerificationNotification;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 use TempestTools\Moat\Contracts\HasPermissionsContract;
 
@@ -490,7 +491,14 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     ],
                     'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
                         'emailVerification'=>[
-
+                            'notification'=>new EmailVerificationNotification($this),
+                            'via'=>[
+                                'mail'=>[
+                                    'to'=>ArrayExpressionBuilder::closure(function () {
+                                        return $this->getEmail();
+                                    })
+                                ]
+                            ]
                         ]
                     ]
                 ],
