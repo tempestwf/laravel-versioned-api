@@ -2,9 +2,11 @@
 
 namespace App\API\V1\Repositories;
 
+use App\API\V1\Entities\Role;
 use App\API\V1\Entities\User;
 use App\API\V1\Entities\EmailVerification;
 use App\Repositories\Repository;
+use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
 class EmailVerificationRepository extends Repository
@@ -38,6 +40,32 @@ class EmailVerificationRepository extends Repository
 
         return $emailVerification;
     }*/
+
+    /**
+     * After a verification token is verified, it's user should be given the user role
+     *
+     * @param GenericEventArgs $e
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function postUpdate(GenericEventArgs $e): void
+    {
+        $results = $e->getArgs()['params']['results'] ?? [];
+        /**
+         * @var $roleRepo RoleRepository
+         */
+        $roleRepo = $this->getEm()->getRepository(Role::class);
+        // Look at the entity that are passed and make each one have the user role
+        foreach ($results as $entity) {
+            /**
+             * @var $entity EmailVerification
+             */
+            $verified = $entity->getBindParams()['verified'] ?? false;
+            if ($verified === true) {
+                $user = $entity->getUser();
+                $roleRepo->addUserRoles($user);
+            }
+        }
+    }
 
     /**
      * @return array

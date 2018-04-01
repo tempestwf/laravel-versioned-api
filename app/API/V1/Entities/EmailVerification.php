@@ -71,7 +71,7 @@ class EmailVerification extends EntityAbstract
      * @param bool $verified
      * @return EmailVerification
      */
-    public function verify(bool $verified): EmailVerification
+    public function setVerified(bool $verified): EmailVerification
     {
         $this->verified = $verified;
         return $this;
