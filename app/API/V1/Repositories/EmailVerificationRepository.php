@@ -100,6 +100,9 @@ class EmailVerificationRepository extends Repository
                     ]
                 ]
             ],
+            'admin'=>[
+                'extends'=>[':guest']
+            ],
         ];
     }
 

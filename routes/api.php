@@ -11,6 +11,7 @@
 |
 */
 
+use App\API\V1\Controllers\EmailVerificationController;
 use App\API\V1\Controllers\IndexController;
 use App\API\V1\Controllers\AuthController;
 use App\API\V1\Controllers\ContextController;
@@ -148,6 +149,9 @@ $api->version(
         $api->get('/contexts/guest/artists', ArtistController::class . '@index');
         $api->get('/contexts/guest/albums/{id}', AlbumController::class . '@show');
         $api->get('/contexts/guest/artists/{id}', ArtistController::class . '@show');
+        $api->resources([
+            '/contexts/guest/email-verification'=> EmailVerificationController::class,
+        ]);
     }
 );
 
@@ -237,6 +241,7 @@ $api->version(
             '/contexts/admin/albums'=>AlbumController::class,
             '/contexts/admin/artists'=>ArtistController::class,
             '/contexts/admin/users'=>UserController::class,
+            '/contexts/admin/email-verification'=>EmailVerificationController::class,
         ]);
     }
 );
