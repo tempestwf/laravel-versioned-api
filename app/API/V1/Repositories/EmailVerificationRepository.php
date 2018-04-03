@@ -90,7 +90,7 @@ class EmailVerificationRepository extends Repository
                     // TODO: Write test to make sure you can read the list and also an individual one
                     'query'=>[
                         'select'=>[
-                            'tokenAndUser'=>'e, u'
+                            'tokenAndUser'=>'e, partial u.{id, name, address, job, locale, createdAt, updatedAt}'
                         ],
                         'innerJoin'=>[
                             'user'=>[

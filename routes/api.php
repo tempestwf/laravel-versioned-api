@@ -245,7 +245,7 @@ $api->version(
         $api->get('/contexts/admin/email-verification', EmailVerificationController::class . '@index');
         $api->get('/contexts/admin/email-verification/{id}', EmailVerificationController::class . '@show');
         $api->put('/contexts/admin/email-verification', EmailVerificationController::class . '@update');
-        $api->delete('/contexts/admin/email-verification', EmailVerificationController::class . '@update');
+        $api->delete('/contexts/admin/email-verification', EmailVerificationController::class . '@delete');
     }
 );
 

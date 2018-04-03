@@ -126,7 +126,7 @@ class EmailVerification extends EntityAbstract
             'guest'=>[
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true
+                    'allowed'=>false
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],
