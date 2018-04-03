@@ -424,6 +424,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
+                    'permissive'=>false,
                     'settings'=>[
                         'validate'=>[ // Validates name and email and inherited by the rest of the config
                             'rules'=>[
@@ -489,6 +490,24 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             }
                         )
                     ],
+                    'name'=>[ // name allowed
+                        'permissive'=>true,
+                    ],
+                    'job'=>[ // job allowed
+                        'permissive'=>true,
+                    ],
+                    'address'=>[ // address allowed
+                        'permissive'=>true,
+                    ],
+                    'email'=>[ // email allowed
+                        'permissive'=>true,
+                    ],
+                    'password'=>[ // password allowed
+                        'permissive'=>true,
+                    ],
+                    'locale'=>[ // locale allowed
+                        'permissive'=>true,
+                    ],
                     'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
                         'emailVerification'=>[
                             'notification'=>new EmailVerificationNotification($this),
@@ -540,24 +559,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 'read'=>true
                             ]
                         ],
-                        'name'=>[ // name allowed
-                            'permissive'=>true,
-                        ],
-                        'job'=>[ // job allowed
-                            'permissive'=>true,
-                        ],
-                        'address'=>[ // address allowed
-                            'permissive'=>true,
-                        ],
-                        'email'=>[ // email allowed
-                            'permissive'=>true,
-                        ],
-                        'password'=>[ // password allowed
-                            'permissive'=>true,
-                        ],
-                        'locale'=>[ // locale allowed
-                            'permissive'=>true,
-                        ]
                     ],
                 ],
                 'update'=>[
