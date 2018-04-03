@@ -143,8 +143,16 @@
     <association from="\App\API\V1\Entities\EmailVerification" to="\App\API\V1\Entities\User" owner-alias="emailVerification" inverse-alias="user" many-owner="false" many-inverse="false" uuid="b746eae4-97dc-4e2c-9ed8-cc1e14841339">
       <association-field from="user_id" to="id"/>
       <orm-attributes>
-        <attribute name="side-owning"/>
-        <attribute name="side-inverse"/>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
       </orm-attributes>
     </association>
     <entity name="\App\API\V1\Entities\Permission" local-name="Permission" namespace="\App\API\V1\Entities" uuid="8333811e-e382-46eb-b749-e731798c6cd6">
@@ -514,7 +522,7 @@
     <entity uuid="88ea596f-f118-40e7-9fe5-6a455c53cce7" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-26" position-y="488" size-x="0" size-x2="115" size-y="0" size-y2="171"/>
     <entity uuid="b9413c05-f48a-45b6-9cdb-af25b6b72f2d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="401" position-y="278" size-x="0" size-x2="120" size-y="0" size-y2="73"/>
     <entity uuid="c046246c-1deb-470d-9f24-9ee56d3bf230" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="15" position-y="11" size-x="0" size-x2="119" size-y="0" size-y2="60"/>
-    <entity uuid="cccb5181-893d-4c1f-bded-7e0df65e3697" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="15" position-y="291" size-x="0" size-x2="90" size-y="0" size-y2="87"/>
+    <entity uuid="cccb5181-893d-4c1f-bded-7e0df65e3697" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="14" position-y="291" size-x="0" size-x2="90" size-y="0" size-y2="115"/>
     <entity uuid="e33edf88-b81b-4067-b273-3bb63155408e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="648" position-y="281" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
     <entity uuid="e4e321d9-dffd-4af4-8f8b-998d9f990d98" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="202" position-y="302" size-x="0" size-x2="99" size-y="0" size-y2="74"/>
     <many-to-many-association uuid="8f650c2b-4004-4f29-a2f1-e8d31a51a5e1" color="#969696"/>

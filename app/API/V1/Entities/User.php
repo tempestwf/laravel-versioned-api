@@ -106,7 +106,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     private $socialize;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user", cascade={"persist"})
      * @var EmailVerification $emailVerification
      */
     private $emailVerification;
