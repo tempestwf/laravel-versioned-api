@@ -55,7 +55,8 @@ class EmailVerificationRepository extends Repository
          */
         $roleRepo = $this->getEm()->getRepository(Role::class);
         // Look at the entity that are passed and make each one have the user role
-        foreach ($results as $entity) {
+        if (\count($results) > 0) {
+            $entity = array_pop($results);
             /**
              * @var $entity EmailVerification
              */
