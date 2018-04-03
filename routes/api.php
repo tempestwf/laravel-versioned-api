@@ -134,7 +134,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization', 'raven'],
         'provider'   => 'V1',
         'permissions' => [],
         'ttPath'=>['guest'],
@@ -149,9 +149,8 @@ $api->version(
         $api->get('/contexts/guest/artists', ArtistController::class . '@index');
         $api->get('/contexts/guest/albums/{id}', AlbumController::class . '@show');
         $api->get('/contexts/guest/artists/{id}', ArtistController::class . '@show');
-        $api->resources([
-            '/contexts/guest/email-verification'=> EmailVerificationController::class,
-        ]);
+        $api->get('/contexts/guest/email-verification/{id}', EmailVerificationController::class . '@show');
+        $api->put('/contexts/guest/email-verification', EmailVerificationController::class . '@update');
     }
 );
 
@@ -228,7 +227,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization', 'raven'],
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['admin'],
@@ -243,6 +242,10 @@ $api->version(
             '/contexts/admin/users'=>UserController::class,
             '/contexts/admin/email-verification'=>EmailVerificationController::class,
         ]);
+        $api->get('/contexts/admin/email-verification', EmailVerificationController::class . '@index');
+        $api->get('/contexts/admin/email-verification/{id}', EmailVerificationController::class . '@show');
+        $api->put('/contexts/admin/email-verification', EmailVerificationController::class . '@update');
+        $api->delete('/contexts/admin/email-verification', EmailVerificationController::class . '@update');
     }
 );
 

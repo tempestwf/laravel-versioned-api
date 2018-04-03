@@ -30,6 +30,14 @@
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
           </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
         </attribute>
       </orm-attributes>
     </entity>
@@ -77,14 +85,35 @@
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
           </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
         </attribute>
       </orm-attributes>
     </entity>
     <entity name="\App\API\V1\Entities\EmailVerification" local-name="EmailVerification" namespace="\App\API\V1\Entities" uuid="09fff147-bba4-441e-b70a-e8908dcf5ec0">
-      <field name="id" type="integer" required="true" primary="true" uuid="ef1bb1c1-6845-4b6a-83a8-010c043e8808">
+      <field name="id" type="string" required="true" primary="true" uuid="ef1bb1c1-6845-4b6a-83a8-010c043e8808">
         <orm-attributes>
           <attribute name="generator">
-            <attribute name="strategy">AUTO</attribute>
+            <attribute name="strategy">CUSTOM</attribute>
+          </attribute>
+          <attribute name="custom-id-generator">
+            <attribute name="class">TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator</attribute>
           </attribute>
         </orm-attributes>
       </field>
@@ -96,6 +125,14 @@
         <attribute name="table">email_verification</attribute>
         <attribute name="export-file-name">EmailVerification.php</attribute>
         <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
           <attribute name="SoftDeleteable">
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
@@ -123,6 +160,14 @@
         <attribute name="repository-class">App\API\V1\Repositories\PermissionRepository</attribute>
         <attribute name="export-file-name">Permission.php</attribute>
         <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
           <attribute name="SoftDeleteable">
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
@@ -198,6 +243,14 @@
         <attribute name="table">roles</attribute>
         <attribute name="export-file-name">Role.php</attribute>
         <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
           <attribute name="SoftDeleteable">
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
@@ -279,6 +332,14 @@
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
           </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
         </attribute>
       </orm-attributes>
     </entity>
@@ -330,6 +391,36 @@
         <attribute name="table">users</attribute>
         <attribute name="export-file-name">User.php</attribute>
         <attribute name="Gedmo">
+          <attribute name="Sluggable">
+            <attribute name="Slug">slug</attribute>
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="Sluggable">
+            <attribute name="Slug">slug</attribute>
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
           <attribute name="Sluggable">
             <attribute name="Slug">slug</attribute>
             <attribute name="Fields">
