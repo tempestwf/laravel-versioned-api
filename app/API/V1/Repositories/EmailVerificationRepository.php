@@ -2,10 +2,11 @@
 
 namespace App\API\V1\Repositories;
 
+use App\API\V1\Entities\Role;
 use App\API\V1\Entities\User;
-use App\API\V1\Entities\Permission;
 use App\API\V1\Entities\EmailVerification;
 use App\Repositories\Repository;
+use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
 class EmailVerificationRepository extends Repository
@@ -17,8 +18,9 @@ class EmailVerificationRepository extends Repository
      * @param User $user
      * @return EmailVerification
      * @throws \Doctrine\DBAL\ConnectionException
+     * Deprecated
      */
-    public function createEmailVerificationCode(User $user): EmailVerification
+    /*public function createEmailVerificationCode(User $user): EmailVerification
     {
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
@@ -37,6 +39,33 @@ class EmailVerificationRepository extends Repository
         }
 
         return $emailVerification;
+    }*/
+
+    /**
+     * After a verification token is verified, it's user should be given the user role
+     *
+     * @param GenericEventArgs $e
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function postUpdate(GenericEventArgs $e): void
+    {
+        $results = $e->getArgs()['params']['results'] ?? [];
+        /**
+         * @var $roleRepo RoleRepository
+         */
+        $roleRepo = $this->getEm()->getRepository(Role::class);
+        // Look at the entity that are passed and make each one have the user role
+        if (\count($results) > 0) {
+            $entity = array_pop($results);
+            /**
+             * @var $entity EmailVerification
+             */
+            $verified = $entity->getBindParams()['verified'] ?? false;
+            if ($verified === true) {
+                $user = $entity->getUser();
+                $roleRepo->addUserRoles($user);
+            }
+        }
     }
 
     /**
@@ -52,16 +81,29 @@ class EmailVerificationRepository extends Repository
                     ]
                 ]
             ],
-            'superAdmin'=>[
+            'guest'=>[
                 'extends'=>[':default'],
                 'read'=>[
                     'permissions'=>[
                         'allowed'=>true
+                    ],
+                    // TODO: Write test to make sure you can read the list and also an individual one
+                    'query'=>[
+                        'select'=>[
+                            'tokenAndUser'=>'e, partial u.{id, name, address, job, locale, createdAt, updatedAt}'
+                        ],
+                        'innerJoin'=>[
+                            'user'=>[
+                                'join'=>'e.user',
+                                'alias'=>'u',
+                            ]
+                        ]
                     ]
                 ]
             ],
-            // Below here is for testing purposes only
-            'testing'=>[]
+            'admin'=>[
+                'extends'=>[':guest']
+            ],
         ];
     }
 

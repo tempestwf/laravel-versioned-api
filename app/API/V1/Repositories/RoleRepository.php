@@ -101,8 +101,8 @@ class RoleRepository extends Repository
             foreach ($roles as $role) {
                 $user->addRole($role);
                 $em->persist($user);
-                $em->flush();
             }
+            $em->flush();
             $conn->commit();
         } catch (\Exception $e) {
             $conn->rollBack();

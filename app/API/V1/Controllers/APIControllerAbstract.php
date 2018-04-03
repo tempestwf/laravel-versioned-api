@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use TempestTools\Moat\Contracts\HasIdContract;
 use TempestTools\Common\Contracts\HasUserContract;
-use TempestTools\Common\Laravel\Controller\BaseControllerAbstract;
+use TempestTools\Scribe\Laravel\Controllers\BaseControllerAbstract;
 
 use App, Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;

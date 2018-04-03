@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping AS ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Common\Entities\Traits\SoftDeleteable;
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
@@ -20,6 +21,7 @@ use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
+use TempestTools\Raven\Laravel\Orm\Notification\EmailVerificationNotification;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 use TempestTools\Moat\Contracts\HasPermissionsContract;
 
@@ -104,7 +106,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     private $socialize;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user", cascade={"persist"})
      * @var EmailVerification $emailVerification
      */
     private $emailVerification;
@@ -422,6 +424,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
+                    'permissive'=>false,
                     'settings'=>[
                         'validate'=>[ // Validates name and email and inherited by the rest of the config
                             'rules'=>[
@@ -477,6 +480,46 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                 'create'=>[
                     'allowed'=>true,
                     'extends'=>[':default:create'],
+                    'settings'=>[
+                        // When a guest makes a new user we make a new email token for them. The id of the token is generated automatically is a unique randomly generated string
+                        'mutate'=>ArrayExpressionBuilder::closure(
+                            function (array $params) {
+                                $entity = $params['self'];
+                                $emailToken = new EmailVerification();
+                                $entity->setEmailVerification($emailToken);
+                            }
+                        )
+                    ],
+                    'name'=>[ // name allowed
+                        'permissive'=>true,
+                    ],
+                    'job'=>[ // job allowed
+                        'permissive'=>true,
+                    ],
+                    'address'=>[ // address allowed
+                        'permissive'=>true,
+                    ],
+                    'email'=>[ // email allowed
+                        'permissive'=>true,
+                    ],
+                    'password'=>[ // password allowed
+                        'permissive'=>true,
+                    ],
+                    'locale'=>[ // locale allowed
+                        'permissive'=>true,
+                    ],
+                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
+                        'emailVerification'=>[
+                            'notification'=>new EmailVerificationNotification($this),
+                            'via'=>[
+                                'mail'=>[
+                                    'to'=>ArrayExpressionBuilder::closure(function () {
+                                        return $this->getEmail();
+                                    })
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 'update'=>[
                     'allowed'=>false,
@@ -516,24 +559,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 'read'=>true
                             ]
                         ],
-                        'name'=>[ // name allowed
-                            'permissive'=>true,
-                        ],
-                        'job'=>[ // job allowed
-                            'permissive'=>true,
-                        ],
-                        'address'=>[ // address allowed
-                            'permissive'=>true,
-                        ],
-                        'email'=>[ // email allowed
-                            'permissive'=>true,
-                        ],
-                        'password'=>[ // password allowed
-                            'permissive'=>true,
-                        ],
-                        'locale'=>[ // locale allowed
-                            'permissive'=>true,
-                        ]
                     ],
                 ],
                 'update'=>[

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.10.1370" mvc="Symfony3" orm="Doctrine2" name="Laravel-versioned-api" uuid="3f0a34a9-0654-4157-838f-c2267ab6d16a">
+<skipper version="3.2.12.1400" mvc="Symfony" orm="Doctrine2" name="Laravel-versioned-api" uuid="3f0a34a9-0654-4157-838f-c2267ab6d16a">
   <module name="\app/API/V1/Entities" local-name="app/API/V1/Entities" namespace="\App\API\V1\Entities" local-namespace="\App\API\V1\Entities" export-format="Doctrine2Php" export-path="app/API/V1/Entities" uuid="4c2bc012-cb72-4b02-93df-d1bf00d5807b">
     <entity name="\App\API\V1\Entities\Album" local-name="Album" namespace="\App\API\V1\Entities" description="List of albums owned by a user" uuid="b9413c05-f48a-45b6-9cdb-af25b6b72f2d">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="7eb3f52e-9281-46b4-8ecc-795c37a28552">
@@ -9,7 +9,7 @@
           </attribute>
         </orm-attributes>
       </field>
-      <field name="name" type="string" uuid="cbc22433-5601-455d-87a8-71eba7af5417"/>
+      <field name="name" type="string" unique="true" uuid="cbc22433-5601-455d-87a8-71eba7af5417"/>
       <field name="releaseDate" type="datetime" uuid="6fba0ab6-d380-4b81-9ba4-8e860fc2a861">
         <orm-attributes>
           <attribute name="column">release_date</attribute>
@@ -25,6 +25,20 @@
       <orm-attributes>
         <attribute name="repository-class">App\API\V1\Repositories\AlbumRepository</attribute>
         <attribute name="export-file-name">Album.php</attribute>
+        <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+        </attribute>
       </orm-attributes>
     </entity>
     <association from="\App\API\V1\Entities\Album" to="\App\API\V1\Entities\Artist" caption="Artist Album" owner-alias="albums" inverse-alias="artist" many-owner="true" many-inverse="false" uuid="be507a13-0322-4f96-ae12-fe155f33bdc0">
@@ -41,6 +55,7 @@
             <attribute name="cascade-persist">true</attribute>
             <attribute name="cascade-remove">false</attribute>
           </attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
         </attribute>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -53,15 +68,175 @@
           </attribute>
         </orm-attributes>
       </field>
-      <field name="name" type="string" uuid="df7121cd-b04a-41d4-93c7-90b75ab71e59"/>
+      <field name="name" type="string" unique="true" uuid="df7121cd-b04a-41d4-93c7-90b75ab71e59"/>
       <index name="name_unq" unique="true">
         <index-field name="name"/>
       </index>
       <orm-attributes>
         <attribute name="repository-class">App\API\V1\Repositories\ArtistRepository</attribute>
         <attribute name="export-file-name">Artist.php</attribute>
+        <attribute name="Gedmo">
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+        </attribute>
       </orm-attributes>
     </entity>
+    <entity name="\App\API\V1\Entities\EmailVerification" local-name="EmailVerification" namespace="\App\API\V1\Entities" uuid="09fff147-bba4-441e-b70a-e8908dcf5ec0">
+      <field name="id" type="string" required="true" primary="true" uuid="ef1bb1c1-6845-4b6a-83a8-010c043e8808">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">CUSTOM</attribute>
+          </attribute>
+          <attribute name="custom-id-generator">
+            <attribute name="class">TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="verificationCode" type="string" uuid="e802ebe4-25bd-4330-b788-b764adeb4d38"/>
+      <field name="verified" type="boolean" required="true" uuid="e7d2731a-10d4-4004-8cd8-8b40fb196d22"/>
+      <field name="user_id" unique="true" uuid="f7f8a624-7052-4c2e-b441-b52ad4220d7e"/>
+      <orm-attributes>
+        <attribute name="repository-class">App\API\V1\Repositories\EmailVerificationRepository</attribute>
+        <attribute name="table">email_verification</attribute>
+        <attribute name="export-file-name">EmailVerification.php</attribute>
+        <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\App\API\V1\Entities\EmailVerification" to="\App\API\V1\Entities\User" owner-alias="emailVerification" inverse-alias="user" many-owner="false" many-inverse="false" uuid="b746eae4-97dc-4e2c-9ed8-cc1e14841339">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\App\API\V1\Entities\Permission" local-name="Permission" namespace="\App\API\V1\Entities" uuid="8333811e-e382-46eb-b749-e731798c6cd6">
+      <field name="id" type="integer" required="true" primary="true" uuid="4356a4a1-274c-4234-a524-35d17858c5a9">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" type="string" uuid="8821953d-99de-4e8b-98a1-a96e59104252"/>
+      <orm-attributes>
+        <attribute name="repository-class">App\API\V1\Repositories\PermissionRepository</attribute>
+        <attribute name="export-file-name">Permission.php</attribute>
+        <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\App\API\V1\Entities\UserToPermission" local-name="UserToPermission" namespace="\App\API\V1\Entities" uuid="c046246c-1deb-470d-9f24-9ee56d3bf230">
+      <field name="user_id" type="integer" required="true" primary="true" uuid="d0aaf39e-9de5-44cc-a40d-70462d4ef2e1"/>
+      <field name="permission_id" type="integer" required="true" primary="true" uuid="c3267317-a833-4f93-b08f-e70cac304387"/>
+      <field name="id" type="integer" required="true" unique="true" primary="true" uuid="5bfbdf3c-d517-4891-92b8-746c7d15a01d"/>
+    </entity>
+    <many-to-many mn-entity="\App\API\V1\Entities\UserToPermission" caption="User to Permission" uuid="ab22b10f-f5cc-4010-b9ff-ea9312392709">
+      <many-to-many-entity name="\App\API\V1\Entities\Permission" owning-side="true" alias="permissions" uuid="37d80ead-e8fb-40b8-b83a-6d628e3f4a36">
+        <many-to-many-field from="permission_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+      <many-to-many-entity name="\App\API\V1\Entities\User" owning-side="false" alias="users" uuid="cdd07bc3-ee06-4a58-8ff1-e6e9d748aa6f">
+        <many-to-many-field from="user_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="\App\API\V1\Entities\RoleToPermission" local-name="RoleToPermission" namespace="\App\API\V1\Entities" uuid="61be2e28-2dae-4445-966c-ab0ffca3e528">
+      <field name="role_id" type="integer" required="true" primary="true" uuid="3f96d078-f205-47b2-b9b9-ddd9400bfb7b"/>
+      <field name="permission_id" type="integer" required="true" primary="true" uuid="15d4d795-2970-4f04-a3ea-eefaf0c860a8"/>
+      <field name="id" type="integer" required="true" unique="true" primary="true" uuid="9d8ba1c3-ffaf-4b5c-bac8-7c3408242e76"/>
+    </entity>
+    <many-to-many mn-entity="\App\API\V1\Entities\RoleToPermission" caption="Role to Permission" uuid="8f650c2b-4004-4f29-a2f1-e8d31a51a5e1">
+      <many-to-many-entity name="\App\API\V1\Entities\Permission" owning-side="true" alias="permissions" uuid="c58dcfa8-d4db-4757-a836-b3b537dc9a29">
+        <many-to-many-field from="permission_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+      <many-to-many-entity name="\App\API\V1\Entities\Role" owning-side="false" alias="roles" uuid="4e1ad03d-2372-4e7c-927b-694dfc6b4577">
+        <many-to-many-field from="role_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+    </many-to-many>
     <entity name="\App\API\V1\Entities\Role" local-name="Role" namespace="\App\API\V1\Entities" uuid="335198c7-ad63-4f38-91df-2f98357bd35d">
       <field name="id" type="integer" required="true" primary="true" uuid="d2f41a26-a88d-45bc-a1ea-b1b684bfbc4a">
         <orm-attributes>
@@ -75,8 +250,114 @@
         <attribute name="repository-class">App\API\V1\Repositories\RoleRepository</attribute>
         <attribute name="table">roles</attribute>
         <attribute name="export-file-name">Role.php</attribute>
+        <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+        </attribute>
       </orm-attributes>
     </entity>
+    <entity name="\App\API\V1\Entities\UserToRole" local-name="UserToRole" namespace="\App\API\V1\Entities" uuid="7a4718b3-9f8a-477c-a8bd-4811dfe1947b">
+      <field name="user_id" type="integer" required="true" primary="true" uuid="fe66c0c0-3d2a-4c8c-81b6-8ca15cab1322"/>
+      <field name="role_id" type="integer" required="true" primary="true" uuid="895e4d9b-34b3-4bde-b1ca-bbbcd8fd27bf"/>
+      <field name="id" type="integer" required="true" unique="true" primary="true" uuid="bf2b15bd-016b-4eee-ad56-ce2cc91d3427"/>
+    </entity>
+    <many-to-many mn-entity="\App\API\V1\Entities\UserToRole" caption="User to Role" uuid="f92ec8a8-db82-4ed7-a684-12ba3de7d690">
+      <many-to-many-entity name="\App\API\V1\Entities\Role" owning-side="true" alias="roles" uuid="a106a810-9e53-413d-b5d3-a05c7955590e">
+        <many-to-many-field from="role_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+      <many-to-many-entity name="\App\API\V1\Entities\User" owning-side="false" alias="users" uuid="32ca44af-4f4c-4f57-bb06-3f65fe445e5a">
+        <many-to-many-field from="user_id" to="id"/>
+        <orm-attributes>
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+          <attribute name="on-delete">CASCADE</attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
+        </orm-attributes>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="\App\API\V1\Entities\SocializeUser" local-name="SocializeUser" namespace="\App\API\V1\Entities" uuid="88ea596f-f118-40e7-9fe5-6a455c53cce7">
+      <field name="id" type="integer" required="true" primary="true" uuid="6b441704-3fa5-4215-83a6-c3557317eefd">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="socializeId" type="string" uuid="5d7047fc-2a39-495c-bbc0-f3d6a738d5bf">
+        <orm-attributes>
+          <attribute name="column">socialize_id</attribute>
+        </orm-attributes>
+      </field>
+      <field name="nickname" type="string" uuid="b32426a3-024f-4517-b63c-d3e48b353e44"/>
+      <field name="avatar" type="string" uuid="bf5026f1-3d38-4155-9593-94f408c3d0ce"/>
+      <field name="avatarOriginal" type="string" uuid="d7606f85-7823-47da-a62e-2790b4d26b67">
+        <orm-attributes>
+          <attribute name="column">avatar_original</attribute>
+        </orm-attributes>
+      </field>
+      <field name="profileUrl" type="string" uuid="2da9c65f-b997-4d81-9b8b-4c60606d1c41">
+        <orm-attributes>
+          <attribute name="column">profile_url</attribute>
+        </orm-attributes>
+      </field>
+      <field name="type" type="string" uuid="5e9da0f5-3304-47a9-a390-35a351b13022"/>
+      <field name="token" type="string" uuid="12a78afb-bf05-4b1a-9ab2-7f98cbffee96"/>
+      <field name="refreshToken" type="string" uuid="b9f17ba9-3840-4385-a175-43956f1cb484">
+        <orm-attributes>
+          <attribute name="column">refresh_token</attribute>
+        </orm-attributes>
+      </field>
+      <field name="expiresIn" type="integer" uuid="e9111838-69a5-4d58-b99f-d7837d24340c">
+        <orm-attributes>
+          <attribute name="column">expires_in</attribute>
+        </orm-attributes>
+      </field>
+      <field name="user_id" unique="true" uuid="22600217-6e39-4839-902f-887c2527324c"/>
+      <orm-attributes>
+        <attribute name="repository-class">App\API\V1\Repositories\SocializeUserRepository</attribute>
+        <attribute name="table">socialize_user</attribute>
+        <attribute name="export-file-name">SocializeUser.php</attribute>
+        <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\App\API\V1\Entities\SocializeUser" to="\App\API\V1\Entities\User" owner-alias="socialize" inverse-alias="user" many-owner="false" many-inverse="false" uuid="4dabd028-8e2a-48a7-bbe6-eab242060e0f">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
     <entity name="\App\API\V1\Entities\User" local-name="User" namespace="\App\API\V1\Entities" uuid="cccb5181-893d-4c1f-bded-7e0df65e3697">
       <field name="name" type="string" uuid="d2c35e58-c34e-4a4c-9a4f-8d11eceaae3c">
         <orm-attributes>
@@ -106,10 +387,64 @@
           </attribute>
         </orm-attributes>
       </field>
+      <field name="slug" type="string" unique="true" uuid="b473c2a1-b0fb-4a00-ab56-c83890ad1059"/>
+      <field name="locale" type="string" default="en" required="true" uuid="a312b001-062c-49b3-a00f-9c37d86c0d8d">
+        <orm-attributes>
+          <attribute name="column">locale</attribute>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
       <orm-attributes>
         <attribute name="repository-class">App\API\V1\Repositories\UserRepository</attribute>
         <attribute name="table">users</attribute>
         <attribute name="export-file-name">User.php</attribute>
+        <attribute name="Gedmo">
+          <attribute name="Sluggable">
+            <attribute name="Slug">slug</attribute>
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="Sluggable">
+            <attribute name="Slug">slug</attribute>
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+          <attribute name="Sluggable">
+            <attribute name="Slug">slug</attribute>
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
+        </attribute>
       </orm-attributes>
     </entity>
     <entity name="\App\API\V1\Entities\AlbumToUser" local-name="AlbumToUser" namespace="\App\API\V1\Entities" uuid="e4e321d9-dffd-4af4-8f8b-998d9f990d98">
@@ -125,98 +460,14 @@
             <attribute name="cascade-detach">false</attribute>
           </attribute>
           <attribute name="on-delete">CASCADE</attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
         </orm-attributes>
       </many-to-many-entity>
       <many-to-many-entity name="\App\API\V1\Entities\Album" owning-side="false" alias="albums" uuid="f770372a-3366-4658-9a7d-02893a3b9a46">
         <many-to-many-field from="album_id" to="id"/>
         <orm-attributes>
           <attribute name="on-delete">CASCADE</attribute>
-        </orm-attributes>
-      </many-to-many-entity>
-    </many-to-many>
-    <entity name="\App\API\V1\Entities\Permission" local-name="Permission" namespace="\App\API\V1\Entities" uuid="8333811e-e382-46eb-b749-e731798c6cd6">
-      <field name="id" type="integer" required="true" primary="true" uuid="4356a4a1-274c-4234-a524-35d17858c5a9">
-        <orm-attributes>
-          <attribute name="generator">
-            <attribute name="strategy">AUTO</attribute>
-          </attribute>
-        </orm-attributes>
-      </field>
-      <field name="name" type="string" uuid="8821953d-99de-4e8b-98a1-a96e59104252"/>
-      <orm-attributes>
-        <attribute name="repository-class">App\API\V1\Repositories\PermissionRepository</attribute>
-        <attribute name="export-file-name">Permission.php</attribute>
-      </orm-attributes>
-    </entity>
-    <entity name="\App\API\V1\Entities\UserToPermission" local-name="UserToPermission" namespace="\App\API\V1\Entities" uuid="c046246c-1deb-470d-9f24-9ee56d3bf230">
-      <field name="user_id" type="integer" required="true" primary="true" uuid="d0aaf39e-9de5-44cc-a40d-70462d4ef2e1"/>
-      <field name="permission_id" type="integer" required="true" primary="true" uuid="c3267317-a833-4f93-b08f-e70cac304387"/>
-    </entity>
-    <many-to-many mn-entity="\App\API\V1\Entities\UserToPermission" caption="User to Permission" uuid="ab22b10f-f5cc-4010-b9ff-ea9312392709">
-      <many-to-many-entity name="\App\API\V1\Entities\Permission" owning-side="true" alias="permissions" uuid="37d80ead-e8fb-40b8-b83a-6d628e3f4a36">
-        <many-to-many-field from="permission_id" to="id"/>
-        <orm-attributes>
-          <attribute name="cascade">
-            <attribute name="cascade-persist">true</attribute>
-          </attribute>
-          <attribute name="on-delete">CASCADE</attribute>
-        </orm-attributes>
-      </many-to-many-entity>
-      <many-to-many-entity name="\App\API\V1\Entities\User" owning-side="false" alias="users" uuid="cdd07bc3-ee06-4a58-8ff1-e6e9d748aa6f">
-        <many-to-many-field from="user_id" to="id"/>
-        <orm-attributes>
-          <attribute name="cascade">
-            <attribute name="cascade-persist">true</attribute>
-          </attribute>
-          <attribute name="on-delete">CASCADE</attribute>
-        </orm-attributes>
-      </many-to-many-entity>
-    </many-to-many>
-    <entity name="\App\API\V1\Entities\RoleToPermission" local-name="RoleToPermission" namespace="\App\API\V1\Entities" uuid="61be2e28-2dae-4445-966c-ab0ffca3e528">
-      <field name="role_id" type="integer" required="true" primary="true" uuid="3f96d078-f205-47b2-b9b9-ddd9400bfb7b"/>
-      <field name="permission_id" type="integer" required="true" primary="true" uuid="15d4d795-2970-4f04-a3ea-eefaf0c860a8"/>
-    </entity>
-    <many-to-many mn-entity="\App\API\V1\Entities\RoleToPermission" caption="Role to Permission" uuid="8f650c2b-4004-4f29-a2f1-e8d31a51a5e1">
-      <many-to-many-entity name="\App\API\V1\Entities\Permission" owning-side="true" alias="permissions" uuid="c58dcfa8-d4db-4757-a836-b3b537dc9a29">
-        <many-to-many-field from="permission_id" to="id"/>
-        <orm-attributes>
-          <attribute name="cascade">
-            <attribute name="cascade-persist">true</attribute>
-          </attribute>
-          <attribute name="on-delete">CASCADE</attribute>
-        </orm-attributes>
-      </many-to-many-entity>
-      <many-to-many-entity name="\App\API\V1\Entities\Role" owning-side="false" alias="roles" uuid="4e1ad03d-2372-4e7c-927b-694dfc6b4577">
-        <many-to-many-field from="role_id" to="id"/>
-        <orm-attributes>
-          <attribute name="cascade">
-            <attribute name="cascade-persist">true</attribute>
-          </attribute>
-          <attribute name="on-delete">CASCADE</attribute>
-        </orm-attributes>
-      </many-to-many-entity>
-    </many-to-many>
-    <entity name="\App\API\V1\Entities\UserToRole" local-name="UserToRole" namespace="\App\API\V1\Entities" uuid="7a4718b3-9f8a-477c-a8bd-4811dfe1947b">
-      <field name="user_id" type="integer" required="true" primary="true" uuid="fe66c0c0-3d2a-4c8c-81b6-8ca15cab1322"/>
-      <field name="role_id" type="integer" required="true" primary="true" uuid="895e4d9b-34b3-4bde-b1ca-bbbcd8fd27bf"/>
-    </entity>
-    <many-to-many mn-entity="\App\API\V1\Entities\UserToRole" caption="User to Role" uuid="f92ec8a8-db82-4ed7-a684-12ba3de7d690">
-      <many-to-many-entity name="\App\API\V1\Entities\Role" owning-side="true" alias="roles" uuid="a106a810-9e53-413d-b5d3-a05c7955590e">
-        <many-to-many-field from="role_id" to="id"/>
-        <orm-attributes>
-          <attribute name="cascade">
-            <attribute name="cascade-persist">true</attribute>
-          </attribute>
-          <attribute name="on-delete">CASCADE</attribute>
-        </orm-attributes>
-      </many-to-many-entity>
-      <many-to-many-entity name="\App\API\V1\Entities\User" owning-side="false" alias="users" uuid="32ca44af-4f4c-4f57-bb06-3f65fe445e5a">
-        <many-to-many-field from="user_id" to="id"/>
-        <orm-attributes>
-          <attribute name="cascade">
-            <attribute name="cascade-persist">true</attribute>
-          </attribute>
-          <attribute name="on-delete">CASCADE</attribute>
+          <attribute name="fetch">EXTRA_LAZY</attribute>
         </orm-attributes>
       </many-to-many-entity>
     </many-to-many>
@@ -258,16 +509,20 @@
     </entity>
   </module>
   <visual-data>
+    <association uuid="4dabd028-8e2a-48a7-bbe6-eab242060e0f" color="#B31F24"/>
+    <association uuid="b746eae4-97dc-4e2c-9ed8-cc1e14841339" color="#F4931F"/>
     <association uuid="be507a13-0322-4f96-ae12-fe155f33bdc0" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <entity uuid="09fff147-bba4-441e-b70a-e8908dcf5ec0" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="173" position-y="513" size-x="0" size-x2="126" size-y="0" size-y2="73"/>
     <entity uuid="335198c7-ad63-4f38-91df-2f98357bd35d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="418" position-y="196" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
     <entity uuid="446dec21-7212-4de8-82aa-2f0d10cd4295" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="20" position-y="40" size-x="0" size-x2="99" size-y="0" size-y2="87"/>
     <entity uuid="51bd6952-a6b4-40e9-b522-d277e14bcd14" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="20" position-y="40" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
     <entity uuid="61be2e28-2dae-4445-966c-ab0ffca3e528" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="227" position-y="106" size-x="0" size-x2="119" size-y="0" size-y2="60"/>
     <entity uuid="7a4718b3-9f8a-477c-a8bd-4811dfe1947b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="184" position-y="196" size-x="0" size-x2="92" size-y="0" size-y2="60"/>
     <entity uuid="8333811e-e382-46eb-b749-e731798c6cd6" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="242" position-y="19" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
+    <entity uuid="88ea596f-f118-40e7-9fe5-6a455c53cce7" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-26" position-y="488" size-x="0" size-x2="115" size-y="0" size-y2="171"/>
     <entity uuid="b9413c05-f48a-45b6-9cdb-af25b6b72f2d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="401" position-y="278" size-x="0" size-x2="120" size-y="0" size-y2="73"/>
     <entity uuid="c046246c-1deb-470d-9f24-9ee56d3bf230" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="15" position-y="11" size-x="0" size-x2="119" size-y="0" size-y2="60"/>
-    <entity uuid="cccb5181-893d-4c1f-bded-7e0df65e3697" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="15" position-y="291" size-x="0" size-x2="90" size-y="0" size-y2="87"/>
+    <entity uuid="cccb5181-893d-4c1f-bded-7e0df65e3697" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="14" position-y="291" size-x="0" size-x2="90" size-y="0" size-y2="115"/>
     <entity uuid="e33edf88-b81b-4067-b273-3bb63155408e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="648" position-y="281" size-x="0" size-x2="80" size-y="0" size-y2="45"/>
     <entity uuid="e4e321d9-dffd-4af4-8f8b-998d9f990d98" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="202" position-y="302" size-x="0" size-x2="99" size-y="0" size-y2="74"/>
     <many-to-many-association uuid="8f650c2b-4004-4f29-a2f1-e8d31a51a5e1" color="#969696"/>
@@ -276,9 +531,9 @@
     <many-to-many-association uuid="f92ec8a8-db82-4ed7-a684-12ba3de7d690" color="#969696"/>
     <many-to-many-association-entity uuid="4e1ad03d-2372-4e7c-927b-694dfc6b4577" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <many-to-many-association-entity uuid="f770372a-3366-4658-9a7d-02893a3b9a46" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
-    <module uuid="4c2bc012-cb72-4b02-93df-d1bf00d5807b" bg-color="#E7F5FD" position-x="49" position-y="49" size-x="0" size-x2="902" size-y="21" size-y2="528"/>
-    <module uuid="96f428b0-b3df-44b2-86b1-1278a68b1641" bg-color="#E7F3E7" position-x="216" position-y="634" size-x="0" size-x2="134" size-y="0" size-y2="105"/>
-    <module uuid="a1654012-b666-4b51-b1d4-2a040835badb" bg-color="#FEFCE8" position-x="22" position-y="597" size-x="0" size-x2="139" size-y="0" size-y2="147"/>
-    <project uuid="3f0a34a9-0654-4157-838f-c2267ab6d16a" size-x="0" size-x2="1070" size-y="0" size-y2="794"/>
+    <module uuid="4c2bc012-cb72-4b02-93df-d1bf00d5807b" bg-color="#E7F5FD" position-x="49" position-y="49" size-x="36" size-x2="914" size-y="21" size-y2="679"/>
+    <module uuid="96f428b0-b3df-44b2-86b1-1278a68b1641" bg-color="#E7F3E7" position-x="194" position-y="767" size-x="0" size-x2="134" size-y="-8" size-y2="105"/>
+    <module uuid="a1654012-b666-4b51-b1d4-2a040835badb" bg-color="#FEFCE8" position-x="7" position-y="756" size-x="0" size-x2="139" size-y="0" size-y2="147"/>
+    <project uuid="3f0a34a9-0654-4157-838f-c2267ab6d16a" size-x="33" size-x2="1070" size-y="0" size-y2="912"/>
   </visual-data>
 </skipper>
