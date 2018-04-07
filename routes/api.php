@@ -86,9 +86,10 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['prime.controller', 'recaptcha'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'raven', 'recaptcha'],
         'provider'   => 'V1',
         'ttPath'=>['guest'],
+        'ttFallback'=>['default'],
     ],
     function () use ($api)
     {
@@ -99,13 +100,14 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['prime.controller'],
+        //'middleware' => ['prime.controller'],
         'provider'   => 'V1',
-        'ttPath'=>['guest'],
+        //'ttPath'=>['guest'],
+        //'ttFallback'=>['default'],
     ],
     function () use ($api)
     {
-        $api->get('/activate/{code}', UserController::class . '@activate');
+        //$api->get('/activate/{code}', UserController::class . '@activate');
         $api->get('/auth/authenticate/{provider}', AuthController::class . '@getSocialAuth');
         $api->get('/auth/authenticate/callback/{provider}', AuthController::class . '@getSocialAuthCallback');
     }
@@ -114,17 +116,12 @@ $api->version(
 $api->version(
 	'V1',
 	[
-		'middleware' => ['jwt.auth', 'api.auth', 'basic.extractor', 'acl', 'localization'],
+		'middleware' => ['jwt.auth', 'api.auth', 'acl', 'localization'],
 		'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)]
+        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
 	],
 	function () use ($api)
 	{
-        $api->resources([
-            '/contexts/user/albums'=> AlbumController::class,
-            '/contexts/user/artists'=>ArtistController::class,
-            '/contexts/user/users'=> UserController::class
-        ]);
 		$api->get('auth/me', UserController::class . '@me');
 	}
 );
