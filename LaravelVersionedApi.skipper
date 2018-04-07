@@ -38,6 +38,10 @@
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
           </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
         </attribute>
       </orm-attributes>
     </entity>
@@ -80,6 +84,15 @@
             <attribute name="Fields">
               <attribute name="Field">name</attribute>
             </attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
           </attribute>
           <attribute name="SoftDeleteable">
             <attribute name="FieldName">deletedAt</attribute>
@@ -137,6 +150,10 @@
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
           </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
         </attribute>
       </orm-attributes>
     </entity>
@@ -168,6 +185,10 @@
         <attribute name="repository-class">App\API\V1\Repositories\PermissionRepository</attribute>
         <attribute name="export-file-name">Permission.php</attribute>
         <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
           <attribute name="SoftDeleteable">
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
@@ -251,6 +272,10 @@
         <attribute name="table">roles</attribute>
         <attribute name="export-file-name">Role.php</attribute>
         <attribute name="Gedmo">
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
           <attribute name="SoftDeleteable">
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
@@ -348,6 +373,10 @@
             <attribute name="FieldName">deletedAt</attribute>
             <attribute name="TimeAware">false</attribute>
           </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
+          </attribute>
         </attribute>
       </orm-attributes>
     </entity>
@@ -404,6 +433,21 @@
             <attribute name="Fields">
               <attribute name="Field">name</attribute>
             </attribute>
+          </attribute>
+          <attribute name="Sluggable">
+            <attribute name="Slug">slug</attribute>
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="Loggable">
+            <attribute name="Fields">
+              <attribute name="Field">name</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="SoftDeleteable">
+            <attribute name="FieldName">deletedAt</attribute>
+            <attribute name="TimeAware">false</attribute>
           </attribute>
           <attribute name="Loggable">
             <attribute name="Fields">
