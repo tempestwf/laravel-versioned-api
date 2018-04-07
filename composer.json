@@ -53,7 +53,7 @@
       "TempestTools\\Common\\": "packages/tempesttools/common/src",
       "TempestTools\\Scribe\\": "packages/tempesttools/scribe/src",
       "Gedmo\\": "packages/tempesttools/doctrine/gedmo/lib/Gedmo",
-      "TempestTools\\Raven\\": "packages/tempesttools/scribe/src"
+      "TempestTools\\Raven\\": "packages/tempesttools/raven/src"
     },
     "files": [
       "app/helpers.php"
