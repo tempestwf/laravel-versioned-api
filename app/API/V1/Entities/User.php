@@ -7,8 +7,6 @@ use App\Entities\Traits\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping AS ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\API\V1\Traits\Entities\Blameable;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
@@ -633,18 +631,18 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'testing'=>[
                 'create'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:create'],
                 ],
                 'update'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:update'],
                 ],
                 'delete'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:delete'],
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:read'],
                     'allowed'=>true,
                 ],
             ],
