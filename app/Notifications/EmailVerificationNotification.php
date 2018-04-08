@@ -5,10 +5,12 @@
  * Date: 3/16/2018
  * Time: 5:22 PM
  */
-namespace TempestTools\Raven\Laravel\Orm\Notification;
+namespace App\Notifications;
 use App\API\V1\Entities\User;
 use Illuminate\Notifications\Messages\MailMessage;
 use TempestTools\Scribe\Contracts\Orm\EntityContract;
+use TempestTools\Raven\Laravel\Orm\Notification\GeneralNotificationAbstract;
+
 class EmailVerificationNotification extends GeneralNotificationAbstract
 {
     /**

@@ -9,6 +9,7 @@ use TempestTools\Common\Entities\Traits\SoftDeleteable;
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
+use TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator;
 
 /** @noinspection LongInheritanceChainInspection */
 

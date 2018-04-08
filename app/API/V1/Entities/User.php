@@ -21,7 +21,7 @@ use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
-use App\Notification\EmailVerificationNotification;
+use App\Notifications\EmailVerificationNotification;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 use TempestTools\Moat\Contracts\HasPermissionsContract;
 
