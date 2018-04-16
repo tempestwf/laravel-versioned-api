@@ -35,6 +35,7 @@ class EmailVerificationNotification extends GeneralNotificationAbstract
      * @return MailMessage
      */
     protected function addUserEntityToMailMessage (MailMessage $mailMessage, User $notifiable, array $settings):MailMessage {
+        // This is just example code, a real email would take the user to a webpage that would leverage the api to verify the token, and then redirect to a success page.
         $verificationKey = $notifiable->getEmailVerification()->getId();
         $mailMessage->greeting('Welcome to TempestTools');
         $mailMessage->action(env('APP_URL') . 'contexts/guest/email-verification/' . $verificationKey, 'Click here to verify your account');
