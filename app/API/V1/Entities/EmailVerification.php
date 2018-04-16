@@ -43,18 +43,18 @@ class EmailVerification extends EntityAbstract
     private $user;
 
     /**
-     * @return int
+     * @return null|string
      */
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return EmailVerification
      */
-    public function setId(int $id): EmailVerification
+    public function setId(string $id): EmailVerification
     {
         $this->id = $id;
         return $this;
@@ -132,6 +132,7 @@ class EmailVerification extends EntityAbstract
                 'update'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true,
+                    'permissive'=>true,
                     'fields'=>[
                         'verified'=>[ // A guest can set the token to verified because they won't be able to find the token with out having received it in their email
                             'permissive'=>true,

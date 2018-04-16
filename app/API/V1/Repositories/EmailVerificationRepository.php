@@ -49,7 +49,8 @@ class EmailVerificationRepository extends Repository
      */
     public function postUpdate(GenericEventArgs $e): void
     {
-        $results = $e->getArgs()['params']['results'] ?? [];
+        $k = $e->getArgs();
+        $results = $e->getArgs()['results'] ?? [];
         /**
          * @var $roleRepo RoleRepository
          */
@@ -87,7 +88,6 @@ class EmailVerificationRepository extends Repository
                     'permissions'=>[
                         'allowed'=>true
                     ],
-                    // TODO: Write test to make sure you can read the list and also an individual one
                     'query'=>[
                         'select'=>[
                             'tokenAndUser'=>'e, partial u.{id, name, address, job, locale, createdAt, updatedAt}'
@@ -101,9 +101,13 @@ class EmailVerificationRepository extends Repository
                     ]
                 ]
             ],
+            'user'=>[
+                'extends'=>[':guest']
+            ],
             'admin'=>[
                 'extends'=>[':guest']
             ],
+
         ];
     }
 

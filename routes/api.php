@@ -70,16 +70,16 @@ $api->version(
 // Came with original skeleton
 
 $api->version(
-	'V1',
+    'V1',
     [
-		'provider'   => 'V1',
-	],
-	function () use ($api)
-	{
+        'provider'   => 'V1',
+    ],
+    function () use ($api)
+    {
         $api->get('/', IndexController::class . '@about');
-		$api->post('auth/authenticate', AuthController::class . '@authenticate');
-		$api->get('auth/refresh',  AuthController::class . '@refresh');
-	}
+        $api->post('auth/authenticate', AuthController::class . '@authenticate');
+        $api->get('auth/refresh',  AuthController::class . '@refresh');
+    }
 );
 
 
@@ -114,16 +114,16 @@ $api->version(
 );
 
 $api->version(
-	'V1',
-	[
-		'middleware' => ['jwt.auth', 'api.auth', 'acl', 'localization'],
-		'provider'   => 'V1',
-        'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
-	],
-	function () use ($api)
-	{
-		$api->get('auth/me', UserController::class . '@me');
-	}
+    'V1',
+    [
+        'middleware' => ['jwt.auth', 'api.auth', 'acl', 'localization'],
+        'provider'   => 'V1',
+        //'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI_AND_REQUEST_METHOD)],
+    ],
+    function () use ($api)
+    {
+        $api->get('auth/me', UserController::class . '@me');
+    }
 );
 
 // Scribe routes:
@@ -131,7 +131,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization', 'raven'],
+        'middleware' => ['basic.extractor', 'prime.controller', /*'acl',*/ 'localization', 'raven'],
         'provider'   => 'V1',
         'permissions' => [],
         'ttPath'=>['guest'],
@@ -147,10 +147,9 @@ $api->version(
         $api->get('/contexts/guest/albums/{id}', AlbumController::class . '@show');
         $api->get('/contexts/guest/artists/{id}', ArtistController::class . '@show');
         $api->get('/contexts/guest/email-verification/{id}', EmailVerificationController::class . '@show');
-        $api->put('/contexts/guest/email-verification', EmailVerificationController::class . '@update');
+        $api->put('/contexts/guest/email-verification/{id}', EmailVerificationController::class . '@update');
     }
 );
-
 
 $api->version(
     'V1',
@@ -224,7 +223,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'acl', 'localization', 'raven'],
+        'middleware' => ['jwt.auth', 'api.auth', 'basic.extractor', 'prime.controller', 'acl', 'localization', 'raven'],
         'provider'   => 'V1',
         'permissions' => [ArrayExpressionBuilder::template(PermissionsTemplatesConstants::URI)],
         'ttPath'=>['admin'],
@@ -239,10 +238,7 @@ $api->version(
             '/contexts/admin/users'=>UserController::class,
             '/contexts/admin/email-verification'=>EmailVerificationController::class,
         ]);
-        $api->get('/contexts/admin/email-verification', EmailVerificationController::class . '@index');
         $api->get('/contexts/admin/email-verification/{id}', EmailVerificationController::class . '@show');
-        $api->put('/contexts/admin/email-verification', EmailVerificationController::class . '@update');
-        $api->delete('/contexts/admin/email-verification', EmailVerificationController::class . '@delete');
     }
 );
 
@@ -265,7 +261,3 @@ $api->version(
         ]);
     }
 );
-
-
-
-

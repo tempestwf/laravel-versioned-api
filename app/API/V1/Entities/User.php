@@ -3,6 +3,8 @@
 namespace App\API\V1\Entities;
 
 use App\Entities\Traits\Authenticatable;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,6 +22,8 @@ use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
 use App\Notifications\EmailVerificationNotification;
+use TempestTools\Raven\Contracts\Orm\NotifiableEntityContract;
+use TempestTools\Raven\Laravel\Orm\NotifiableTrait;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 use TempestTools\Moat\Contracts\HasPermissionsContract;
 
@@ -33,9 +37,9 @@ use TempestTools\Moat\Contracts\HasPermissionsContract;
  * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, ExtractableContract, AuthenticatableContract
+class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, ExtractableContract, AuthenticatableContract, NotifiableEntityContract
 {
-    use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait;
+    use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait, NotifiableTrait;
 
     /**
      * @ORM\Id
@@ -477,6 +481,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'guest'=>[
                 'create'=>[
                     'allowed'=>true,
+                    'permissive'=>true,
                     'extends'=>[':default:create'],
                     'settings'=>[
                         // When a guest makes a new user we make a new email token for them. The id of the token is generated automatically is a unique randomly generated string
@@ -484,6 +489,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             function (array $params) {
                                 $entity = $params['self'];
                                 $emailToken = new EmailVerification();
+                                $emailToken->setUser($entity);
                                 $entity->setEmailVerification($emailToken);
                             }
                         )
@@ -600,7 +606,8 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'allowed'=>true,
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':admin:create']
+                    'extends'=>[':admin:create'],
+                    'allowed'=>true,
                 ],
             ],
             'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin

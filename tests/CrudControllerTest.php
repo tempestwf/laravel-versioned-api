@@ -71,7 +71,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $result1 = $response1->decodeResponseJson();
             $this->assertEquals('Test Artist', $result1['name']);
 
-            $this->refreshApplication();
             $create = [
                 'token'=>$token,
                 'params'=>[
@@ -88,7 +87,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $result2 = $response2->decodeResponseJson();
             $this->assertEquals('Test Artist', $result2[0]['name']);
 
-            $this->refreshApplication();
             $artist = $this->getDefaultArtist();
             $update = [
                 'token'=>$token,
@@ -107,7 +105,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $result3 = $response3->decodeResponseJson();
             $this->assertEquals('Test Artist Updated', $result3[0]['name']);
 
-            $this->refreshApplication();
             $update = [
                 'token'=>$token,
                 'params'=> [
@@ -121,7 +118,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $result4 = $response4->decodeResponseJson();
             $this->assertEquals('Test Artist Updated Again', $result4['name']);
 
-            $this->refreshApplication();
             $update = [
                 'token'=>$token,
                 'params'=> [
@@ -154,7 +150,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             /* SoftDeleteable still sends in the id */
             $this->assertEquals($result6[0]['id'], $result5['id']);
 
-            $this->refreshApplication();
             $delete = [
                 'token'=>$token,
                 'params'=> [
@@ -167,7 +162,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $result7 = $response7->decodeResponseJson();
             $this->assertEquals($result7['id'], $artist->getId());
 
-            $this->refreshApplication();
             $delete = [
                 'token'=>$token,
                 'params'=> [
@@ -211,7 +205,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => 'password']);
             $result = $response->decodeResponseJson();
 
-            $this->refreshApplication();
             /** @var string $token */
             $token = $result['token'];
             $testArtist = $artistRepo->findOneBy(['name'=>'Brahms']);
@@ -219,7 +212,6 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $result = $response->decodeResponseJson();
             $this->assertEquals($result['name'], 'Brahms');
 
-            $this->refreshApplication();
             $query = [
                 'query'=>[
                     'where'=>[

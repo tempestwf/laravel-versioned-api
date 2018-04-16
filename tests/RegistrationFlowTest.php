@@ -1,89 +1,90 @@
 <?php
 
-use App\API\V1\Entities\Role;
+use App\API\V1\Repositories\EmailVerificationRepository;
+use App\API\V1\Repositories\UserRepository;
 use Faker\Factory;
-use App\API\V1\Entities\User;
-use App\API\V1\Entities\EmailVerification;
 use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 class RegistrationFlowTest extends CrudTestBaseAbstract
 {
-    /**
-     * @return User
-     */
-    protected function makeUser(): User
-    {
-        $generator = Factory::create();
-        $user = new User();
-        $user
-            ->setEmail($generator->safeEmail)
-            ->setPassword('password')
-            ->setName($generator->name)
-            ->setJob($generator->jobTitle)
-            ->setLocale('en')
-            ->setAddress($generator->address);
-        return $user;
-    }
+    protected $password = '441520435a0a2dac143af05b55f4b751';
 
     public function testEmailVerification():void
     {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
-        $conn->beginTransaction();
+        //$conn->beginTransaction();
         try {
-            $repo = $this->em->getRepository(Role::class);
-            /** @var Role $userRole */
-            $userRole = $repo->findOneBy(['name' => 'user']);
-            $user = $this->makeUser();
-            $user->addRole($userRole);
-            $em->persist($user);
-            $em->flush();
+            $generator = Factory::create();
+            /** Register user via the guest endpoint **/
+            $response = $this->json(
+                'POST', '/contexts/guest/users',
+                [
+                    "params" => [
+                        "name" => $generator->name,
+                        "email" => $generator->safeEmail,
+                        "password" => $this->password,
+                        "job" => $generator->jobTitle,
+                        "address" => $generator->address,
+                        "locale" => "en"
+                    ],
+                    "options" => [
+                        "email" => false,
+                        "g-recaptcha-response-omit" => env('GOOGLE_RECAPTCHA_SKIP_CODE') /** skipping recaptcha with a key **/
+                    ]
+                ]
+            );
+            $userResult = $response->decodeResponseJson();
+            $this->assertArrayHasKey('id', $userResult);
 
-            $emailVerification = new EmailVerification();
-            $emailVerification
-                ->setVerificationCode('SampleVerificationCode')
-                ->setUser($user)
-                ->verify(false);
-            $em->persist($emailVerification);
-            $em->flush();
-            $conn->commit();
+            /** Making sure user has email verification entry **/
+            $emailVerificationRepository = new EmailVerificationRepository();
+            $emailVerification = $emailVerificationRepository->findOneBy(["user" => $userResult["id"]]);
+            $this->assertEquals( $emailVerification->getUser()->getId(), $userResult['id']);
+            $this->assertEquals( $emailVerification->getVerified(), false);
 
-            $conn->beginTransaction();
+            /** Email verification endpoint **/
+            $response = $this->json(
+                'PUT', "/contexts/guest/email-verification/" . $emailVerification->getId(),
+                [
+                    "params" => [ "verified" => true ],
+                    "options" => [ "simplifiedParams" => true ]
+                ]
+            );
+            $result = $response->decodeResponseJson();
+            $this->assertArrayHasKey('id', $result);
 
-            $verificationCode = base64_encode($user->getEmail() . '_wrong code here');
-            $response = $this->json('GET', '/activate/' . $verificationCode);
-            /** Fail Activation wih wrong activation code **/
-            $response->assertResponseStatus(401);
+            /** Making sure user has user has role entry of 'user' **/
+            $userRepository = new UserRepository();
+            $user = $userRepository->find($userResult["id"]);
+            $this->assertEquals( $user->getId(), $userResult['id']);
+            $this->assertEquals( $user->getRoles()[0]->getName(), 'user');
 
-            $this->refreshApplication();
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(422);
 
-            $verificationCode = base64_encode($user->getEmail() . '_' . $emailVerification->getVerificationCode());
-            $response = $this->json('GET', '/activate/' . $verificationCode);
-            /** Successfully activated **/
-            $response->assertResponseStatus(200);
+            /** Try to log in with correct password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => $this->password]);
+            $result = $response->decodeResponseJson();
+            $this->assertArrayHasKey('token', $result);
 
-            $this->refreshApplication();
+            /** Access me no token **/
+            $response = $this->json('GET', '/auth/me', [],['HTTP_AUTHORIZATION'=>'Bearer ' . null]);
+            $response->assertResponseStatus(400);
 
-            $userRole = $user->getRoles();
-            /** Make sure the new user only has 1 role **/
-            $this->assertEquals(count($userRole), 1);
-            /** Make sure the new user only has user role **/
-            $this->assertEquals($userRole[0]->getName(), 'user');
+            /** Access me with token **/
+            $response = $this->json('GET', '/auth/me', [],['HTTP_AUTHORIZATION'=>'Bearer ' . $result["token"]]);
+            $result = $response->decodeResponseJson();
+            $this->assertArrayHasKey('id', $result);
+            $this->assertEquals( $user->getName(), $userResult["name"]);
 
-            $conn->commit();
+            /** Leave no trace of test **/
+            //$conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
-            throw $e;
-        }
-
-        $conn->beginTransaction();
-        try {
-            $em->remove($user);
-            $em->flush();
-            $conn->commit();
-        } catch (Exception $e) {
-            $conn->rollBack();
-            throw $e;
+            //throw $e;
         }
     }
 }
