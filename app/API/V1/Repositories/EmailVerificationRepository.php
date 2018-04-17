@@ -15,33 +15,6 @@ class EmailVerificationRepository extends Repository
         $entity = EmailVerification::class;
 
     /**
-     * @param User $user
-     * @return EmailVerification
-     * @throws \Doctrine\DBAL\ConnectionException
-     * Deprecated
-     */
-    /*public function createEmailVerificationCode(User $user): EmailVerification
-    {
-        $em = $this->getEntityManager();
-        $conn = $em->getConnection();
-        $conn->beginTransaction();
-        $emailVerification = null;
-        try {
-            $verification_code = str_random(env('AUTH_PASSWORD_LENGTH', 30));
-            $emailVerification = new EmailVerification();
-            $emailVerification->setVerificationCode($verification_code);
-            $emailVerification->setUser($user);
-            $em->persist($emailVerification);
-            $em->flush();
-            $conn->commit();
-        } catch (\Exception $e) {
-            $conn->rollBack();
-        }
-
-        return $emailVerification;
-    }*/
-
-    /**
      * After a verification token is verified, it's user should be given the user role
      *
      * @param GenericEventArgs $e

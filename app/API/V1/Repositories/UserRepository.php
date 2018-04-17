@@ -42,12 +42,10 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
             $socializeUser = new SocializeUser();
             $socializeUser->setUser($user);
             $socializeUser->setAvatar($socialiteUser->avatar);
-            // TODO: This seems to be broken @jerome
             $socializeUser->setAvatarOriginal($socialiteUser->avatar_original);
             $socializeUser->setExpiresIn($socialiteUser->expiresIn);
             $socializeUser->setNickname($socialiteUser->nickname);
             if (strtolower($socializeType) === 'facebook') {
-                // TODO: This seems to be broken @jerome
                 $socializeUser->setProfileUrl($socialiteUser->profileUrl);
             }
             $socializeUser->setRefreshToken($socialiteUser->refreshToken);
