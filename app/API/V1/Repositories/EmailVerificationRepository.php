@@ -2,10 +2,11 @@
 
 namespace App\API\V1\Repositories;
 
+use App\API\V1\Entities\Role;
 use App\API\V1\Entities\User;
-use App\API\V1\Entities\Permission;
 use App\API\V1\Entities\EmailVerification;
 use App\Repositories\Repository;
+use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
 class EmailVerificationRepository extends Repository
@@ -14,29 +15,31 @@ class EmailVerificationRepository extends Repository
         $entity = EmailVerification::class;
 
     /**
-     * @param User $user
-     * @return EmailVerification
+     * After a verification token is verified, it's user should be given the user role
+     *
+     * @param GenericEventArgs $e
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function createEmailVerificationCode(User $user): EmailVerification
+    public function postUpdate(GenericEventArgs $e): void
     {
-        $em = $this->getEntityManager();
-        $conn = $em->getConnection();
-        $conn->beginTransaction();
-        $emailVerification = null;
-        try {
-            $verification_code = str_random(env('AUTH_PASSWORD_LENGTH', 30));
-            $emailVerification = new EmailVerification();
-            $emailVerification->setVerificationCode($verification_code);
-            $emailVerification->setUser($user);
-            $em->persist($emailVerification);
-            $em->flush();
-            $conn->commit();
-        } catch (\Exception $e) {
-            $conn->rollBack();
+        $k = $e->getArgs();
+        $results = $e->getArgs()['results'] ?? [];
+        /**
+         * @var $roleRepo RoleRepository
+         */
+        $roleRepo = $this->getEm()->getRepository(Role::class);
+        // Look at the entity that are passed and make each one have the user role
+        if (\count($results) > 0) {
+            $entity = array_pop($results);
+            /**
+             * @var $entity EmailVerification
+             */
+            $verified = $entity->getBindParams()['verified'] ?? false;
+            if ($verified === true) {
+                $user = $entity->getUser();
+                $roleRepo->addUserRoles($user);
+            }
         }
-
-        return $emailVerification;
     }
 
     /**
@@ -52,16 +55,32 @@ class EmailVerificationRepository extends Repository
                     ]
                 ]
             ],
-            'superAdmin'=>[
+            'guest'=>[
                 'extends'=>[':default'],
                 'read'=>[
                     'permissions'=>[
                         'allowed'=>true
+                    ],
+                    'query'=>[
+                        'select'=>[
+                            'tokenAndUser'=>'e, partial u.{id, name, address, job, locale, createdAt, updatedAt}'
+                        ],
+                        'innerJoin'=>[
+                            'user'=>[
+                                'join'=>'e.user',
+                                'alias'=>'u',
+                            ]
+                        ]
                     ]
                 ]
             ],
-            // Below here is for testing purposes only
-            'testing'=>[]
+            'user'=>[
+                'extends'=>[':guest']
+            ],
+            'admin'=>[
+                'extends'=>[':guest']
+            ],
+
         ];
     }
 

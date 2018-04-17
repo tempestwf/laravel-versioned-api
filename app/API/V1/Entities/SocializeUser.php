@@ -280,9 +280,10 @@ class SocializeUser extends EntityAbstract
                 'create'=>[
                     'allowed'=>false,
                     'settings'=>[
-                        'validate'=>[
+                        'validate'=>[ // Validates name and email and inherited by the rest of the config
                             'rules'=>[
-                                'name'=>'required|min:2',
+                                'user_id' => 'required',
+                                'socialize_id' => 'required'
                             ],
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
@@ -290,8 +291,11 @@ class SocializeUser extends EntityAbstract
                     ],
                     'toArray'=> [
                         'id'=>[],
-                        'name'=>[],
-                        'albums'=>[],
+                        'user_id'=>[],
+                        'nickname'=>[],
+                        'avatar'=>[],
+                        'profile_url'=>[],
+                        'type'=>[],
                     ]
                 ],
                 'update'=>[
@@ -302,42 +306,6 @@ class SocializeUser extends EntityAbstract
                 ],
                 'read'=>[ // Same as default create
                     'extends'=>[':default:create']
-                ],
-            ],
-            'admin'=>[
-                'create'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'update'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'delete'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-            ],
-            'superAdmin'=>[
-                'create'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'update'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'delete'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
                 ],
             ],
             'guest'=>[
@@ -357,7 +325,37 @@ class SocializeUser extends EntityAbstract
                     'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
-            ]
+            ],
+            'admin'=>[
+                'create'=>[
+                    'extends'=>[':default:create'],
+                ],
+                'update'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
+                'delete'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create'],
+                ],
+            ],
+            'superAdmin'=>[
+                'create'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'update'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':admin:create'],
+                ],
+            ],
         ];
     }
 }

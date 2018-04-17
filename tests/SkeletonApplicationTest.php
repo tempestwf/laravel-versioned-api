@@ -527,8 +527,8 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $this->refreshApplication();
             $response = $this->json('POST', '/contexts/admin/users', $create, ['HTTP_AUTHORIZATION'=>'Bearer ' . $token]);
             $result = $response->decodeResponseJson();
-            //Assert should not fail
-            $this->assertArrayHasKey('id', $result[0]);
+            //Assert should fail, admin level can't do anything with permissions
+            $this->assertEquals( 500, $result['status_code']);
 
             $this->refreshApplication();
             $create = [
@@ -752,6 +752,4 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         return [$user, $album, $artist, $role, $permission];
 
     }
-
-
 }

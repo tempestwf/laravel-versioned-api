@@ -3,14 +3,15 @@
 namespace App\API\V1\Entities;
 
 use App\Entities\Traits\Authenticatable;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping AS ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Common\Entities\Traits\SoftDeleteable;
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
@@ -20,6 +21,9 @@ use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Common\Contracts\ExtractableContract;
 use TempestTools\Common\Utility\ExtractorOptionsTrait;
+use App\Notifications\EmailVerificationNotification;
+use TempestTools\Raven\Contracts\Orm\NotifiableEntityContract;
+use TempestTools\Raven\Laravel\Orm\NotifiableTrait;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 use TempestTools\Moat\Contracts\HasPermissionsContract;
 
@@ -33,9 +37,9 @@ use TempestTools\Moat\Contracts\HasPermissionsContract;
  * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, ExtractableContract, AuthenticatableContract
+class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, ExtractableContract, AuthenticatableContract, NotifiableEntityContract
 {
-    use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait;
+    use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait, NotifiableTrait;
 
     /**
      * @ORM\Id
@@ -104,7 +108,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     private $socialize;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user")
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\EmailVerification", mappedBy="user", cascade={"persist"})
      * @var EmailVerification $emailVerification
      */
     private $emailVerification;
@@ -422,6 +426,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'default'=>[
                 'create'=>[
                     'allowed'=>false,
+                    'permissive'=>false,
                     'settings'=>[
                         'validate'=>[ // Validates name and email and inherited by the rest of the config
                             'rules'=>[
@@ -476,7 +481,49 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'guest'=>[
                 'create'=>[
                     'allowed'=>true,
+                    'permissive'=>true,
                     'extends'=>[':default:create'],
+                    'settings'=>[
+                        // When a guest makes a new user we make a new email token for them. The id of the token is generated automatically is a unique randomly generated string
+                        'mutate'=>ArrayExpressionBuilder::closure(
+                            function (array $params) {
+                                $entity = $params['self'];
+                                $emailToken = new EmailVerification();
+                                $emailToken->setUser($entity);
+                                $entity->setEmailVerification($emailToken);
+                            }
+                        )
+                    ],
+                    'name'=>[ // name allowed
+                        'permissive'=>true,
+                    ],
+                    'job'=>[ // job allowed
+                        'permissive'=>true,
+                    ],
+                    'address'=>[ // address allowed
+                        'permissive'=>true,
+                    ],
+                    'email'=>[ // email allowed
+                        'permissive'=>true,
+                    ],
+                    'password'=>[ // password allowed
+                        'permissive'=>true,
+                    ],
+                    'locale'=>[ // locale allowed
+                        'permissive'=>true,
+                    ],
+                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
+                        'emailVerification'=>[
+                            'notification'=>new EmailVerificationNotification($this),
+                            'via'=>[
+                                'mail'=>[
+                                    'to'=>ArrayExpressionBuilder::closure(function () {
+                                        return $this->getEmail();
+                                    })
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 'update'=>[
                     'allowed'=>false,
@@ -516,24 +563,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 'read'=>true
                             ]
                         ],
-                        'name'=>[ // name allowed
-                            'permissive'=>true,
-                        ],
-                        'job'=>[ // job allowed
-                            'permissive'=>true,
-                        ],
-                        'address'=>[ // address allowed
-                            'permissive'=>true,
-                        ],
-                        'email'=>[ // email allowed
-                            'permissive'=>true,
-                        ],
-                        'password'=>[ // password allowed
-                            'permissive'=>true,
-                        ],
-                        'locale'=>[ // locale allowed
-                            'permissive'=>true,
-                        ]
                     ],
                 ],
                 'update'=>[
@@ -577,7 +606,8 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'allowed'=>true,
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':admin:create']
+                    'extends'=>[':admin:create'],
+                    'allowed'=>true,
                 ],
             ],
             'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
@@ -608,18 +638,18 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             'testing'=>[
                 'create'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:create'],
                 ],
                 'update'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:update'],
                 ],
                 'delete'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:delete'],
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create'],
+                    'extends'=>[':superAdmin:read'],
                     'allowed'=>true,
                 ],
             ],

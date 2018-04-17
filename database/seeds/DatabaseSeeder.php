@@ -77,8 +77,7 @@ class DatabaseSeeder extends Seeder
             $emailVerification = new EmailVerification();
             $emailVerification
                 ->setUser($user)
-                ->setVerificationCode('sampleverificationcode')
-                ->verify(true);
+                ->setVerified(true);
 
             $this->em->persist($emailVerification);
 
@@ -107,6 +106,7 @@ class DatabaseSeeder extends Seeder
                     '/contexts/user/users',
                     '/contexts/user/users/{user}',
                     '/contexts/user/users/{user}/albums',
+                    '/contexts/user/email-verification/{id}',
                 ],
                 'admin'=>[
                     '/contexts/admin/albums',
@@ -116,6 +116,8 @@ class DatabaseSeeder extends Seeder
                     '/contexts/admin/users',
                     '/contexts/admin/users/{user}',
                     '/contexts/admin/users/{user}/albums',
+                    '/contexts/admin/email-verification',
+                    '/contexts/admin/email-verification/{id}',
                 ],
                 'super-admin'=>[
                     '/contexts/super-admin/users',

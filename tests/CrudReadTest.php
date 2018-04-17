@@ -619,6 +619,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testReadPermissions () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -718,6 +719,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testSqlQueryFunctionality () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -831,6 +833,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testGeneralDataRetrieval () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -1014,6 +1017,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testGeneralQueryBuilding () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -1140,6 +1144,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testBasicRead () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -1166,6 +1171,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testFixedLimit () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -1208,7 +1214,4 @@ class CrudReadTest extends CrudTestBaseAbstract
             throw $e;
         }
     }
-
-
-
 }

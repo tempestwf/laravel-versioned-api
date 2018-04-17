@@ -26,7 +26,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
      * @return User|null
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function registerSocializeUser(string $socializeType, SocialiteUser $socialiteUser)
+    public function registerSocializeUser(string $socializeType, SocialiteUser $socialiteUser):User
     {
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
@@ -58,7 +58,6 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
             $em->flush();
             $conn->commit();
         } catch (\Exception $e) {
-            var_dump($e);
             $conn->rollBack();
         }
 

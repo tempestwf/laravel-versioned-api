@@ -514,7 +514,6 @@ class CudTest extends CrudTestBaseAbstract
 
             $this->assertEquals($result[0]->getId(), NULL);
 
-            $em->flush();
             $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
@@ -1134,6 +1133,4 @@ class CudTest extends CrudTestBaseAbstract
             throw $e;
         }
     }
-
-
 }
