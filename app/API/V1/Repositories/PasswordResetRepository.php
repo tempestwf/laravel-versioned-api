@@ -2,40 +2,38 @@
 
 namespace App\API\V1\Repositories;
 
-use App\API\V1\Entities\Role;
-use App\API\V1\Entities\EmailVerification;
+use App\API\V1\Entities\PasswordReset;
 use App\Repositories\Repository;
+use TempestTools\Common\Exceptions\Utility\PasswordResetException;
 use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
-class EmailVerificationRepository extends Repository
+class PasswordResetRepository extends Repository
 {
     protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
-        $entity = EmailVerification::class;
+        $entity = PasswordReset::class;
 
     /**
      * After a verification token is verified, it's user should be given the user role
      *
      * @param GenericEventArgs $e
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \TempestTools\Common\Exceptions\Utility\PasswordResetException
      */
     public function postUpdate(GenericEventArgs $e): void
     {
-        $entity = $e->getArgs()['lastResult'] ?? null;
+        $k = $e->getArgs();
         /**
-         * @var $roleRepo RoleRepository
+         * @var PasswordReset $entity
          */
-        $roleRepo = $this->getEm()->getRepository(Role::class);
-        // Look at the entity that are passed and make each one have the user role
-        if ($entity !== null) {
-            /**
-             * @var $entity EmailVerification
-             */
-            $verified = $entity->getBindParams()['verified'] ?? false;
-            if ($verified === true) {
-                $user = $entity->getUser();
-                $roleRepo->addUserRoles($user);
+        $entity = $e->getArgs()['lastResult'] ?? null;
+
+        // Set the associated user entity password to be the password passed from the front end in options
+        if ($entity !== null && $entity->getBindParams()['verified'] === true) {
+            if (isset($k['frontEndOptions']['password']) === false) {
+                throw PasswordResetException::noPassword();
             }
+            $user = $entity->getUser();
+            $user->setPassword($k['frontEndOptions']['password']);
         }
     }
 

@@ -15,6 +15,7 @@ use App\API\V1\Controllers\EmailVerificationController;
 use App\API\V1\Controllers\IndexController;
 use App\API\V1\Controllers\AuthController;
 use App\API\V1\Controllers\ContextController;
+use App\API\V1\Controllers\PasswordResetController;
 use App\API\V1\Controllers\PermissionController;
 use App\API\V1\Controllers\RoleController;
 use Dingo\Api\Routing\Router;
@@ -148,6 +149,9 @@ $api->version(
         $api->get('/contexts/guest/artists/{id}', ArtistController::class . '@show');
         $api->get('/contexts/guest/email-verification/{id}', EmailVerificationController::class . '@show');
         $api->put('/contexts/guest/email-verification/{id}', EmailVerificationController::class . '@update');
+        $api->get('/contexts/guest/password-reset/{id}', PasswordResetController::class . '@show');
+        $api->put('/contexts/guest/password-reset/{id}', PasswordResetController::class . '@update');
+        $api->post('/contexts/guest/password-reset', PasswordResetController::class . '@store');
     }
 );
 

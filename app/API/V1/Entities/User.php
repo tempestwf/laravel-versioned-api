@@ -3,9 +3,6 @@
 namespace App\API\V1\Entities;
 
 use App\Entities\Traits\Authenticatable;
-use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
-
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,6 +26,7 @@ use TempestTools\Moat\Contracts\HasPermissionsContract;
 
 
 /** @noinspection LongInheritanceChainInspection */
+/** @noinspection PhpSuperClassIncompatibleWithInterfaceInspection */
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\UserRepository")
@@ -112,6 +110,12 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      * @var EmailVerification $emailVerification
      */
     private $emailVerification;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\PasswordReset", mappedBy="user", cascade={"persist"})
+     * @var PasswordReset $passwordReset
+     */
+    private $passwordReset;
 
     /**
      * User constructor.
@@ -415,6 +419,22 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
+     * @return PasswordReset
+     */
+    public function getPasswordReset(): PasswordReset
+    {
+        return $this->passwordReset;
+    }
+
+    /**
+     * @param PasswordReset $passwordReset
+     */
+    public function setPasswordReset(PasswordReset $passwordReset): void
+    {
+        $this->passwordReset = $passwordReset;
+    }
+
+    /**
      * @return array
      * @throws \RuntimeException
      */
@@ -655,5 +675,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             ],
         ];
     }
+
 
 }
