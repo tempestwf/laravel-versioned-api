@@ -4,7 +4,7 @@ namespace App\API\V1\Repositories;
 
 use App\API\V1\Entities\PasswordReset;
 use App\Repositories\Repository;
-use TempestTools\Common\Exceptions\Utility\PasswordResetException;
+use App\Exceptions\PasswordResetException;
 use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -12,6 +12,20 @@ class PasswordResetRepository extends Repository
 {
     protected /** @noinspection ClassOverridesFieldOfSuperClassInspection */
         $entity = PasswordReset::class;
+
+    /**
+     * @param GenericEventArgs $e
+     */
+    public function preUpdate(GenericEventArgs $e): void
+    {
+        $k = $e->getArgs();
+        $params = $k['params'];
+        /** @var PasswordReset $entity */
+        $entity = $k['entity'];
+        if( $params['verified'] === true && $entity->getVerified() === true) {
+            throw PasswordResetException::alreadyVerified();
+        }
+    }
 
     /**
      * After a verification token is verified, it's user should be given the user role

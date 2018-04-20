@@ -1,6 +1,9 @@
 <?php
 namespace App\API\V1\Entities;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 use App\API\V1\Traits\Entities\Blameable;
 use App\Notifications\ResetPasswordNotification;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
@@ -8,6 +11,7 @@ use TempestTools\Common\Entities\Traits\SoftDeleteable;
 
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
+use TempestTools\Common\Exceptions\Utility\PasswordResetException;
 use TempestTools\Raven\Contracts\Orm\NotifiableEntityContract;
 use TempestTools\Raven\Laravel\Orm\NotifiableTrait;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
@@ -40,8 +44,8 @@ class PasswordReset extends EntityAbstract implements NotifiableEntityContract
     private $verified = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", inversedBy="emailVerification")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="emailVerification", cascade={"persist"})
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      */
     private $user;
 
@@ -100,6 +104,21 @@ class PasswordReset extends EntityAbstract implements NotifiableEntityContract
     }
 
     /**
+     * On an entity with HasLifecycleCallbacks it will run the special features of tt entities before persist
+     *
+     * @ORM\PreUpdate
+     * @throws \RuntimeException
+     */
+    public function ttPrePersist():void
+    {
+        //$arrayHelper = $this->getConfigArrayHelper();
+        //if ($arrayHelper !== NULL) {
+            /** @noinspection PhpParamsInspection */
+            //$arrayHelper->ttPrePersist($this);
+        //}
+    }
+
+    /**
      * @return array
      */
     public function getTTConfig(): array
@@ -145,7 +164,7 @@ class PasswordReset extends EntityAbstract implements NotifiableEntityContract
                     ]
                 ],
                 'update'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                     'allowed'=>true,
                     'permissive'=>true,
                     'fields'=>[

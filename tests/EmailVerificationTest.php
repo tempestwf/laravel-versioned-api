@@ -89,7 +89,7 @@ class EmailVerificationTest extends CrudTestBaseAbstract
             $this->assertEquals($result['id'], $emailVerification->getId());
             $this->assertEquals($result['verified'], true);
 
-            /** Test not validated **/
+            /** Test login validated **/
             $response = $this->json('POST', '/auth/authenticate', ['email' => $email, 'password' => $password]);
             $tokenResult = $response->decodeResponseJson();
             $response->assertResponseStatus(200);

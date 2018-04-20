@@ -2,6 +2,9 @@
 
 namespace App\API\V1\Controllers;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 use App\API\V1\Repositories\PasswordResetRepository;
 use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
 
@@ -43,7 +46,7 @@ class PasswordResetController extends APIControllerAbstract
                     'allowIndex'=>false
                 ],
                 'POST'=>[
-                    'allowed'=>false,
+                    'allowed'=>true,
                 ],
                 'PUT'=>[
                     'allowed'=>true,

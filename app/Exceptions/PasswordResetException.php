@@ -6,7 +6,7 @@
  * Time: 6:52 PM
  */
 
-namespace TempestTools\Common\Exceptions\Utility;
+namespace App\Exceptions;
 
 /**
  * Exception related tempest tools configurations
@@ -24,6 +24,13 @@ class PasswordResetException extends \RunTimeException
         return new self (sprintf('Error: No new password found in options passed from the front end'));
     }
 
+    /**
+     * @return PasswordResetException
+     */
+    public static function alreadyVerified (): PasswordResetException
+    {
+        return new self (sprintf('Error: This password reset token is already verified'));
+    }
 }
 
 
