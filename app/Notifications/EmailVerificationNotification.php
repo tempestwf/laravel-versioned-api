@@ -9,7 +9,7 @@ namespace App\Notifications;
 use App\API\V1\Entities\User;
 use Illuminate\Notifications\Messages\MailMessage;
 use TempestTools\Scribe\Contracts\Orm\EntityContract;
-use TempestTools\Raven\Laravel\Orm\Notification\GeneralNotificationAbstract;
+use TempestTools\Raven\Laravel\Notifications\GeneralNotificationAbstract;
 
 class EmailVerificationNotification extends GeneralNotificationAbstract
 {
