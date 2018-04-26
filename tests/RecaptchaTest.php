@@ -7,11 +7,14 @@ class RecaptchaTest extends CrudTestBaseAbstract
 {
     protected $password = '441520435a0a2dac143af05b55f4b751';
 
+    /**
+     * @group recaptcha
+     * @throws Exception
+     */
     public function testRecaptchaFail():void
     {
         $this->refreshApplication();
         $em = $this->em();
-        $conn = $em->getConnection();
         //$conn->beginTransaction();
         try {
             $generator = Factory::create();
