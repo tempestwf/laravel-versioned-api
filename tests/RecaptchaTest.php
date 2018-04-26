@@ -14,7 +14,7 @@ class RecaptchaTest extends CrudTestBaseAbstract
     public function testRecaptchaFail():void
     {
         $this->refreshApplication();
-        $em = $this->em();
+        //$em = $this->em();
         //$conn->beginTransaction();
         try {
             $generator = Factory::create();
