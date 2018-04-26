@@ -1,10 +1,7 @@
 <?php
 
 use App\API\V1\Repositories\EmailVerificationRepository;
-use App\API\V1\Repositories\RoleRepository;
-use App\API\V1\Repositories\UserRepository;
 use Faker\Factory;
-use App\API\V1\Entities\User;
 use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
 class EmailVerificationTest extends CrudTestBaseAbstract
@@ -14,7 +11,7 @@ class EmailVerificationTest extends CrudTestBaseAbstract
 
     /**
      * Test that acl middle ware works in allowing some one to access an end point
-     * @group aclMiddleware
+     * @group emailVerification
      * @return void
      * @throws Exception
      */
@@ -104,7 +101,7 @@ class EmailVerificationTest extends CrudTestBaseAbstract
 
     /**
      * Test that acl middle ware works in allowing some one to access an end point
-     * @group aclMiddleware
+     * @group emailVerification
      * @return void
      * @throws Exception
      */
