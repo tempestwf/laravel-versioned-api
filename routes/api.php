@@ -87,7 +87,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', /*'raven',*/ 'recaptcha'],
+        'middleware' => ['basic.extractor', 'prime.controller', 'raven', 'recaptcha'],
         'provider'   => 'V1',
         'ttPath'=>['guest'],
         'ttFallback'=>['default'],
@@ -132,7 +132,7 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', /*'acl',*/ 'localization'/*, 'raven'*/],
+        'middleware' => ['basic.extractor', 'prime.controller', /*'acl',*/ 'localization', 'raven'],
         'provider'   => 'V1',
         'permissions' => [],
         'ttPath'=>['guest'],
