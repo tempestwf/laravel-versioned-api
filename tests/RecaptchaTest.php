@@ -13,9 +13,10 @@ class RecaptchaTest extends CrudTestBaseAbstract
      */
     public function testRecaptchaFail():void
     {
-        $this->refreshApplication();
-        //$em = $this->em();
-        //$conn->beginTransaction();
+        //$this->refreshApplication();
+        $em = $this->em();
+        $conn = $em->getConnection();
+        $conn->beginTransaction();
         try {
             $generator = Factory::create();
             $data = [
@@ -51,9 +52,9 @@ class RecaptchaTest extends CrudTestBaseAbstract
             /** Nothing comes next. We cannot spoof recaptcha. **/
 
             /** Leave no trace of test **/
-            //$conn->rollBack();
+            $conn->rollBack();
         } catch (Exception $e) {
-            //$conn->rollBack();
+            $conn->rollBack();
             throw $e;
         }
     }

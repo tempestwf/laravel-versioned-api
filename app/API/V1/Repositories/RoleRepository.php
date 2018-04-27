@@ -89,23 +89,36 @@ class RoleRepository extends Repository
      *
      * @param User $user
      * @param array $roles
+     * @param boolean $transaction
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
-    public function addUserRoles(User $user, array $roles = ['user']):void
+    public function addUserRoles(User $user, array $roles = ['user'], bool $transaction = true):void
     {
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
-        $conn->beginTransaction();
+        if ($transaction === true) {
+            $conn->beginTransaction();
+        }
+
         try {
             $roles = $this->findIn('name', $roles);
+            $userRoles = $user->getRoles()->getValues();
             foreach ($roles as $role) {
-                $user->addRole($role);
-                $em->persist($user);
+                if (\in_array($role, $userRoles, true) !== true) {
+                    $user->addRole($role);
+                    $em->persist($user);
+                }
             }
-            $em->flush();
-            $conn->commit();
+            if ($transaction === true) {
+                $em->flush();
+                $conn->commit();
+            }
         } catch (\Exception $e) {
-            $conn->rollBack();
+            if ($transaction === true) {
+                $conn->rollBack();
+            }
+            throw $e;
         }
     }
 

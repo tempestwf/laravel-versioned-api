@@ -17,6 +17,7 @@ class EmailVerificationRepository extends Repository
      * After a verification token is verified, it's user should be given the user role
      *
      * @param GenericEventArgs $e
+     * @throws \Exception
      * @throws \Doctrine\DBAL\ConnectionException
      */
     public function postUpdate(GenericEventArgs $e): void
@@ -34,7 +35,7 @@ class EmailVerificationRepository extends Repository
             $verified = $entity->getBindParams()['verified'] ?? false;
             if ($verified === true) {
                 $user = $entity->getUser();
-                $roleRepo->addUserRoles($user);
+                $roleRepo->addUserRoles($user, $roles = ['user'], false);
             }
         }
     }
