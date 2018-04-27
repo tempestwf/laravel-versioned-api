@@ -25,8 +25,8 @@ class PasswordResetTest extends CrudTestBaseAbstract
     {
         $generator = Factory::create();
         $em = $this->em();
-        $conn = $em->getConnection();
-        $conn->beginTransaction();
+        //$conn = $em->getConnection();
+        //$conn->beginTransaction();
         try {
             $email = "jerome.erazo@gmail.com";
             $password = $this->password;
@@ -51,6 +51,7 @@ class PasswordResetTest extends CrudTestBaseAbstract
             $userResult = $response->decodeResponseJson();
             $this->assertArrayHasKey('id', $userResult);
 
+            $this->refreshApplication();
 
             /** Test password reset with email not verified yet **/
             // TODO: If we want to make sure passwords can't be reset on unverified emails then we can put back in this test
@@ -81,6 +82,8 @@ class PasswordResetTest extends CrudTestBaseAbstract
             $this->assertArrayHasKey('id', $result);
 
 
+            $this->refreshApplication();
+
             /** Test password reset with email verified **/
             $response = $this->json(
                 'POST', "/contexts/guest/password-reset",
@@ -91,6 +94,8 @@ class PasswordResetTest extends CrudTestBaseAbstract
             );
             $result = $response->decodeResponseJson();
             $response->assertResponseStatus(201);
+
+            $this->refreshApplication();
 
             /** Change password **/
             $response = $this->json(
@@ -106,6 +111,8 @@ class PasswordResetTest extends CrudTestBaseAbstract
             $resultx = $response->decodeResponseJson();
             $response->assertResponseStatus(200);
 
+            $this->refreshApplication();
+
             /** Change password again **/
             $response = $this->json(
                 'PUT', '/contexts/guest/password-reset/' . $result['id'],
@@ -120,16 +127,18 @@ class PasswordResetTest extends CrudTestBaseAbstract
             $result = $response->decodeResponseJson();
             $response->assertResponseStatus(500);
 
+            $this->refreshApplication();
+
             /** Test login validated **/
             $response = $this->json('POST', '/auth/authenticate', ['email' => $email, 'password' => '1ce51220016dbb4443e19a7ce308555f']);
             $tokenResult = $response->decodeResponseJson();
             $response->assertResponseStatus(200);
             $this->assertArrayHasKey('token', $tokenResult);
 
-            $conn->rollBack();
+            //$conn->rollBack();
             $this->refreshApplication();
         } catch (Exception $e) {
-            $conn->rollBack();
+            //$conn->rollBack();
             throw $e;
         }
     }
