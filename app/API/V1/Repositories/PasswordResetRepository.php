@@ -15,6 +15,7 @@ class PasswordResetRepository extends Repository
 
     /**
      * @param GenericEventArgs $e
+     * @throws \App\Exceptions\PasswordResetException
      */
     public function preUpdate(GenericEventArgs $e): void
     {
@@ -22,6 +23,11 @@ class PasswordResetRepository extends Repository
         $params = $k['params'];
         /** @var PasswordReset $entity */
         $entity = $k['entity'];
+
+        if ($params['verified'] === false) {
+            throw PasswordResetException::cantSetFalse();
+        }
+
         if( $params['verified'] === true && $entity->getVerified() === true) {
             throw PasswordResetException::alreadyVerified();
         }

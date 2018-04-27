@@ -31,6 +31,14 @@ class PasswordResetException extends \RunTimeException
     {
         return new self (sprintf('Error: This password reset token is already verified'));
     }
+
+    /**
+     * @return PasswordResetException
+     */
+    public static function cantSetFalse (): PasswordResetException
+    {
+        return new self (sprintf('Error: A verification token can not be set to false'));
+    }
 }
 
 
