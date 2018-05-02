@@ -27,6 +27,22 @@ class PasswordResetException extends \RunTimeException
     /**
      * @return PasswordResetException
      */
+    public static function noRole (): PasswordResetException
+    {
+        return new self (sprintf('Error: You need to have role first before you can update your password.'));
+    }
+
+    /**
+     * @return PasswordResetException
+     */
+    public static function emailNotVerified (): PasswordResetException
+    {
+        return new self (sprintf('Error: You need to verify your email first before resetting password.'));
+    }
+
+    /**
+     * @return PasswordResetException
+     */
     public static function alreadyVerified (): PasswordResetException
     {
         return new self (sprintf('Error: This password reset token is already verified'));

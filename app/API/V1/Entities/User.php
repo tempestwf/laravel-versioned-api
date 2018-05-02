@@ -236,6 +236,11 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
         return $this->roles;
     }
 
+    public function hasRole()
+    {
+        return !!$this->getRoles();
+    }
+
     /**
      * @return Collection|NULL
      */
