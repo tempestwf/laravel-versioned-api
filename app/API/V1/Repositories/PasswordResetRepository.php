@@ -32,7 +32,7 @@ class PasswordResetRepository extends Repository
         }
 
         /* check if has role */
-        if (!$user->hasRole()) {
+        if (!$user->hasRole('user')) {
             throw PasswordResetException::noRole();
         }
     }
@@ -54,7 +54,7 @@ class PasswordResetRepository extends Repository
         }
 
         /* check if has role */
-        if (!$entity->getUser()->hasRole()) {
+        if (!$entity->getUser()->hasRole('user')) {
             throw PasswordResetException::noRole();
         }
 

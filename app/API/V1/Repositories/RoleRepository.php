@@ -102,12 +102,13 @@ class RoleRepository extends Repository
         }
 
         try {
-            $roles = $this->findIn('name', $roles);
-            $userRoles = $user->getRoles()->getValues();
             foreach ($roles as $role) {
-                if (\in_array($role, $userRoles, true) !== true) {
-                    $user->addRole($role);
-                    $em->persist($user);
+                if (!$user->hasRole(strtolower($role))) {
+                    $eRole = $this->findOneBy(['name' => strtolower($role)]);
+                    if ($eRole) {
+                        $user->addRole($eRole);
+                        $em->persist($user);
+                    }
                 }
             }
             if ($transaction === true) {

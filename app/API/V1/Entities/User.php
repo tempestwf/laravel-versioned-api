@@ -236,9 +236,19 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
         return $this->roles;
     }
 
-    public function hasRole()
+    /**
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole(string $role)
     {
-        return !!$this->getRoles();
+        $roles = [];
+        foreach ($this->getRoles() as $r) {
+            array_push($roles, $r->getName());
+        }
+
+        $result = \in_array($role, $roles, true);
+        return $result;
     }
 
     /**
