@@ -127,9 +127,7 @@ class PasswordReset extends EntityAbstract implements NotifiableEntityContract
             'default'=>[
                 'create'=>[
                     'allowed'=>false, // all actions off by default, they get turned on for guests and hire levels
-                    'toArray'=> [
-                        'id'=>[]
-                    ],
+                    'toArray'=> [],
                     'fields'=>[
                         'verified'=>[ // Can't create this with verified
                             'permissive'=>false,
@@ -170,7 +168,10 @@ class PasswordReset extends EntityAbstract implements NotifiableEntityContract
                     'fields'=>[
                         'verified'=>[ // A guest can set the token to verified because they won't be able to find the token with out having received it in their email
                             'permissive'=>true,
-                        ]
+                        ],
+                        'user' => [
+                            'permissive'=>false,
+                        ],
                     ]
                 ],
                 'delete'=>[

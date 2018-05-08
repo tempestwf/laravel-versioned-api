@@ -16,30 +16,54 @@ class PasswordResetRepository extends Repository
 
     /**
      * @param GenericEventArgs $e
-     * @throws \App\Exceptions\PasswordResetException
+     * @throws PasswordResetException
      */
     public function preCreate(GenericEventArgs $e): void
     {
         $k = $e->getArgs();
-        $params = $k['params'];
-        /** @var PasswordReset $entity */
-        $roleRepo = $this->getEm()->getRepository(User::class);
-        $user = $roleRepo->find(array_keys($params['user']['read'])[0]);
+        $options = $k['frontEndOptions'];
 
-        /* check if has role */
+        if (!isset($options['email'])) {
+            throw PasswordResetException::noEmail();
+        }
+
+        /** @var UserRepository $roleRepo */
+        $roleRepo = $this->getEm()->getRepository(User::class);
+        $user = $roleRepo->findOneBy(["email" => $options['email']]);
+
+        if (!$user) {
+            throw PasswordResetException::noUserAssociatedEmail();
+        }
+
+        /** check verified email **/
         if (!$user->getEmailVerification()->getVerified()) {
             throw PasswordResetException::emailNotVerified();
         }
 
-        /* check if has role */
+        /** check if has role **/
         if (!$user->hasRole('user')) {
             throw PasswordResetException::noRole();
         }
     }
 
+    public function postCreate(GenericEventArgs $e): void
+    {
+        $k = $e->getArgs();
+        /** @var PasswordReset $entity */
+        $entity = $k['lastResult'] ?? null;
+        if ($entity !== null) {
+            $options = $k['frontEndOptions'];
+            /** @var UserRepository $roleRepo */
+            $roleRepo = $this->getEm()->getRepository(User::class);
+            /** @var User $user */
+            $user = $roleRepo->findOneBy(["email" => $options['email']]);
+            $entity->setUser($user);
+        }
+    }
+
     /**
      * @param GenericEventArgs $e
-     * @throws \App\Exceptions\PasswordResetException
+     * @throws PasswordResetException
      */
     public function preUpdate(GenericEventArgs $e): void
     {
@@ -48,22 +72,29 @@ class PasswordResetRepository extends Repository
         /** @var PasswordReset $entity */
         $entity = $k['entity'];
 
-        /* check if has role */
+        /** check verified email **/
         if (!$entity->getUser()->getEmailVerification()->getVerified()) {
             throw PasswordResetException::emailNotVerified();
         }
 
-        /* check if has role */
+        /** check if has role **/
         if (!$entity->getUser()->hasRole('user')) {
             throw PasswordResetException::noRole();
         }
 
+        /** check setting verified to false **/
         if ($params['verified'] === false) {
             throw PasswordResetException::cantSetFalse();
         }
 
+        /** check already verified **/
         if( $params['verified'] === true && $entity->getVerified() === true) {
             throw PasswordResetException::alreadyVerified();
+        }
+
+        /** check no password value **/
+        if (!isset($k['frontEndOptions']['password'])) {
+            throw PasswordResetException::noPassword();
         }
     }
 
@@ -71,7 +102,7 @@ class PasswordResetRepository extends Repository
      * After a verification token is verified, it's user should be given the user role
      *
      * @param GenericEventArgs $e
-     * @throws \TempestTools\Common\Exceptions\Utility\PasswordResetException
+     * @throws PasswordResetException
      */
     public function postUpdate(GenericEventArgs $e): void
     {
@@ -83,7 +114,7 @@ class PasswordResetRepository extends Repository
 
         // Set the associated user entity password to be the password passed from the front end in options
         if ($entity !== null && $entity->getBindParams()['verified'] === true) {
-            if (isset($k['frontEndOptions']['password']) === false) {
+            if (!isset($k['frontEndOptions']['password'])) {
                 throw PasswordResetException::noPassword();
             }
             $user = $entity->getUser();

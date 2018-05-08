@@ -550,6 +550,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'locale'=>[ // locale allowed
                         'permissive'=>true,
                     ],
+                    'passwordReset'=>[
+                        'permissive'=>false,
+                    ],
                     'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
                         'emailVerification'=>[
                             'notification'=>new EmailVerificationNotification($this),

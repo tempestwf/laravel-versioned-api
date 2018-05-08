@@ -43,6 +43,22 @@ class PasswordResetException extends \RunTimeException
     /**
      * @return PasswordResetException
      */
+    public static function noEmail (): PasswordResetException
+    {
+        return new self (sprintf('Error: No email in the submitted options.'));
+    }
+
+    /**
+     * @return PasswordResetException
+     */
+    public static function noUserAssociatedEmail (): PasswordResetException
+    {
+        return new self (sprintf('Error: No user is associated with thee given email.'));
+    }
+
+    /**
+     * @return PasswordResetException
+     */
     public static function alreadyVerified (): PasswordResetException
     {
         return new self (sprintf('Error: This password reset token is already verified'));
