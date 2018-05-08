@@ -10,7 +10,7 @@
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Application Test Suite">
-            <directory suffix="EmailVerificationTest.php">./tests</directory>
+            <directory suffix="Test.php">./tests</directory>
             <exclude>./tests/TestCase.php</exclude>
             <exclude>./tests/ExampleTest.php</exclude>
             <exclude>./tests/CoreSpeedTest.php</exclude>

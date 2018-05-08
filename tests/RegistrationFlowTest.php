@@ -61,8 +61,7 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
                     "options" => [ "simplifiedParams" => true ]
                 ]
             );
-            $result = $response->decodeResponseJson();
-            $this->assertArrayHasKey('id', $result);
+            $response->assertResponseStatus(200);
 
             /** Making sure user has user has role entry of 'user' **/
             $userRepository = new UserRepository();
