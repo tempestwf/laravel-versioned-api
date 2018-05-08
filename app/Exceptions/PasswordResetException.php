@@ -19,6 +19,14 @@ class PasswordResetException extends \RunTimeException
     /**
      * @return PasswordResetException
      */
+    public static function tokenExpired (): PasswordResetException
+    {
+        return new self (sprintf('Error: Password token expired.'));
+    }
+
+    /**
+     * @return PasswordResetException
+     */
     public static function noPassword (): PasswordResetException
     {
         return new self (sprintf('Error: No new password found in options passed from the front end'));

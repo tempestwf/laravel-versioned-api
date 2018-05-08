@@ -106,9 +106,7 @@ class EmailVerification extends EntityAbstract
             'default'=>[
                 'create'=>[
                     'allowed'=>false, // all actions off by default, they get turned on for guests and hire levels
-                    'toArray'=> [
-                        'id'=>[]
-                    ],
+                    'toArray'=> [],
                     'fields'=>[
                         'verified'=>[ // Can't create this with verified
                             'permissive'=>false,

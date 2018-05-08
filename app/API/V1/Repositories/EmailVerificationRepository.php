@@ -4,6 +4,7 @@ namespace App\API\V1\Repositories;
 
 use App\API\V1\Entities\Role;
 use App\API\V1\Entities\EmailVerification;
+use App\Exceptions\EmailVerificationException;
 use App\Repositories\Repository;
 use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
@@ -27,6 +28,13 @@ class EmailVerificationRepository extends Repository
          * @var $roleRepo RoleRepository
          */
         $roleRepo = $this->getEm()->getRepository(Role::class);
+
+        /** check token expiration **/
+        $date = $entity->getCreatedAt()->modify('+' . env('EMAIL_VERIFICATION_TOKEN_LIFE_SPAN', 1440) . ' minutes');
+        if ($date < new \DateTime()) {
+            throw EmailVerificationException::tokenExpired();
+        }
+
         // Look at the entity that are passed and make each one have the user role
         if ($entity !== null) {
             /**

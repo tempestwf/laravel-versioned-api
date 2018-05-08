@@ -6,6 +6,7 @@ use App\API\V1\Entities\PasswordReset;
 use App\API\V1\Entities\User;
 use App\Repositories\Repository;
 use App\Exceptions\PasswordResetException;
+use Faker\Provider\ka_GE\DateTime;
 use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -71,6 +72,12 @@ class PasswordResetRepository extends Repository
         $params = $k['params'];
         /** @var PasswordReset $entity */
         $entity = $k['entity'];
+
+        /** check token expiration **/
+        $date = $entity->getCreatedAt()->modify('+' . env('PASSWORD_RESET_TOKEN_LIFE_SPAN', 1440) . ' minutes');
+        if ($date < new \DateTime()) {
+            throw PasswordResetException::tokenExpired();
+        }
 
         /** check verified email **/
         if (!$entity->getUser()->getEmailVerification()->getVerified()) {

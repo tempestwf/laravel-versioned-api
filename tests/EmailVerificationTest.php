@@ -1,6 +1,7 @@
 <?php
 
 use App\API\V1\Repositories\EmailVerificationRepository;
+use App\API\V1\Repositories\UserRepository;
 use Faker\Factory;
 use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
@@ -19,8 +20,6 @@ class EmailVerificationTest extends CrudTestBaseAbstract
     {
         $generator = Factory::create();
         $em = $this->em();
-        $conn = $em->getConnection();
-        $conn->beginTransaction();
         try {
             $email = $generator->safeEmail;
             $password = $this->password;
@@ -69,6 +68,12 @@ class EmailVerificationTest extends CrudTestBaseAbstract
             $response = $this->json('POST', '/auth/authenticate', ['email' => $email, 'password' => $password]);
             $response->assertResponseStatus(403);
 
+            /** set token expired **/
+            $emailVerificationCreatedDate = $emailVerification->getCreatedAt();
+            $emailVerification->setCreatedAt($emailVerificationCreatedDate->modify('-' . env('EMAIL_VERIFICATION_TOKEN_LIFE_SPAN', 1440) . ' minutes'));
+            $em->persist($emailVerification);
+            $em->flush($emailVerification);
+
             /** Email verification endpoint **/
             $response = $this->json(
                 'PUT', "/contexts/guest/email-verification/" . $emailVerification->getId(),
@@ -77,8 +82,22 @@ class EmailVerificationTest extends CrudTestBaseAbstract
                     "options" => [ "simplifiedParams" => true ]
                 ]
             );
-            $result = $response->decodeResponseJson();
-            $this->assertArrayHasKey('id', $result);
+            $response->assertResponseStatus(500);
+
+            /** set token not expired **/
+            $emailVerification->setCreatedAt($emailVerificationCreatedDate->modify('+' . env('EMAIL_VERIFICATION_TOKEN_LIFE_SPAN', 1440) . ' minutes'));
+            $em->persist($emailVerification);
+            $em->flush($emailVerification);
+
+            /** Email verification endpoint **/
+            $response = $this->json(
+                'PUT', "/contexts/guest/email-verification/" . $emailVerification->getId(),
+                [
+                    "params" => [ "verified" => true ],
+                    "options" => [ "simplifiedParams" => true ]
+                ]
+            );
+            $response->assertResponseStatus(200);
 
             /** Email verification verify true **/
             $response = $this->json('GET', "/contexts/guest/email-verification/" . $emailVerification->getId(),[]);
@@ -92,9 +111,19 @@ class EmailVerificationTest extends CrudTestBaseAbstract
             $response->assertResponseStatus(200);
             $this->assertArrayHasKey('token', $tokenResult);
 
-            $conn->rollBack();
+            /** Delete EmailVerification **/
+            $emailVerification->setDeletedAt(new DateTime());
+            $em->remove($emailVerification);
+            $em->flush($emailVerification);
+
+            /** Delete User **/
+            $userRepo = new UserRepository();
+            $user = $userRepo->find($userResult['id']);
+            $user->setDeletedAt(new DateTime());
+            $em->remove($user);
+            $em->flush($user);
+
         } catch (Exception $e) {
-            $conn->rollBack();
             throw $e;
         }
     }
@@ -107,8 +136,6 @@ class EmailVerificationTest extends CrudTestBaseAbstract
      */
     public function testAdminAccess() :void
     {
-        //$this->refreshApplication();
-
         /** Test guest access with wrong id **/
         $response = $this->json('GET', "/contexts/admin/email-verification/anyId!!!",[]);
         $response->assertResponseStatus(400);
@@ -123,7 +150,6 @@ class EmailVerificationTest extends CrudTestBaseAbstract
 
         /** Test guest access with wrong id **/
         $response = $this->json('GET', "/contexts/admin/email-verification", [], ['HTTP_AUTHORIZATION'=>'Bearer ' . $tokenResult['token']]);
-        $result = $response->decodeResponseJson();
         $response->assertResponseStatus(200);
 
         /** Test guest access with wrong id **/

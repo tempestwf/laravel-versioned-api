@@ -6,6 +6,7 @@
  * Time: 8:31 PM
  */
 
+use App\API\V1\Entities\PasswordReset;
 use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Repositories\PasswordResetRepository;
 use App\API\V1\Repositories\UserRepository;
@@ -75,8 +76,7 @@ class PasswordResetTest extends CrudTestBaseAbstract
                     "options" => [ "simplifiedParams" => true ]
                 ]
             );
-            $result = $response->decodeResponseJson();
-            $this->assertArrayHasKey('id', $result);
+            $response->assertResponseStatus(200);
 
             /** Test password reset with email verified **/
             $response = $this->json(
@@ -88,13 +88,37 @@ class PasswordResetTest extends CrudTestBaseAbstract
                     ]
                 ]
             );
-            $result = $response->decodeResponseJson();
-            /** TODO: this should not return the entry id **/
             $response->assertResponseStatus(201);
 
             /** Get password reset **/
             $passwordResetRepo = new PasswordResetRepository();
+
+            /** @var PasswordReset $passwordReset */
             $passwordReset = $passwordResetRepo->findOneBy(["user" => $userResult['id']]);
+
+            /** set token expired **/
+            $passwordResetCreatedDate = $passwordReset->getCreatedAt();
+            $passwordReset->setCreatedAt($passwordResetCreatedDate->modify('-' . env('PASSWORD_RESET_TOKEN_LIFE_SPAN', 1440) . ' minutes'));
+            $em->persist($passwordReset);
+            $em->flush($passwordReset);
+
+            /** Change password on expired password reset token **/
+            $response = $this->json(
+                'PUT', '/contexts/guest/password-reset/' . $passwordReset->getId(),
+                [
+                    "params" => ["verified" => true] ,
+                    "options" => [
+                        "password"=>"1ce51220016dbb4443e19a7ce308555f",
+                        "simplifiedParams" => true
+                    ]
+                ]
+            );
+            $response->assertResponseStatus(500);
+
+            /** set token not expired **/
+            $passwordReset->setCreatedAt($passwordResetCreatedDate->modify('+' . env('PASSWORD_RESET_TOKEN_LIFE_SPAN', 1440) . ' minutes'));
+            $em->persist($passwordReset);
+            $em->flush($passwordReset);
 
             /** Change password without set password **/
             $response = $this->json(
