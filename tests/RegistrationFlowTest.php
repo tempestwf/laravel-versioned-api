@@ -9,12 +9,17 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
 {
     protected $password = '441520435a0a2dac143af05b55f4b751';
 
+    /**
+     * @group registrationFlow
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws Exception
+     */
     public function testEmailVerification():void
     {
-        $this->refreshApplication();
+        //$this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
-        //$conn->beginTransaction();
+        $conn->beginTransaction();
         try {
             $generator = Factory::create();
             /** Register user via the guest endpoint **/
@@ -44,6 +49,10 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
             $this->assertEquals( $emailVerification->getUser()->getId(), $userResult['id']);
             $this->assertEquals( $emailVerification->getVerified(), false);
 
+            //$conn->commit();
+            //$this->refreshApplication();
+            //$conn->beginTransaction();
+
             /** Email verification endpoint **/
             $response = $this->json(
                 'PUT', "/contexts/guest/email-verification/" . $emailVerification->getId(),
@@ -52,8 +61,7 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
                     "options" => [ "simplifiedParams" => true ]
                 ]
             );
-            $result = $response->decodeResponseJson();
-            $this->assertArrayHasKey('id', $result);
+            $response->assertResponseStatus(200);
 
             /** Making sure user has user has role entry of 'user' **/
             $userRepository = new UserRepository();
@@ -81,10 +89,10 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
             $this->assertEquals( $user->getName(), $userResult["name"]);
 
             /** Leave no trace of test **/
-            //$conn->rollBack();
+            $conn->rollBack();
         } catch (Exception $e) {
             $conn->rollBack();
-            //throw $e;
+            throw $e;
         }
     }
 }

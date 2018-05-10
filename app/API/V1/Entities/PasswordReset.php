@@ -5,24 +5,30 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\API\V1\Traits\Entities\Blameable;
+use App\Notifications\ResetPasswordNotification;
+use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
 use TempestTools\Common\Entities\Traits\SoftDeleteable;
 
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
+use TempestTools\Common\Exceptions\Utility\PasswordResetException;
+use TempestTools\Raven\Contracts\Orm\NotifiableEntityContract;
+use TempestTools\Raven\Laravel\Orm\NotifiableTrait;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 
 
 /** @noinspection LongInheritanceChainInspection */
+/** @noinspection PhpSuperClassIncompatibleWithInterfaceInspection */
 
 /**
- * @ORM\Entity(repositoryClass="App\API\V1\Repositories\EmailVerificationRepository")
- * @ORM\Table(name="email_verification")
+ * @ORM\Entity(repositoryClass="App\API\V1\Repositories\PasswordResetRepository")
+ * @ORM\Table(name="password_reset")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class EmailVerification extends EntityAbstract
+class PasswordReset extends EntityAbstract implements NotifiableEntityContract
 {
-    use Blameable, SoftDeleteable, IpTraceable, Timestampable;
+    use Blameable, SoftDeleteable, IpTraceable, Timestampable, NotifiableTrait;
 
     /**
      * @ORM\Id
@@ -38,8 +44,8 @@ class EmailVerification extends EntityAbstract
     private $verified = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", inversedBy="emailVerification")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="emailVerification", cascade={"persist"})
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      */
     private $user;
 
@@ -53,9 +59,9 @@ class EmailVerification extends EntityAbstract
 
     /**
      * @param string $id
-     * @return EmailVerification
+     * @return PasswordReset
      */
-    public function setId(string $id): EmailVerification
+    public function setId(string $id): PasswordReset
     {
         $this->id = $id;
         return $this;
@@ -71,9 +77,9 @@ class EmailVerification extends EntityAbstract
 
     /**
      * @param bool $verified
-     * @return EmailVerification
+     * @return PasswordReset
      */
-    public function setVerified(bool $verified): EmailVerification
+    public function setVerified(bool $verified): PasswordReset
     {
         $this->verified = $verified;
         return $this;
@@ -89,12 +95,27 @@ class EmailVerification extends EntityAbstract
 
     /**
      * @param User $user
-     * @return EmailVerification
+     * @return PasswordReset
      */
-    public function setUser(User $user): EmailVerification
+    public function setUser(User $user): PasswordReset
     {
         $this->user = $user;
         return $this;
+    }
+
+    /**
+     * On an entity with HasLifecycleCallbacks it will run the special features of tt entities before persist
+     *
+     * @ORM\PreUpdate
+     * @throws \RuntimeException
+     */
+    public function ttPrePersist():void
+    {
+        //$arrayHelper = $this->getConfigArrayHelper();
+        //if ($arrayHelper !== NULL) {
+            /** @noinspection PhpParamsInspection */
+            //$arrayHelper->ttPrePersist($this);
+        //}
     }
 
     /**
@@ -126,16 +147,31 @@ class EmailVerification extends EntityAbstract
             'guest'=>[
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>false
+                    'allowed'=>true,
+                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
+                        'emailVerification'=>[
+                            'notification'=>new ResetPasswordNotification($this),
+                            'via'=>[
+                                'mail'=>[
+                                    'to'=>ArrayExpressionBuilder::closure(function () {
+                                        return $this->getUser()->getEmail();
+                                    })
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 'update'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                     'allowed'=>true,
                     'permissive'=>true,
                     'fields'=>[
                         'verified'=>[ // A guest can set the token to verified because they won't be able to find the token with out having received it in their email
                             'permissive'=>true,
-                        ]
+                        ],
+                        'user' => [
+                            'permissive'=>false,
+                        ],
                     ]
                 ],
                 'delete'=>[

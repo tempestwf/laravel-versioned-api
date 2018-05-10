@@ -80,7 +80,7 @@ class AuthController extends APIControllerAbstract
 	}
 
     /**
-     * Refresh Tocken
+     * Refresh Token
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -122,6 +122,7 @@ class AuthController extends APIControllerAbstract
      * @param string $provider
      * @return \Illuminate\Http\JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function getSocialAuthCallback(string $provider)
     {

@@ -2,10 +2,10 @@
 
 namespace App\API\V1\Entities;
 
-use App\Entities\Traits\Authenticatable;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
+use App\Entities\Traits\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,6 +29,7 @@ use TempestTools\Moat\Contracts\HasPermissionsContract;
 
 
 /** @noinspection LongInheritanceChainInspection */
+/** @noinspection PhpSuperClassIncompatibleWithInterfaceInspection */
 
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\UserRepository")
@@ -112,6 +113,12 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      * @var EmailVerification $emailVerification
      */
     private $emailVerification;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\PasswordReset", mappedBy="user", cascade={"persist"})
+     * @var PasswordReset $passwordReset
+     */
+    private $passwordReset;
 
     /**
      * User constructor.
@@ -227,6 +234,21 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     public function getRoles():?Collection
     {
         return $this->roles;
+    }
+
+    /**
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole(string $role)
+    {
+        $roles = [];
+        foreach ($this->getRoles() as $r) {
+            array_push($roles, $r->getName());
+        }
+
+        $result = \in_array($role, $roles, true);
+        return $result;
     }
 
     /**
@@ -415,6 +437,22 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
+     * @return PasswordReset
+     */
+    public function getPasswordReset(): PasswordReset
+    {
+        return $this->passwordReset;
+    }
+
+    /**
+     * @param PasswordReset $passwordReset
+     */
+    public function setPasswordReset(PasswordReset $passwordReset): void
+    {
+        $this->passwordReset = $passwordReset;
+    }
+
+    /**
      * @return array
      * @throws \RuntimeException
      */
@@ -511,6 +549,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     ],
                     'locale'=>[ // locale allowed
                         'permissive'=>true,
+                    ],
+                    'passwordReset'=>[
+                        'permissive'=>false,
                     ],
                     'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
                         'emailVerification'=>[
@@ -655,5 +696,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
             ],
         ];
     }
+
 
 }

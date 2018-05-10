@@ -3,8 +3,8 @@
 namespace App\API\V1\Repositories;
 
 use App\API\V1\Entities\Role;
-use App\API\V1\Entities\User;
 use App\API\V1\Entities\EmailVerification;
+use App\Exceptions\EmailVerificationException;
 use App\Repositories\Repository;
 use TempestTools\Scribe\Doctrine\Events\GenericEventArgs;
 
@@ -18,26 +18,32 @@ class EmailVerificationRepository extends Repository
      * After a verification token is verified, it's user should be given the user role
      *
      * @param GenericEventArgs $e
+     * @throws \Exception
      * @throws \Doctrine\DBAL\ConnectionException
      */
     public function postUpdate(GenericEventArgs $e): void
     {
-        $k = $e->getArgs();
-        $results = $e->getArgs()['results'] ?? [];
+        $entity = $e->getArgs()['lastResult'] ?? null;
         /**
          * @var $roleRepo RoleRepository
          */
         $roleRepo = $this->getEm()->getRepository(Role::class);
+
+        /** check token expiration **/
+        $date = $entity->getCreatedAt()->modify('+' . env('EMAIL_VERIFICATION_TOKEN_LIFE_SPAN', 1440) . ' minutes');
+        if ($date < new \DateTime()) {
+            throw EmailVerificationException::tokenExpired();
+        }
+
         // Look at the entity that are passed and make each one have the user role
-        if (\count($results) > 0) {
-            $entity = array_pop($results);
+        if ($entity !== null) {
             /**
              * @var $entity EmailVerification
              */
             $verified = $entity->getBindParams()['verified'] ?? false;
             if ($verified === true) {
                 $user = $entity->getUser();
-                $roleRepo->addUserRoles($user);
+                $roleRepo->addUserRoles($user, $roles = ['user'], false);
             }
         }
     }

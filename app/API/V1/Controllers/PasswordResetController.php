@@ -2,13 +2,16 @@
 
 namespace App\API\V1\Controllers;
 
-use App\API\V1\Repositories\EmailVerificationRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+use App\API\V1\Repositories\PasswordResetRepository;
 use TempestTools\Scribe\Orm\Transformers\ToArrayTransformer;
 
 /** @noinspection LongInheritanceChainInspection */
-class EmailVerificationController extends APIControllerAbstract
+class PasswordResetController extends APIControllerAbstract
 {
-    public function __construct(EmailVerificationRepository $repo, ToArrayTransformer $arrayTransformer)
+    public function __construct(PasswordResetRepository $repo, ToArrayTransformer $arrayTransformer)
     {
         $this->setRepo($repo);
         $this->setTransformer($arrayTransformer);
@@ -43,7 +46,7 @@ class EmailVerificationController extends APIControllerAbstract
                     'allowIndex'=>false
                 ],
                 'POST'=>[
-                    'allowed'=>false,
+                    'allowed'=>true,
                 ],
                 'PUT'=>[
                     'allowed'=>true,

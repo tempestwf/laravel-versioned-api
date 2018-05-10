@@ -7,12 +7,16 @@ class RecaptchaTest extends CrudTestBaseAbstract
 {
     protected $password = '441520435a0a2dac143af05b55f4b751';
 
+    /**
+     * @group recaptcha
+     * @throws Exception
+     */
     public function testRecaptchaFail():void
     {
-        $this->refreshApplication();
+        //$this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
-        //$conn->beginTransaction();
+        $conn->beginTransaction();
         try {
             $generator = Factory::create();
             $data = [
@@ -48,9 +52,9 @@ class RecaptchaTest extends CrudTestBaseAbstract
             /** Nothing comes next. We cannot spoof recaptcha. **/
 
             /** Leave no trace of test **/
-            //$conn->rollBack();
+            $conn->rollBack();
         } catch (Exception $e) {
-            //$conn->rollBack();
+            $conn->rollBack();
             throw $e;
         }
     }
