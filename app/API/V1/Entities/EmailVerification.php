@@ -28,7 +28,7 @@ class EmailVerification extends EntityAbstract
      * @ORM\Id
      * @ORM\Column(type="string")
      * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator")
+     * @ORM\CustomIdGenerator(class="\TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator")
      */
     private $id;
 
