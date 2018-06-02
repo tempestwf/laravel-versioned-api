@@ -34,7 +34,7 @@ class PasswordReset extends EntityAbstract implements NotifiableEntityContract
      * @ORM\Id
      * @ORM\Column(type="string")
      * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator")
+     * @ORM\CustomIdGenerator(class="\TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator")
      */
     private $id;
 
