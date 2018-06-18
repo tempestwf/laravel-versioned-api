@@ -22,5 +22,7 @@ RUN cd $HOME/api && composer install
 RUN php artisan key:generate
 RUN php artisan jwt:generate
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod 755 /entrypoint.sh
 EXPOSE 80
-CMD ["/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/entrypoint.sh"]
