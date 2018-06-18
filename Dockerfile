@@ -1,4 +1,4 @@
-FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:master
+FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:1-01
 COPY nginx.config /etc/nginx/nginx.conf
 
 RUN apt-get update
