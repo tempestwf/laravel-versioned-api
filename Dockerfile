@@ -1,4 +1,4 @@
-FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:1-03
+FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:1-04
 COPY nginx.config /etc/nginx/nginx.conf
 
 ENV HOME=/aki
@@ -21,3 +21,6 @@ RUN cd $HOME/api && composer install
 
 RUN php artisan key:generate
 RUN php artisan jwt:generate
+
+EXPOSE 80
+CMD ["/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/supervisord.conf"]
