@@ -1,0 +1,30 @@
+image: gitlab.aki.tempest.house:4567/ops/kube-deploy:stable
+
+variables:
+  KUBE_DOMAIN: svc.sweetspotmotion.com
+  REGISTRY: gitlab-registry
+  TIER: web
+  PORT_NAME: web
+  HEALTH_CHECK_PATH: /
+  HEALTH_CHECK_DELAY: 15
+  HEALTH_CHECK_TIMEOUT: 15
+  READY_CHECK_PATH: /
+  READY_CHECK_DELAY: 5
+  READY_CHECK_TIMEOUT: 3
+  SERVICE_PATH: /
+  SPEC_TYPE: LoadBalancer
+  TLS_ENABLE: "true"
+  INGRESS_CLASS: nodejs
+  CPORT: 8000
+  EPORT: 80
+  SPORT: 80
+
+stages:
+  - build
+  
+build:
+  stage: build
+  script:
+    - command build
+  only:
+    - branches
