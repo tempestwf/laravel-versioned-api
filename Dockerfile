@@ -1,19 +1,6 @@
 FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:master
 COPY nginx.config /etc/nginx/nginx.conf
 
-RUN apt-get update
-RUN apt-get install git curl -y
-
-RUN mkdir /usr/local/phar
-
-RUN curl -OsSL https://getcomposer.org/composer.phar \
-    && mv composer.phar /usr/local/phar
-
-RUN curl -OsSL https://phar.phpunit.de/phpunit.phar \
-    && mv phpunit.phar /usr/local/phar
-
-RUN cd /usr/bin/ && chmod +x composer php phpunit
-
 ENV HOME=/aki
 RUN mkdir -p $HOME/api
 COPY . $HOME/api
