@@ -6,6 +6,9 @@ RUN mkdir -p $HOME/api
 COPY . $HOME/api
 WORKDIR $HOME/api
 
+RUN apt-get update
+RUN apt-get install git
+
 USER root
 RUN whoami
 RUN chown -R www-data:www-data $HOME/api
