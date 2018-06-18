@@ -1,6 +1,9 @@
 FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:master
 COPY nginx.config /etc/nginx/nginx.conf
 
+RUN apt-get update
+RUN apt-get install git curl -y
+
 RUN mkdir /usr/local/phar
 
 RUN curl -OsSL https://getcomposer.org/composer.phar \
@@ -15,9 +18,6 @@ ENV HOME=/aki
 RUN mkdir -p $HOME/api
 COPY . $HOME/api
 WORKDIR $HOME/api
-
-RUN apt-get update
-RUN apt-get install git -y
 
 USER root
 RUN whoami
