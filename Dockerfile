@@ -24,4 +24,4 @@ RUN php artisan jwt:generate
 
 RUN chmod +x run.sh
 EXPOSE 80
-CMD ["./run.sh"]
+CMD ["sudo", "./run.sh"]
