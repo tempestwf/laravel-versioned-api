@@ -1,6 +1,9 @@
 FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:master
 COPY nginx.config /etc/nginx/nginx.conf
 
+RUN apt-get update
+RUN apt-get install -y git
+
 ENV HOME=/aki
 RUN mkdir -p $HOME/api
 COPY . $HOME/api
