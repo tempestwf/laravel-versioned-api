@@ -2,7 +2,9 @@ FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:master
 COPY nginx.config /etc/nginx/nginx.conf
 
 RUN apt-get update
-RUN apt-get install -y git
+RUN apt-get install -y git curl
+RUN curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer -V
 
 ENV HOME=/aki
 RUN mkdir -p $HOME/api
