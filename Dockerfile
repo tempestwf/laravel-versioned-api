@@ -22,7 +22,6 @@ RUN cd $HOME/api && composer install
 RUN php artisan key:generate
 RUN php artisan jwt:generate
 
-COPY run.sh /run.sh
-RUN chmod 755 /run.sh
+RUN mv run.sh /run.sh && chmod +x /run.sh
 EXPOSE 80
 CMD ["/run.sh"]
