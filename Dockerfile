@@ -12,7 +12,6 @@ RUN chown -R www-data:www-data $HOME/api
 RUN cd $HOME/api
 RUN ls -ls
 
-RUN apk update
 RUN git submodule init
 RUN git submodule update
 
