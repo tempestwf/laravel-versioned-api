@@ -12,6 +12,7 @@ RUN chown -R www-data:www-data $HOME/api
 RUN cd $HOME/api
 RUN ls -ls
 
+RUN apt-get install git-core
 RUN git submodule init
 RUN git submodule update
 
