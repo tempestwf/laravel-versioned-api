@@ -3,7 +3,7 @@ COPY nginx.config /etc/nginx/nginx.conf
 
 RUN apt-get update
 RUN apt-get install -y git curl
-RUN curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer -V
 
 ENV HOME=/aki
