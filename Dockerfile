@@ -21,8 +21,12 @@ RUN cd $HOME/api && composer install
 
 RUN php artisan key:generate
 RUN php artisan jwt:generate
-#RUN php artisan doctrine:migrations:migrate
+
+RUN php artisan doctrine:migrations:diff
+RUN php artisan doctrine:migrations:migrate
 RUN php artisan doctrine:generate:proxies
+
+RUN php artisan db:seed
 
 USER root
 
