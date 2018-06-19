@@ -3,6 +3,9 @@ image: registry.sweetspotmotion.com:4567/ops/kube-deploy:stable
 variables:
   KUBE_DOMAIN: svc.sweetspotmotion.com
   REGISTRY: gitlab-registry
+  DEPLOY_REDIS: "false"
+  DEPLOY_APP: "true"
+  REDIS_MULTI_ENV: "false"
   TIER: web
   PORT_NAME: web
   HEALTH_CHECK_PATH: /
