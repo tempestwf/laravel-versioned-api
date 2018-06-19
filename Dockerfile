@@ -24,5 +24,7 @@ RUN php artisan jwt:generate
 
 USER root
 
+RUN mkdir /run/php
+
 EXPOSE 80
 CMD ["/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/supervisord.conf"]
