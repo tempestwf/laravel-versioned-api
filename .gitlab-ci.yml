@@ -15,12 +15,13 @@ variables:
   SPEC_TYPE: LoadBalancer
   TLS_ENABLE: "true"
   INGRESS_CLASS: nodejs
-  CPORT: 8000
+  CPORT: 80
   EPORT: 80
   SPORT: 80
 
 stages:
   - build
+  - staging
   
 build:
   stage: build
@@ -28,3 +29,24 @@ build:
     - command build
   only:
     - branches
+
+staging:
+  stage: staging
+  variables:
+    KUBE_NAMESPACE: default
+    REPLICAS: 1
+    HPA_MIN_REPLICAS: 1
+    HPA_MAX_REPLICAS: 10
+    HPA_TARGET_CPU: 50
+    TRACK: stg
+    MEM_REQ: 100Mi
+    MEM_LIMIT: 400Mi
+    CPU_REQ: 100m
+    CPU_LIMIT: 500m
+  script:
+    - command deploy
+  environment:
+    name: $CI_PROJECT_NAME-stg
+    url: http://$CI_ENVIRONMENT_NAME.$KUBE_DOMAIN
+  only:
+    - stg
