@@ -22,5 +22,7 @@ RUN cd $HOME/api && composer install
 RUN php artisan key:generate
 RUN php artisan jwt:generate
 
+USER root
+
 EXPOSE 80
 CMD ["/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/supervisord.conf"]
