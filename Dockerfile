@@ -1,4 +1,4 @@
-FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:1-05
+FROM registry.sweetspotmotion.com:4567/sweetspotmotion/nginx-php-fpm:1-06
 COPY nginx.config /etc/nginx/nginx.conf
 
 ENV HOME=/aki
