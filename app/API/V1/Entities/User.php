@@ -470,7 +470,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'rules'=>[
                                 'name' => 'required|max:255',
                                 'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
-                                'password' => 'required|min:6',
+                                'password' => 'required|regex:/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/',
                                 'locale' => 'required',
                             ],
                             'messages'=>NULL,
@@ -503,7 +503,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'rules'=>[
                                 'name' => 'required|max:255',
                                 'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
-                                'password' => 'required|min:6',
+                                'password' => 'required|regex:/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/',
                                 'locale' => 'required',
                             ],
                         ],
