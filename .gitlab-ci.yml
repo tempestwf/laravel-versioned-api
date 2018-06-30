@@ -23,20 +23,12 @@ variables:
   SPORT: 80
 
 stages:
+  - stg-prehook
   - build
   - staging
-  
-build:
-  stage: build
-  script:
-    - envsubst < .env.example > .env
-    - cat .env
-    - command build
-  only:
-    - branches
 
-staging:
-  stage: staging
+stg-prehook:
+  stage: stg-prehook
   variables:
     KUBE_NAMESPACE: ssm-dev
     REPLICAS: 1
@@ -48,6 +40,23 @@ staging:
     MEM_LIMIT: 400Mi
     CPU_REQ: 100m
     CPU_LIMIT: 500m
+  environment:
+    name: $CI_PROJECT_NAME-stg
+    url: http://$CI_ENVIRONMENT_NAME.$KUBE_DOMAIN
+  only:
+    - stg  
+
+build:
+  stage: build
+  script:
+    - envsubst < .env.example > .env
+    - cat .env
+    - command build
+  only:
+    - branches
+
+staging:
+  stage: staging
   script:
     - command deploy
   environment:
