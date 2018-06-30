@@ -1,4 +1,4 @@
-image: registry.sweetspotmotion.com:4567/ops/kube-deploy:stable
+image: registry.sweetspotmotion.com/ops/kube-deploy:stable
 
 variables:
   KUBE_DOMAIN: svc.sweetspotmotion.com
