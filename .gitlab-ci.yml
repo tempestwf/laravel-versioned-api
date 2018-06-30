@@ -40,6 +40,8 @@ stg-prehook:
     MEM_LIMIT: 400Mi
     CPU_REQ: 100m
     CPU_LIMIT: 500m
+  script:
+    - echo "env set?"
   environment:
     name: $CI_PROJECT_NAME-stg
     url: http://$CI_ENVIRONMENT_NAME.$KUBE_DOMAIN
