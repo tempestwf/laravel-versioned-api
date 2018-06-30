@@ -25,15 +25,6 @@ variables:
 stages:
   - staging
 
-build:
-  stage: build
-  script:
-    - envsubst < .env.example > .env
-    - cat .env
-    - command build
-  only:
-    - branches
-
 staging:
   stage: staging
   variables:
