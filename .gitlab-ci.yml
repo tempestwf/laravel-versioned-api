@@ -47,6 +47,7 @@ staging:
     CPU_REQ: 100m
     CPU_LIMIT: 500m
   script:
+    - envsubst < .env.example > .env
     - command deploy
   environment:
     name: $CI_PROJECT_NAME-stg
