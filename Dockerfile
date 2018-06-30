@@ -10,7 +10,7 @@ USER root
 RUN whoami
 RUN chown -R www-data:www-data $HOME/api
 RUN cd $HOME/api
-COPY .env.example .env
+#COPY .env.example .env
 RUN ls -ls
 
 RUN git submodule init
