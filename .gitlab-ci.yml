@@ -23,30 +23,7 @@ variables:
   SPORT: 80
 
 stages:
-  - stg-prehook
-  - build
   - staging
-
-stg-prehook:
-  stage: stg-prehook
-  variables:
-    KUBE_NAMESPACE: ssm-dev
-    REPLICAS: 1
-    HPA_MIN_REPLICAS: 1
-    HPA_MAX_REPLICAS: 10
-    HPA_TARGET_CPU: 50
-    TRACK: stg
-    MEM_REQ: 100Mi
-    MEM_LIMIT: 400Mi
-    CPU_REQ: 100m
-    CPU_LIMIT: 500m
-  script:
-    - echo "env set?"
-  environment:
-    name: $CI_PROJECT_NAME-stg
-    url: http://$CI_ENVIRONMENT_NAME.$KUBE_DOMAIN
-  only:
-    - stg  
 
 build:
   stage: build
@@ -59,7 +36,21 @@ build:
 
 staging:
   stage: staging
+  variables:
+    KUBE_NAMESPACE: ssm-dev
+    REPLICAS: 1
+    HPA_MIN_REPLICAS: 1
+    HPA_MAX_REPLICAS: 10
+    HPA_TARGET_CPU: 50
+    TRACK: stg
+    MEM_REQ: 100Mi
+    MEM_LIMIT: 400Mi
+    CPU_REQ: 100m
+    CPU_LIMIT: 500m
   script:
+    - envsubst < .env.example > .env
+    - cat .env
+    - command build
     - command deploy
   environment:
     name: $CI_PROJECT_NAME-stg
