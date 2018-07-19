@@ -115,10 +115,23 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     private $emailVerification;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\LoginAttempt", mappedBy="user", cascade={"persist"})
+     * @var LoginAttempt $loginAttempt
+     */
+    private $loginAttempt;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\API\V1\Entities\PasswordReset", mappedBy="user", cascade={"persist"})
      * @var PasswordReset $passwordReset
      */
     private $passwordReset;
+
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false, name="locked")
+     * @var boolean $locked
+     */
+    private $locked = false;
 
     /**
      * User constructor.
@@ -403,11 +416,29 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
-     * @return \App\API\V1\Entities\EmailVerification
+     * @return EmailVerification
      */
     public function getEmailVerification(): EmailVerification
     {
         return $this->emailVerification;
+    }
+
+    /**
+     * @param LoginAttempt $loginAttempt
+     * @return User
+     */
+    public function setLoginAttempts(LoginAttempt $loginAttempt): User
+    {
+        $this->loginAttempt = $loginAttempt;
+        return $this;
+    }
+
+    /**
+     * @return LoginAttempt
+     */
+    public function getLoginAttempt(): LoginAttempt
+    {
+        return $this->loginAttempt;
     }
 
     /**
@@ -450,6 +481,25 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     public function setPasswordReset(PasswordReset $passwordReset): void
     {
         $this->passwordReset = $passwordReset;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function isLocked():?bool
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param bool $locked
+     * @return User
+     */
+    public function setLocked(bool $locked):User
+    {
+        $this->locked = $locked;
+
+        return $this;
     }
 
     /**
