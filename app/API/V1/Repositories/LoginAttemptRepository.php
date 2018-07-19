@@ -46,49 +46,27 @@ class LoginAttemptRepository extends Repository
         /** @var LoginAttempt $attempt */
         $attempt = $this->findOneBy(['user'=>$user]);
         $value['error'] = $error;
-        $this->init($this->getArrayHelper() ?? new ArrayHelper(), ['superAdmin']);
         if ($attempt) {
-            $this->update(
+            $attempt = $this->update(
                 [
+                    'id' => $attempt->getId(),
                     'count' => $attempt->getCount() + 1,
                     'trace' => $value
                 ],
                 [],
                 ['simplifiedParams' => true]);
         } else {
-            $this->create(
+            $attempt = $this->create(
                 [
                     'count' => 1,
                     'trace' => $value,
-                    'user' => $user
+                    'user' => $user->getId()
                 ],
                 [],
                 ['simplifiedParams' => true]);
         }
 
-        /*$em = $this->getEntityManager();
-        $conn = $em->getConnection();
-        $conn->beginTransaction();
-        try {
-            if ($attempt) {
-                $attempt->setCount($attempt->getCount() + 1);
-                $attempt->setTrace($value);
-
-            } else {
-                $attempt = new LoginAttempt;
-                $attempt->setCount(1);
-                $attempt->setTrace($value);
-                $attempt->setUser($user);
-            }
-
-            $em->persist($attempt);
-            $em->flush();
-            $conn->commit();
-        } catch (\Exception $e) {
-            $conn->rollBack();
-        }*/
-
-        $status = $this->getAttemptStatus($attempt);
+        $status = $this->getAttemptStatus($attempt[0]);
         return  $status ? $status : $error;
     }
 
@@ -97,35 +75,33 @@ class LoginAttemptRepository extends Repository
      *
      * @param LoginAttempt $attempt
      * @param int $fullLockCount
-     * @return LoginAttempt
+     * @return mixed
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function resetAttempt(LoginAttempt $attempt, int $fullLockCount = 0)
     {
-        $em = $this->getEntityManager();
-        $conn = $em->getConnection();
-        $conn->beginTransaction();
-        try {
-            $attempt->setCount(0);
-            $attempt->setFullLockCount($fullLockCount);
-            $attempt->setTrace(['reset' => true]);
-            $em->persist($attempt);
-            $em->flush();
-            $conn->commit();
-        } catch (\Exception $e) {
-            $conn->rollBack();
-        }
+        $attempt = $this->update(
+            [
+                'id' => $attempt->getId(),
+                'count' => 0,
+                'fullLockCount' => $fullLockCount,
+                'trace' => ['reset' => true]
+            ],
+            [],
+            ['simplifiedParams' => true]);
 
         if ($fullLockCount === 0) {
-            $this->lockUser($attempt->getUser(), false);
+            $this->lockUser($attempt[0]->getUser(), false);
         }
 
-        return $attempt;
+        return $attempt[0];
     }
 
     /**
      * @param User $user
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function resetUserAttempt(User $user)
     {
@@ -160,6 +136,7 @@ class LoginAttemptRepository extends Repository
      * @param LoginAttempt $attempt
      * @return int
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function getAttemptStatus(LoginAttempt $attempt)
     {
@@ -194,6 +171,7 @@ class LoginAttemptRepository extends Repository
      * @param User $user
      * @return int
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function attemptCheck(User $user)
     {
@@ -212,7 +190,7 @@ class LoginAttemptRepository extends Repository
             'default'=>[
                 'read'=>[
                     'permissions'=>[
-                        'allowed'=>false
+                        'allowed'=>true
                     ]
                 ]
             ],

@@ -247,35 +247,11 @@ class LoginAttempt extends EntityAbstract implements NotifiableEntityContract
             'guest'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true,
-                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
-                        'emailVerification'=>[
-                            'notification'=>new LoginLockNotification($this),
-                            'via'=>[
-                                'mail'=>[
-                                    'to'=>ArrayExpressionBuilder::closure(function () {
-                                        return $this->getUser()->getEmail();
-                                    })
-                                ]
-                            ]
-                        ]
-                    ]
+                    'allowed'=>true
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true,
-                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
-                        'emailVerification'=>[
-                            'notification'=>new LoginLockNotification($this),
-                            'via'=>[
-                                'mail'=>[
-                                    'to'=>ArrayExpressionBuilder::closure(function () {
-                                        return $this->getUser()->getEmail();
-                                    })
-                                ]
-                            ]
-                        ]
-                    ]
+                    'allowed'=>true
                 ],
                 'delete'=>[
                     'extends'=>[':default:create'],
@@ -288,11 +264,35 @@ class LoginAttempt extends EntityAbstract implements NotifiableEntityContract
             'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true
+                    'allowed'=>true,
+                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
+                        'fullLockCount'=>[
+                            'notification'=>new LoginLockNotification($this),
+                            'via'=>[
+                                'mail'=>[
+                                    'to'=>ArrayExpressionBuilder::closure(function () {
+                                        return $this->getUser()->getEmail();
+                                    })
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true
+                    'allowed'=>true,
+                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
+                        'fullLockCount'=>[
+                            'notification'=>new LoginLockNotification($this),
+                            'via'=>[
+                                'mail'=>[
+                                    'to'=>ArrayExpressionBuilder::closure(function () {
+                                        return $this->getUser()->getEmail();
+                                    })
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 'delete'=>[
                     'extends'=>[':default:create'],

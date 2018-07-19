@@ -74,6 +74,7 @@ $api->version(
     'V1',
     [
         'provider'   => 'V1',
+        'middleware' => ['basic.extractor', 'prime.controller', 'raven'],
     ],
     function () use ($api)
     {

@@ -60,6 +60,7 @@ class AuthController extends APIControllerAbstract
         $credentials = $request->only('email', 'password');
         $attemptResult = null;
         $token = null;
+        $this->loginAttemptRepo->init($this->getArrayHelper(), ['superAdmin'], $this->getTTFallBackNoMode());
 
         /** @var User $user */
 		$user = $this->userRepo->findOneBy(['email'=>$credentials['email']]);
