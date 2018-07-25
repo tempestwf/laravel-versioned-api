@@ -12,9 +12,6 @@ use App\API\V1\Entities\LoginAttempt;
 use App\API\V1\Entities\User;
 use App\Repositories\Repository;
 use Carbon\Carbon;
-use TempestTools\Common\ArrayObject\DefaultTTArrayObject;
-use TempestTools\Common\Helper\ArrayHelper;
-use TempestTools\Raven\Constants\ArrayHelperConstants;
 
 /** @noinspection LongInheritanceChainInspection */
 class LoginAttemptRepository extends Repository
@@ -99,6 +96,8 @@ class LoginAttemptRepository extends Repository
     }
 
     /**
+     * Reset User Attempt
+     *
      * @param User $user
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -113,6 +112,8 @@ class LoginAttemptRepository extends Repository
     }
 
     /**
+     * Lock User
+     *
      * @param User $user
      * @param bool $lock
      * @throws \Doctrine\DBAL\ConnectionException
@@ -133,6 +134,8 @@ class LoginAttemptRepository extends Repository
     }
 
     /**
+     * Get Attempt Status
+     *
      * @param LoginAttempt $attempt
      * @return int
      * @throws \Doctrine\DBAL\ConnectionException
@@ -149,13 +152,27 @@ class LoginAttemptRepository extends Repository
 
         /** Check for attempts */
         if ($max_partial_lock && $attempt->getCount() >= $max_partial_lock) {
-            if ($diffSec >= $partialLockTimeOut) {
-                $this->resetAttempt($attempt, $attempt->getFullLockCount() + 1);
-                return self::LOGIN_ATTEMPT_DEFAULT;
+            if ($partialLockTimeOut && $diffSec >= $partialLockTimeOut) {
+                $attempt = $this->resetAttempt($attempt, $attempt->getFullLockCount() + 1);
+                if ($max_full_lock && $attempt->getFullLockCount() >= $max_full_lock) {
+                    return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_FULL_LOCKED;
+                } else {
+                    return self::LOGIN_ATTEMPT_DEFAULT;
+                }
+            } else {
+                if ($attempt->getCount() >= $max_partial_lock) {
+                    $attempt = $this->resetAttempt($attempt, $attempt->getFullLockCount() + 1);
+                    if ($max_full_lock && $attempt->getFullLockCount() >= $max_full_lock) {
+                        return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_FULL_LOCKED;
+                    } else {
+                        return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED;
+                    }
+                } else {
+                    return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED;
+                }
             }
-            return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED;
         } else if ($max_full_lock && $attempt->getFullLockCount() >= $max_full_lock) {
-            if ($diffSec >= $fullLockTimeOut) {
+            if ($fullLockTimeOut && $diffSec >= $fullLockTimeOut) {
                 $this->resetAttempt($attempt);
                 return self::LOGIN_ATTEMPT_DEFAULT;
             } else {
@@ -168,6 +185,8 @@ class LoginAttemptRepository extends Repository
     }
 
     /**
+     * Attempt Check
+     *
      * @param User $user
      * @return int
      * @throws \Doctrine\DBAL\ConnectionException

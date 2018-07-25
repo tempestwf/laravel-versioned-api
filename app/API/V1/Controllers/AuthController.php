@@ -11,6 +11,7 @@ use Laravel\Socialite\Contracts\Factory as Socialite;
 use Dingo\Api\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use TempestTools\Scribe\Laravel\Events\Controller\PostUpdate;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\JWTAuth;
@@ -94,10 +95,15 @@ class AuthController extends APIControllerAbstract
                 return response()->json(['error' => trans('auth.invalid_credentials')], 401);
                 break;
             case LoginAttemptRepository::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED:
-                return response()->json(['error' => trans('auth.attempt_partial_lock')], 401);
-                break;
             case LoginAttemptRepository::LOGIN_ATTEMPT_ERROR_ACCOUNT_FULL_LOCKED:
-                return response()->json(['error' => trans('auth.attempt_full_lock')], 401);
+                /** Send email to registered user for suspicious activity alert. */
+                $settings = $this->getConfigArrayHelper()->transformNoneGetRequest($request->input(), $request->route()->parameters(), null);
+                event(new PostUpdate($settings));
+                if ($attemptResult === LoginAttemptRepository::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED) {
+                    return response()->json(['error' => trans('auth.attempt_partial_lock')], 403);
+                } else {
+                    return response()->json(['error' => trans('auth.attempt_full_lock')], 423);
+                }
                 break;
             case LoginAttemptRepository::LOGIN_ATTEMPT_NOT_ACTIVATED:
                 return response()->json(['error' => trans('auth.email_not_activated')], 403);

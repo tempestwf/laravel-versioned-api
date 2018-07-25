@@ -7,6 +7,7 @@
  */
 
 namespace App\Notifications;
+use App\API\V1\Entities\LoginAttempt;
 use App\API\V1\Entities\PasswordReset;
 use Illuminate\Notifications\Messages\MailMessage;
 use TempestTools\Scribe\Contracts\Orm\EntityContract;
@@ -31,15 +32,25 @@ class LoginLockNotification extends GeneralNotificationAbstract
     /**
      * Formats the email with info from the user Entity
      * @param MailMessage $mailMessage
-     * @param PasswordReset $notifiable
+     * @param LoginAttempt $notifiable
      * @param array $settings
      * @return MailMessage
      */
-    protected function addUserEntityToMailMessage (MailMessage $mailMessage, PasswordReset $notifiable, array $settings):MailMessage {
-        // This is just example code, a real email would take the user to a webpage that would leverage the api to verify the token, and then redirect to a success page.
-        $verificationKey = $notifiable->getId();
-        $mailMessage->greeting('Login Attempt Notification');
-        $mailMessage->action(env('APP_URL') . 'contexts/guest/reset-password/' . $verificationKey, 'Click here to verify your account');
+    protected function addUserEntityToMailMessage (MailMessage $mailMessage, LoginAttempt $notifiable, array $settings):MailMessage {
+        $max_full_lock = (int) env('MAX_LOGIN_ATTEMPTS_BEFORE_FULL_LOCK', 0);
+
+        $mailMessage->greeting('Hello ' . $notifiable->getUser()->getName() . ',');
+        if ($notifiable->getFullLockCount() < $max_full_lock) {
+            $mailMessage->subject(trans('email.auth_partial_lock_subject'));
+            $mailMessage->line(trans('email.auth_partial_lock_line_1'));
+            $mailMessage->line(trans('email.auth_partial_lock_line_2'));
+        } else {
+            $mailMessage->subject(trans('email.auth_full_lock_subject'));
+            $mailMessage->line(trans('email.auth_full_lock_line_1'));
+            $mailMessage->line(trans('email.auth_full_lock_line_2'));
+            $mailMessage->action(trans('email.auth_full_lock_action'), env('APP_URL') . 'contexts/guest/reactivate/' . $notifiable->getUser()->getId());
+        }
+
         return $mailMessage;
     }
 }

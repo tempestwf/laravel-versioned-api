@@ -26,4 +26,7 @@ return [
     'token_absent' => 'token_absent',
     'token_invalid' => 'token_invalid',
     'no_such_provider' => 'no_such_provider',
+
+    'attempt_partial_lock' => 'Your account has been temporarily locked. Please try again later.',
+    'attempt_full_lock' => 'Your account has been locked. Please reactivate or send us a message to gain back access to your account.',
 ];
