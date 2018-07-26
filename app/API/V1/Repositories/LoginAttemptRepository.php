@@ -214,12 +214,7 @@ class LoginAttemptRepository extends Repository
                 ]
             ],
             'superAdmin'=>[
-                'extends'=>[':default'],
-                'read'=>[
-                    'permissions'=>[
-                        'allowed'=>true
-                    ]
-                ]
+                'extends'=>[':default']
             ],
             // Below here is for testing purposes only
             'testing'=>[]

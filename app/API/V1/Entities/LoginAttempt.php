@@ -279,20 +279,8 @@ class LoginAttempt extends EntityAbstract implements NotifiableEntityContract
                     ]
                 ],
                 'update'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true,
-                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
-                        'fullLockCount'=>[
-                            'notification'=>new LoginLockNotification($this),
-                            'via'=>[
-                                'mail'=>[
-                                    'to'=>ArrayExpressionBuilder::closure(function () {
-                                        return $this->getUser()->getEmail();
-                                    })
-                                ]
-                            ]
-                        ]
-                    ]
+                    'extends'=>[':superAdmin:create'],
+                    'allowed'=>true
                 ],
                 'delete'=>[
                     'extends'=>[':default:create'],
