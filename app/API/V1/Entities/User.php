@@ -51,11 +51,11 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     public $id;
 
     /**
-	 * @ORM\Column(type="string", nullable=true, name="name")
-	 * @var string $name
+     * @ORM\Column(type="string", nullable=true, name="name")
+     * @var string $name
      * @Gedmo\Versioned
-	 */
-	protected $name;
+     */
+    protected $name;
 
     /**
      * @Gedmo\Slug(fields={"name"})
@@ -75,32 +75,34 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      */
     protected $locale;
 
-	/**
-	 * @ORM\Column(type="string", nullable=true, name="job")
-	 * @var string $job
-	 */
-	protected $job;
+    /**
+     * @ORM\Column(type="string", nullable=true, name="job")
+     * @var string $job
+     */
+    protected $job;
 
-	/**
+    /**
      * ArrayCollection|App\API\V1\Entities\Album[]
-	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Album", inversedBy="users", fetch="EXTRA_LAZY")
-	 * @ORM\JoinTable(
-	 *     name="AlbumToUser",
-	 *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},
-	 *     inverseJoinColumns={@ORM\JoinColumn(name="album_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")}
-	 * )
-	 */
-	protected $albums;
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Album", inversedBy="users", fetch="EXTRA_LAZY")
+     * @ORM\JoinTable(
+     *     name="AlbumToUser",
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="album_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")}
+     * )
+     */
+    protected $albums;
 
-	/**
-	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="users", cascade={"persist"}, fetch="EXTRA_LAZY")
-	 */
-	private $permissions;
 
-	/**
-	 * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Role", mappedBy="users", cascade={"persist"}, fetch="EXTRA_LAZY")
-	 */
-	private $roles;
+    /**
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="users", cascade={"persist"}, fetch="EXTRA_LAZY")
+     */
+    private $permissions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Role", mappedBy="users", cascade={"persist"}, fetch="EXTRA_LAZY")
+     */
+    private $roles;
+
 
     /**
      * @ORM\OneToOne(targetEntity="App\API\V1\Entities\SocializeUser", mappedBy="user")
@@ -115,10 +117,23 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     private $emailVerification;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\API\V1\Entities\LoginAttempt", mappedBy="user", cascade={"persist"})
+     * @var LoginAttempt $loginAttempt
+     */
+    private $loginAttempt;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\API\V1\Entities\PasswordReset", mappedBy="user", cascade={"persist"})
      * @var PasswordReset $passwordReset
      */
     private $passwordReset;
+
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false, name="locked")
+     * @var boolean $locked
+     */
+    private $locked = false;
 
     /**
      * User constructor.
@@ -134,7 +149,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     /**
      * @return int
      */
-    public function getId():?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -144,7 +159,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      *
      * @return User
      */
-    public function setId($id):User
+    public function setId($id): User
     {
         $this->id = $id;
 
@@ -155,44 +170,44 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      * Used by BasicDataExtractorMiddleware to retrieve the information about the currently logged in user.
      * @return array
      */
-    public function extractValues() : array
+    public function extractValues(): array
     {
         return [
             CommonArrayObjectKeyConstants::USER_KEY_NAME => [
-                'id'=>$this->getId(),
-                'name'=>$this->getName(),
-                'job'=>$this->getJob(),
-                'password'=>$this->getPassword(),
-                'email'=>$this->getEmail(),
-                'deletedAt'=>$this->getDeletedAt()
+                'id' => $this->getId(),
+                'name' => $this->getName(),
+                'job' => $this->getJob(),
+                'password' => $this->getPassword(),
+                'email' => $this->getEmail(),
+                'deletedAt' => $this->getDeletedAt()
             ]
         ];
     }
-	
-	/**
-	 * @return string
-	 */
-	public function getName():?String
-	{
-		return $this->name;
-	}
-	
-	/**
-	 * @param string $name
-	 *
-	 * @return User
-	 */
-	public function setName(string $name):User
-	{
-		$this->name = $name;
-		
-		return $this;
-	}
+
+    /**
+     * @return string
+     */
+    public function getName(): ?String
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return User
+     */
+    public function setName(string $name): User
+    {
+        $this->name = $name;
+
+        return $this;
+    }
 
     /**
      * @return null|String
      */
-    public function getSlug():?String
+    public function getSlug(): ?String
     {
         return $this->slug;
     }
@@ -201,37 +216,37 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      * @param string $slug
      * @return User
      */
-    public function setSlug(string $slug):User
+    public function setSlug(string $slug): User
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-	/**
-	 * @return string
-	 */
-	public function getJob():?String
-	{
-		return $this->job;
-	}
-	
-	/**
-	 * @param string $job
-	 *
-	 * @return User
-	 */
-	public function setJob(string $job):User
-	{
-		$this->job = $job;
-		
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getJob(): ?String
+    {
+        return $this->job;
+    }
+
+    /**
+     * @param string $job
+     *
+     * @return User
+     */
+    public function setJob(string $job): User
+    {
+        $this->job = $job;
+
+        return $this;
+    }
 
     /**
      * @return Collection|NULL
      */
-    public function getRoles():?Collection
+    public function getRoles(): ?Collection
     {
         return $this->roles;
     }
@@ -254,7 +269,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     /**
      * @return Collection|NULL
      */
-    public function getPermissions():?Collection
+    public function getPermissions(): ?Collection
     {
         return $this->permissions;
     }
@@ -403,11 +418,29 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
-     * @return \App\API\V1\Entities\EmailVerification
+     * @return EmailVerification
      */
     public function getEmailVerification(): EmailVerification
     {
         return $this->emailVerification;
+    }
+
+    /**
+     * @param LoginAttempt $loginAttempt
+     * @return User
+     */
+    public function setLoginAttempts(LoginAttempt $loginAttempt): User
+    {
+        $this->loginAttempt = $loginAttempt;
+        return $this;
+    }
+
+    /**
+     * @return LoginAttempt
+     */
+    public function getLoginAttempt(): LoginAttempt
+    {
+        return $this->loginAttempt;
     }
 
     /**
@@ -453,6 +486,25 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
+     * @return bool|null
+     */
+    public function isLocked(): ?bool
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param bool $locked
+     * @return User
+     */
+    public function setLocked(bool $locked): User
+    {
+        $this->locked = $locked;
+
+        return $this;
+    }
+
+    /**
      * @return array
      * @throws \RuntimeException
      */
@@ -461,46 +513,46 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
         /** @noinspection NullPointerExceptionInspection */
         return [
             // Default context is the one that we fall back too, and other context inherit from.
-            'default'=>[
-                'create'=>[
-                    'allowed'=>false,
-                    'permissive'=>false,
-                    'settings'=>[
-                        'validate'=>[ // Validates name and email and inherited by the rest of the config
-                            'rules'=>[
+            'default' => [
+                'create' => [
+                    'allowed' => false,
+                    'permissive' => false,
+                    'settings' => [
+                        'validate' => [ // Validates name and email and inherited by the rest of the config
+                            'rules' => [
                                 'name' => 'required|max:255',
                                 'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
                                 'password' => 'required|min:6',
                                 'locale' => 'required',
                             ],
-                            'messages'=>NULL,
-                            'customAttributes'=>NULL,
+                            'messages' => NULL,
+                            'customAttributes' => NULL,
                         ],
                     ],
                     // When converted to an array, the following fields can be returned
-                    'toArray'=> [
-                        'id'=>[],
-                        'name'=>[],
-                        'email'=>[],
-                        'address'=>[],
-                        'job'=>[],
-                        'locale'=>[],
-                        'albums'=>[],
-                        'permissions'=>[],
-                        'roles'=>[],
+                    'toArray' => [
+                        'id' => [],
+                        'name' => [],
+                        'email' => [],
+                        'address' => [],
+                        'job' => [],
+                        'locale' => [],
+                        'albums' => [],
+                        'permissions' => [],
+                        'roles' => [],
                     ],
-                    'fields'=>[
-                        'password'=>[ // password allowed
-                            'permissive'=>true,
+                    'fields' => [
+                        'password' => [ // password allowed
+                            'permissive' => true,
                         ],
                     ]
 
                 ],
-                'update'=>[
-                    'extends'=>[':default:create'],
-                    'settings'=>[
-                        'validate'=>[ // The fields here are not required when doing an update, so change them to not required.
-                            'rules'=>[
+                'update' => [
+                    'extends' => [':default:create'],
+                    'settings' => [
+                        'validate' => [ // The fields here are not required when doing an update, so change them to not required.
+                            'rules' => [
                                 'name' => 'required|max:255',
                                 'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
                                 'password' => 'required|min:6',
@@ -509,21 +561,21 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         ],
                     ],
                 ],
-                'delete'=>[
-                    'extends'=>[':default:update'],
+                'delete' => [
+                    'extends' => [':default:update'],
                 ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':default:update']
+                'read' => [ // Same as default create
+                    'extends' => [':default:update']
                 ],
             ],
-            'guest'=>[
-                'create'=>[
-                    'allowed'=>true,
-                    'permissive'=>true,
-                    'extends'=>[':default:create'],
-                    'settings'=>[
+            'guest' => [
+                'create' => [
+                    'allowed' => true,
+                    'permissive' => true,
+                    'extends' => [':default:create'],
+                    'settings' => [
                         // When a guest makes a new user we make a new email token for them. The id of the token is generated automatically is a unique randomly generated string
-                        'mutate'=>ArrayExpressionBuilder::closure(
+                        'mutate' => ArrayExpressionBuilder::closure(
                             function (array $params) {
                                 $entity = $params['self'];
                                 $emailToken = new EmailVerification();
@@ -532,33 +584,33 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             }
                         )
                     ],
-                    'name'=>[ // name allowed
-                        'permissive'=>true,
+                    'name' => [ // name allowed
+                        'permissive' => true,
                     ],
-                    'job'=>[ // job allowed
-                        'permissive'=>true,
+                    'job' => [ // job allowed
+                        'permissive' => true,
                     ],
-                    'address'=>[ // address allowed
-                        'permissive'=>true,
+                    'address' => [ // address allowed
+                        'permissive' => true,
                     ],
-                    'email'=>[ // email allowed
-                        'permissive'=>true,
+                    'email' => [ // email allowed
+                        'permissive' => true,
                     ],
-                    'password'=>[ // password allowed
-                        'permissive'=>true,
+                    'password' => [ // password allowed
+                        'permissive' => true,
                     ],
-                    'locale'=>[ // locale allowed
-                        'permissive'=>true,
+                    'locale' => [ // locale allowed
+                        'permissive' => true,
                     ],
-                    'passwordReset'=>[
-                        'permissive'=>false,
+                    'passwordReset' => [
+                        'permissive' => false,
                     ],
-                    'notifications'=>[ // A list of arbitrary key names with the actual notifications that will be sent
-                        'emailVerification'=>[
-                            'notification'=>new EmailVerificationNotification($this),
-                            'via'=>[
-                                'mail'=>[
-                                    'to'=>ArrayExpressionBuilder::closure(function () {
+                    'notifications' => [ // A list of arbitrary key names with the actual notifications that will be sent
+                        'emailVerification' => [
+                            'notification' => new EmailVerificationNotification($this),
+                            'via' => [
+                                'mail' => [
+                                    'to' => ArrayExpressionBuilder::closure(function () {
                                         return $this->getEmail();
                                     })
                                 ]
@@ -566,136 +618,135 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         ]
                     ]
                 ],
-                'update'=>[
-                    'allowed'=>false,
-                    'extends'=>[':default:create'],
+                'update' => [
+                    'allowed' => false,
+                    'extends' => [':default:create'],
                 ],
-                'delete'=>[
-                    'allowed'=>false,
-                    'extends'=>[':default:create'],
+                'delete' => [
+                    'allowed' => false,
+                    'extends' => [':default:create'],
                 ],
-                'read'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>false,
+                'read' => [
+                    'extends' => [':default:create'],
+                    'allowed' => false,
                 ],
             ],
             // Configuration for when in user context. Extends default.
-            'user'=>[
-                'create'=>[
-                    'extends'=>[':guest:create'],
-                    'allowed'=>false,
-                    'permissive'=>false,
-                    'settings'=>[
+            'user' => [
+                'create' => [
+                    'extends' => [':guest:create'],
+                    'allowed' => false,
+                    'permissive' => false,
+                    'settings' => [
                         // If you are in user context, then you should only be able to alter your self. We enforce that the userId match with currently logged in user.
-                        'enforce'=>[
-                            'id'=>$this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id'])
+                        'enforce' => [
+                            'id' => $this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id'])
                         ],
                     ],
-                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
-                        'albums'=>[
-                            'permissive'=>false,
-                            'assign'=>[
-                                'add'=>true,
-                                'remove'=>true,
-                                'addSingle'=>true,
-                                'removeSingle'=>true,
+                    'fields' => [ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'albums' => [
+                            'permissive' => false,
+                            'assign' => [
+                                'add' => true,
+                                'remove' => true,
+                                'addSingle' => true,
+                                'removeSingle' => true,
                             ],
-                            'chain'=>[
-                                'read'=>true
+                            'chain' => [
+                                'read' => true
                             ]
                         ],
                     ],
                 ],
-                'update'=>[
-                    'extends'=>[':user:create'], // inherits all of user create, but turns on the allowed flag so now a user can update them selves
-                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
-                        'email'=>[ // Users can't update their email
-                            'permissive'=>false,
+                'update' => [
+                    'extends' => [':user:create'], // inherits all of user create, but turns on the allowed flag so now a user can update them selves
+                    'fields' => [ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'email' => [ // Users can't update their email
+                            'permissive' => false,
                         ],
                     ],
-                    'allowed'=>true
+                    'allowed' => true
                 ],
-                'delete'=>[
-                    'extends'=>[':user:create'], // users can not delete them selves
-                    'allowed'=>false
+                'delete' => [
+                    'extends' => [':user:create'], // users can not delete them selves
+                    'allowed' => false
                 ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':guest:create']
+                'read' => [ // Same as default create
+                    'extends' => [':guest:create']
                 ],
             ],
-            'admin'=>[ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
-                'create'=>[
-                    'extends'=>[':user:create'],
-                    'allowed'=>true,
-                    'permissive'=>false,
+            'admin' => [ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
+                'create' => [
+                    'extends' => [':user:create'],
+                    'allowed' => true,
+                    'permissive' => false,
                     // We override the enforce to null so it is no longer enforced for admins.
-                    'settings'=>[
-                        'enforce'=>null
+                    'settings' => [
+                        'enforce' => null
                     ],
-                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
-                        'albums'=>[
-                            'permissive'=>true,
+                    'fields' => [ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'albums' => [
+                            'permissive' => true,
                         ]
                     ],
                 ],
-                'update'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true,
+                'update' => [
+                    'extends' => [':admin:create'],
+                    'allowed' => true,
                 ],
-                'delete'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true,
+                'delete' => [
+                    'extends' => [':admin:create'],
+                    'allowed' => true,
                 ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true,
+                'read' => [ // Same as default create
+                    'extends' => [':admin:create'],
+                    'allowed' => true,
                 ],
             ],
-            'superAdmin'=>[ // can do everything in default, and is allowed to do it when a super admin
-                'create'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true,
-                    'permissive'=>true,
-                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
-                        'permissions'=>[ // Users can update their name
-                            'permissive'=>true,
+            'superAdmin' => [ // can do everything in default, and is allowed to do it when a super admin
+                'create' => [
+                    'extends' => [':admin:create'],
+                    'allowed' => true,
+                    'permissive' => true,
+                    'fields' => [ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'permissions' => [ // Users can update their name
+                            'permissive' => true,
                         ],
-                        'roles'=>[ // Users can update their job
-                            'permissive'=>true,
+                        'roles' => [ // Users can update their job
+                            'permissive' => true,
                         ]
                     ],
                 ],
-                'update'=>[
-                    'extends'=>[':superAdmin:create'],
+                'update' => [
+                    'extends' => [':superAdmin:create'],
                 ],
-                'delete'=>[
-                    'extends'=>[':superAdmin:create'],
+                'delete' => [
+                    'extends' => [':superAdmin:create'],
                 ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':superAdmin:create']
+                'read' => [ // Same as default create
+                    'extends' => [':superAdmin:create']
                 ],
             ],
             // Below here is for testing purposes only
-            'testing'=>[
-                'create'=>[
-                    'allowed'=>true,
-                    'extends'=>[':superAdmin:create'],
+            'testing' => [
+                'create' => [
+                    'allowed' => true,
+                    'extends' => [':superAdmin:create'],
                 ],
-                'update'=>[
-                    'allowed'=>true,
-                    'extends'=>[':superAdmin:update'],
+                'update' => [
+                    'allowed' => true,
+                    'extends' => [':superAdmin:update'],
                 ],
-                'delete'=>[
-                    'allowed'=>true,
-                    'extends'=>[':superAdmin:delete'],
+                'delete' => [
+                    'allowed' => true,
+                    'extends' => [':superAdmin:delete'],
                 ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':superAdmin:read'],
-                    'allowed'=>true,
+                'read' => [ // Same as default create
+                    'extends' => [':superAdmin:read'],
+                    'allowed' => true,
                 ],
             ],
         ];
     }
-
-
 }
+

@@ -70,7 +70,7 @@ class AclMiddlewareTest extends CrudTestBaseAbstract
 
             /** Login with wrong password **/
             $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => 'wrong_password']);
-            $response->assertResponseStatus(422);
+            $response->assertResponseStatus(401);
 
             /** Login with right password **/
             $response = $this->json('POST', '/auth/authenticate', ['email' => $user->getEmail(), 'password' => $this->password]);

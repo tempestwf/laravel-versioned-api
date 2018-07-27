@@ -38,7 +38,7 @@ class ResetPasswordNotification extends GeneralNotificationAbstract
         // This is just example code, a real email would take the user to a webpage that would leverage the api to verify the token, and then redirect to a success page.
         $verificationKey = $notifiable->getId();
         $mailMessage->greeting('Reset your password!');
-        $mailMessage->action(env('APP_URL') . 'contexts/guest/reset-password/' . $verificationKey, 'Click here to verify your account');
+        $mailMessage->action('Click here to change your password', env('APP_URL') . 'contexts/guest/reset-password/' . $verificationKey);
         return $mailMessage;
     }
 }

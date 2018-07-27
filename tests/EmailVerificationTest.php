@@ -2,6 +2,7 @@
 
 use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\Repositories\LoginAttemptRepository;
 use Faker\Factory;
 use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
@@ -111,17 +112,27 @@ class EmailVerificationTest extends CrudTestBaseAbstract
             $response->assertResponseStatus(200);
             $this->assertArrayHasKey('token', $tokenResult);
 
-            /** Delete EmailVerification **/
+            $userRepo = new UserRepository();
+            $user = $userRepo->find($userResult['id']);
+
+            $loginAttemptRepository = new LoginAttemptRepository();
+            $loginAttempt = $loginAttemptRepository->findOneBy(['user' => $user]);
+
             $emailVerification->setDeletedAt(new DateTime());
+            $loginAttempt->setDeletedAt(new DateTime());
+            $user->setDeletedAt(new DateTime());
+
+            /** Delete EmailVerification **/
             $em->remove($emailVerification);
             $em->flush($emailVerification);
 
+            /** Delete Login Attempt **/
+            $em->remove($loginAttempt);
+            $em->flush($loginAttempt);
+
             /** Delete User **/
-            $userRepo = new UserRepository();
-            $user = $userRepo->find($userResult['id']);
-            $user->setDeletedAt(new DateTime());
-            $em->remove($user);
-            $em->flush($user);
+            //$em->remove($user);
+            //$em->flush($user);
 
         } catch (Exception $e) {
             throw $e;

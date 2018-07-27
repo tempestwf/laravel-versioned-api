@@ -5,7 +5,7 @@ use App\API\V1\Repositories\UserRepository;
 use Faker\Factory;
 use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-class RegistrationFlowTest extends CrudTestBaseAbstract
+class LoginAttemptTest extends CrudTestBaseAbstract
 {
     protected $password = '441520435a0a2dac143af05b55f4b751';
 
@@ -16,7 +16,11 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
      */
     public function testEmailVerification():void
     {
-        //$this->refreshApplication();
+        putenv('MAX_LOGIN_ATTEMPTS_BEFORE_PARTIAL_LOCK=3');
+        putenv('MAX_LOGIN_ATTEMPTS_BEFORE_FULL_LOCK=3');
+        putenv('LOGIN_PARTIAL_LOCK_TIMEOUT=1');
+        putenv('LOGIN_FULL_LOCK_TIMEOUT=1');
+
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -49,10 +53,6 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
             $this->assertEquals( $emailVerification->getUser()->getId(), $userResult['id']);
             $this->assertEquals( $emailVerification->getVerified(), false);
 
-            //$conn->commit();
-            //$this->refreshApplication();
-            //$conn->beginTransaction();
-
             /** Email verification endpoint **/
             $response = $this->json(
                 'PUT', "/contexts/guest/email-verification/" . $emailVerification->getId(),
@@ -73,20 +73,37 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
             $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
             $response->assertResponseStatus(401);
 
-            /** Try to log in with correct password **/
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => $this->password]);
-            $result = $response->decodeResponseJson();
-            $this->assertArrayHasKey('token', $result);
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(401);
 
-            /** Access me no token **/
-            $response = $this->json('GET', '/auth/me', [],['HTTP_AUTHORIZATION'=>'Bearer ' . null]);
-            $response->assertResponseStatus(400);
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(403);
 
-            /** Access me with token **/
-            $response = $this->json('GET', '/auth/me', [],['HTTP_AUTHORIZATION'=>'Bearer ' . $result["token"]]);
-            $result = $response->decodeResponseJson();
-            $this->assertArrayHasKey('id', $result);
-            $this->assertEquals( $user->getName(), $userResult["name"]);
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(401);
+
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(401);
+
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(403);
+
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(401);
+
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(401);
+
+            /** Try to log in with wrong password **/
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
+            $response->assertResponseStatus(423);
 
             /** Leave no trace of test **/
             $conn->rollBack();
