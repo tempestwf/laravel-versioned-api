@@ -5,11 +5,13 @@ namespace App\API\V1\Controllers;
 use App;
 use App\API\V1\Repositories\RoleRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\Repositories\LoginAttemptRepository;
 use App\API\V1\Entities\User;
 use Laravel\Socialite\Contracts\Factory as Socialite;
 use Dingo\Api\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use TempestTools\Scribe\Laravel\Events\Controller\PostUpdate;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\JWTAuth;
@@ -17,7 +19,6 @@ use Hash;
 
 class AuthController extends APIControllerAbstract
 {
-
     /** @var JWTAuth $auth **/
     protected  /** @noinspection ClassOverridesFieldOfSuperClassInspection */ $auth;
     /** @var UserRepository **/
@@ -26,14 +27,17 @@ class AuthController extends APIControllerAbstract
     protected  $roleRepo;
     /** @var Socialite **/
     protected  $socialite;
+    /** @var LoginAttemptRepository **/
+    protected  $loginAttemptRepo;
 
     /**
      * AuthController constructor.
      * @param UserRepository $userRepo
      * @param Socialite $socialite
      * @param RoleRepository $roleRepo
+     * @param LoginAttemptRepository $loginAttemptRepo
      */
-    public function __construct(UserRepository $userRepo, Socialite $socialite, RoleRepository $roleRepo)
+    public function __construct(UserRepository $userRepo, Socialite $socialite, RoleRepository $roleRepo, LoginAttemptRepository $loginAttemptRepo)
 	{
 		parent::__construct();
 
@@ -41,6 +45,7 @@ class AuthController extends APIControllerAbstract
         $this->userRepo = $userRepo;
         $this->roleRepo = $roleRepo;
         $this->socialite = $socialite;
+        $this->loginAttemptRepo = $loginAttemptRepo;
 	}
 
     /**
@@ -48,35 +53,67 @@ class AuthController extends APIControllerAbstract
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
 	public function authenticate(Request $request)
 	{
+        $credentials = $request->only('email', 'password');
+        $attemptResult = null;
         $token = null;
-		$credentials = $request->only('email', 'password');
+        $this->loginAttemptRepo->init($this->getArrayHelper(), ['superAdmin'], $this->getTTFallBackNoMode());
 
         /** @var User $user */
 		$user = $this->userRepo->findOneBy(['email'=>$credentials['email']]);
-		if (!$user) {
-            return response()->json(['error' => trans('auth.invalid_credentials')], 401);
+		if ($user) {
+            $attemptResult = $this->loginAttemptRepo->attemptCheck($user);
+            if (!$attemptResult) {
+                /** Login Attempt */
+                try {
+                    if (!Hash::check($credentials['password'], $user->getPassword()) || ($token = $this->auth->attempt($credentials)) === false) {
+                        $attemptResult = $this->loginAttemptRepo->logAttempt($user, $credentials, LoginAttemptRepository::LOGIN_ATTEMPT_INVALID_PASSWORD);
+                    } else {
+                        $this->loginAttemptRepo->resetUserAttempt($user);
+                    }
+                } catch(JWTException $e) {
+                    $attemptResult = $this->loginAttemptRepo->logAttempt($user, $credentials, LoginAttemptRepository::LOGIN_ATTEMPT_COULD_NOT_CREATE_TOKEN);
+                }
+
+                /** Check for activation */
+                if ($token && $user->isActivated() === false) {
+                    $attemptResult = $this->loginAttemptRepo->logAttempt($user, $credentials, LoginAttemptRepository::LOGIN_ATTEMPT_NOT_ACTIVATED);
+                }
+            }
+        } else {
+            $attemptResult = LoginAttemptRepository::LOGIN_ATTEMPT_INVALID_EMAIL;
         }
 
-        if (!Hash::check($credentials['password'], $user->getPassword())) {
-            return response()->json(['error' => trans('auth.invalid_credentials')], 422);
+        switch ($attemptResult) {
+            case LoginAttemptRepository::LOGIN_ATTEMPT_INVALID_EMAIL:
+            case LoginAttemptRepository::LOGIN_ATTEMPT_INVALID_PASSWORD:
+            case LoginAttemptRepository::LOGIN_ATTEMPT_INVALID_CREDENTIALS:
+                return response()->json(['error' => trans('auth.invalid_credentials')], 401);
+                break;
+            case LoginAttemptRepository::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED:
+            case LoginAttemptRepository::LOGIN_ATTEMPT_ERROR_ACCOUNT_FULL_LOCKED:
+                /** Send email to registered user for suspicious activity alert. */
+                $settings = $this->getConfigArrayHelper()->transformNoneGetRequest($request->input(), $request->route()->parameters(), null);
+                event(new PostUpdate($settings));
+                if ($attemptResult === LoginAttemptRepository::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED) {
+                    return response()->json(['error' => trans('auth.attempt_partial_lock')], 403);
+                } else {
+                    return response()->json(['error' => trans('auth.attempt_full_lock')], 423);
+                }
+                break;
+            case LoginAttemptRepository::LOGIN_ATTEMPT_NOT_ACTIVATED:
+                return response()->json(['error' => trans('auth.email_not_activated')], 403);
+                break;
+            case LoginAttemptRepository::LOGIN_ATTEMPT_COULD_NOT_CREATE_TOKEN:
+                return response()->json(['error' => trans('auth.could_not_create_token')], 500);
+                break;
+            default:
+                return response()->json(compact('token'));
         }
-
-        if ($user->isActivated() === false) {
-            return response()->json(['error' => trans('auth.email_not_activated')], 403);
-        }
-
-        try {
-			if(($token = $this->auth->attempt($credentials)) === false) {
-				return response()->json(['error' => trans('auth.invalid_credentials')], 401);
-			}
-		} catch(JWTException $e) {
-			return response()->json(['error' => trans('auth.could_not_create_token')], 500);
-		}
-
-		return response()->json(compact('token'));
 	}
 
     /**
@@ -89,13 +126,13 @@ class AuthController extends APIControllerAbstract
 		if($this->auth->getToken() === FALSE) {
 			throw new BadRequestHttpException(trans('auth.token_absent'));
 		}
-		
+
 		try {
 			$token = $this->auth->refresh();
 		} catch(TokenInvalidException $e) {
 			throw new UnauthorizedHttpException(trans('auth.token_invalid'));
 		}
-		
+
 		return response()->json(compact('token'));
 	}
 
