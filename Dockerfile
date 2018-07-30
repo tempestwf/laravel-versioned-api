@@ -24,6 +24,8 @@ RUN php artisan jwt:generate
 RUN php artisan vendor:publish --tag="config"
 RUN php artisan doctrine:migrations:migrate
 RUN php artisan doctrine:generate:proxies
+RUN php artisan db:seed
+RUN php artisan db:seed --class=SampleRecordsSeeder
 
 USER root
 
