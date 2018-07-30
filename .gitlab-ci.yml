@@ -1,0 +1,50 @@
+image: registry.sweetspotmotion.com/ops/kube-deploy:stable
+
+variables:
+  KUBE_DOMAIN: svc.sweetspotmotion.com
+  REGISTRY: gitlab-registry
+  DEPLOY_REDIS: "false"
+  DEPLOY_APP: "true"
+  REDIS_MULTI_ENV: "false"
+  TIER: web
+  PORT_NAME: web
+  HEALTH_CHECK_PATH: /
+  HEALTH_CHECK_DELAY: 15
+  HEALTH_CHECK_TIMEOUT: 15
+  READY_CHECK_PATH: /
+  READY_CHECK_DELAY: 5
+  READY_CHECK_TIMEOUT: 3
+  SERVICE_PATH: /
+  SPEC_TYPE: LoadBalancer
+  TLS_ENABLE: "true"
+  INGRESS_CLASS: nodejs
+  CPORT: 80
+  EPORT: 80
+  SPORT: 80
+
+stages:
+  - staging
+
+staging:
+  stage: staging
+  variables:
+    KUBE_NAMESPACE: ssm-dev
+    REPLICAS: 1
+    HPA_MIN_REPLICAS: 1
+    HPA_MAX_REPLICAS: 10
+    HPA_TARGET_CPU: 50
+    TRACK: stg
+    MEM_REQ: 100Mi
+    MEM_LIMIT: 400Mi
+    CPU_REQ: 100m
+    CPU_LIMIT: 500m
+  script:
+    - envsubst < .env.example > .env
+    - cat .env
+    - command build
+    - command deploy
+  environment:
+    name: $CI_PROJECT_NAME-stg
+    url: http://$CI_ENVIRONMENT_NAME.$KUBE_DOMAIN
+  only:
+    - stg
