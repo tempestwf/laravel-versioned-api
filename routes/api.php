@@ -99,8 +99,8 @@ $api->version(
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'raven', 'recaptcha'],
         'provider'   => 'V1',
+        'middleware' => ['basic.extractor', 'prime.controller', 'raven', 'recaptcha'],
         'ttPath'=>['guest'],
         'ttFallback'=>['default'],
     ],
