@@ -18,6 +18,7 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\EmailVerificationRepository")
  * @ORM\Table(name="email_verification")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class EmailVerification extends EntityAbstract
@@ -34,6 +35,7 @@ class EmailVerification extends EntityAbstract
 
     /**
      * @ORM\Column(type="boolean", nullable=false)
+     * @Gedmo\Versioned
      */
     private $verified = false;
 

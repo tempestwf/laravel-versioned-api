@@ -68,6 +68,7 @@ $api->version(
         ]);
     }
 );
+
 // Came with original skeleton
 
 $api->version(
@@ -78,18 +79,28 @@ $api->version(
     ],
     function () use ($api)
     {
-        $api->get('/', IndexController::class . '@about');
+        $api->get('/', IndexController::class . '@healthCheck');
+    }
+);
+
+$api->version(
+    'V1',
+    [
+        'provider'   => 'V1',
+        'middleware' => ['basic.extractor', 'prime.controller', 'raven'],
+    ],
+    function () use ($api)
+    {
         $api->post('auth/authenticate', AuthController::class . '@authenticate');
         $api->get('auth/refresh',  AuthController::class . '@refresh');
     }
 );
 
-
 $api->version(
     'V1',
     [
-        'middleware' => ['basic.extractor', 'prime.controller', 'raven', 'recaptcha'],
         'provider'   => 'V1',
+        'middleware' => ['basic.extractor', 'prime.controller', 'raven', 'recaptcha'],
         'ttPath'=>['guest'],
         'ttFallback'=>['default'],
     ],

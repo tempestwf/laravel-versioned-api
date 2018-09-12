@@ -1,7 +1,7 @@
 <?php
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
@@ -22,6 +22,13 @@ class RouteServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+        $this->app->singleton(\Dingo\Api\Http\Validation\Domain::class, function ($app) {
+            return new MultipleDomains([
+                getenv('API_DOMAIN'),
+                Request::server('HTTP_HOST'),
+            ]);
+        });
+
 		parent::boot();
 	}
 	
@@ -45,16 +52,15 @@ class RouteServiceProvider extends ServiceProvider
 	 */
 	protected function mapWebRoutes()
 	{
-		Route::group(
-			[
-				'middleware' => 'web',
-				'namespace'  => $this->namespace,
-			],
-			function ($router)
-			{
-				require base_path('routes/web.php');
-			}
-		);
+        /** @var \Dingo\Api\Routing\Router $api */
+        $api = app('Dingo\Api\Routing\Router');
+
+        $api->version('v1', [
+            'middleware' => 'api',
+            'domain' => Request::server('HTTP_HOST'),
+        ], function ($api) {
+            require base_path('routes/web.php');
+        });
 	}
 	
 	/**
@@ -66,16 +72,22 @@ class RouteServiceProvider extends ServiceProvider
 	 */
 	protected function mapApiRoutes()
 	{
-		Route::group(
-			[
-				'middleware' => 'api',
-				'namespace'  => $this->namespace,
-				'prefix'     => 'api',
-			],
-			function ($router)
-			{
-				require base_path('routes/api.php');
-			}
-		);
+
+        /** @var \Dingo\Api\Routing\Router $api */
+        $api = app('Dingo\Api\Routing\Router');
+
+        $api->version('v1', [
+            'middleware' => 'api',
+            'domain' => getenv('API_DOMAIN'),
+        ], function ($api) {
+            require base_path('routes/api.php');
+        });
+
+        $api->version('v1', [
+            'middleware' => 'api',
+            'domain' => Request::server('HTTP_HOST'),
+        ], function ($api) {
+            require base_path('routes/api.php');
+        });
 	}
 }

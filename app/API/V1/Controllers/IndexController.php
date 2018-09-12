@@ -19,6 +19,17 @@ class IndexController extends APIControllerAbstract
 
     }
 
+    public function healthCheck(Request $request)
+    {
+        $data = [
+            'success' => true,
+            'health' => 'Up and running',
+            'version' => env('APP_VESION', 'v1'),
+            'message' => env('APP_DESCRIPTION', 'Welcome to Tempest Tools Skeleton!')
+        ];
+        return response()->json(compact('data'));
+    }
+
     public function about(Request $request)
     {
         $data = [
