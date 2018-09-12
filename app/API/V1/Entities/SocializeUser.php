@@ -18,6 +18,7 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\SocializeUserRepository")
  * @ORM\Table(name="socialize_user")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class SocializeUser extends EntityAbstract
@@ -33,46 +34,55 @@ class SocializeUser extends EntityAbstract
 
     /**
      * @ORM\Column(name="socialize_id", type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $socializeId;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $nickname;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $avatar;
 
     /**
      * @ORM\Column(name="avatar_original", type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $avatarOriginal;
 
     /**
      * @ORM\Column(name="profile_url", type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $profileUrl;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $token;
 
     /**
      * @ORM\Column(name="refresh_token", type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $refreshToken;
 
     /**
      * @ORM\Column(name="expires_in", type="integer", nullable=true)
+     * @Gedmo\Versioned
      */
     private $expiresIn;
 

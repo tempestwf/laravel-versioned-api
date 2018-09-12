@@ -7,6 +7,7 @@
  */
 
 namespace App\Notifications;
+use App;
 use App\API\V1\Entities\LoginAttempt;
 use App\API\V1\Entities\PasswordReset;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -39,7 +40,10 @@ class LoginLockNotification extends GeneralNotificationAbstract
     protected function addUserEntityToMailMessage (MailMessage $mailMessage, LoginAttempt $notifiable, array $settings):MailMessage {
         $max_full_lock = (int) env('MAX_LOGIN_ATTEMPTS_BEFORE_FULL_LOCK', 0);
 
-        $mailMessage->greeting('Hello ' . $notifiable->getUser()->getName() . ',');
+        $user = $notifiable->getUser();
+        $mailMessage->greeting(trans('email.greetings',  ['username' => $user->getName()]));
+        App::setLocale($user->getLocale());
+
         if ($notifiable->getFullLockCount() < $max_full_lock) {
             $mailMessage->subject(trans('email.auth_partial_lock_subject'));
             $mailMessage->line(trans('email.auth_partial_lock_line_1'));

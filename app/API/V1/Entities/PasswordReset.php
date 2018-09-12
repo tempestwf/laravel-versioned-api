@@ -24,6 +24,7 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\PasswordResetRepository")
  * @ORM\Table(name="password_reset")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class PasswordReset extends EntityAbstract implements NotifiableEntityContract
@@ -40,6 +41,7 @@ class PasswordReset extends EntityAbstract implements NotifiableEntityContract
 
     /**
      * @ORM\Column(type="boolean", nullable=false)
+     * @Gedmo\Versioned
      */
     private $verified = false;
 

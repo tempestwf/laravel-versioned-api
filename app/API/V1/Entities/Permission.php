@@ -18,6 +18,7 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 /**
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\PermissionRepository")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Permission extends EntityAbstract implements PermissionContract
@@ -33,6 +34,7 @@ class Permission extends EntityAbstract implements PermissionContract
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     protected $name;
 

@@ -20,6 +20,7 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\RoleRepository")
  * @ORM\Table(name="roles")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Role extends EntityAbstract implements RoleContract
@@ -34,6 +35,7 @@ class Role extends EntityAbstract implements RoleContract
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     protected $name;
 

@@ -60,24 +60,28 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     /**
      * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(type="string", unique=true)
+     * @Gedmo\Versioned
      */
     protected $slug;
 
     /**
      * @ORM\Column(type="string", nullable=true, name="address")
      * @var string $name
+     * @Gedmo\Versioned
      */
     protected $address;
 
     /**
      * @ORM\Column(type="string", nullable=false, name="locale", options={"default"="en"})
      * @var string $locale
+     * @Gedmo\Versioned
      */
     protected $locale;
 
     /**
      * @ORM\Column(type="string", nullable=true, name="job")
      * @var string $job
+     * @Gedmo\Versioned
      */
     protected $job;
 
@@ -132,6 +136,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     /**
      * @ORM\Column(type="boolean", nullable=false, name="locked")
      * @var boolean $locked
+     * @Gedmo\Versioned
      */
     private $locked = false;
 
