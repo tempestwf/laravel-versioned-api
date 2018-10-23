@@ -86,18 +86,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     protected $job;
 
     /**
-     * ArrayCollection|App\API\V1\Entities\Album[]
-     * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Album", inversedBy="users", fetch="EXTRA_LAZY")
-     * @ORM\JoinTable(
-     *     name="AlbumToUser",
-     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="album_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")}
-     * )
-     */
-    protected $albums;
-
-
-    /**
      * @ORM\ManyToMany(targetEntity="App\API\V1\Entities\Permission", mappedBy="users", cascade={"persist"}, fetch="EXTRA_LAZY")
      */
     private $permissions;
@@ -145,7 +133,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
      */
     public function __construct()
     {
-        $this->albums = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->permissions = new ArrayCollection();
         parent::__construct();
@@ -313,44 +300,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     public function getLocale(): ?string
     {
         return $this->locale;
-    }
-
-    /**
-     * @return Collection|NULL
-     */
-    public function getAlbums(): ?Collection
-    {
-        return $this->albums;
-    }
-
-    /**
-     * @param Album $album
-     * @param bool $preventLoop
-     * @return User
-     */
-    public function addAlbum(Album $album, bool $preventLoop = false): User
-    {
-        if ($preventLoop === false) {
-            $album->addUser($this, true);
-        }
-
-        $this->albums[] = $album;
-        return $this;
-    }
-
-    /**
-     * @param Album $album
-     * @param bool $preventLoop
-     * @return User
-     */
-    public function removeAlbum(Album $album, bool $preventLoop = false): User
-    {
-        if ($preventLoop === false) {
-            $album->removeUser($this, true);
-        }
-
-        $this->albums->removeElement($album);
-        return $this;
     }
 
     /**
@@ -542,16 +491,14 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         'address' => [],
                         'job' => [],
                         'locale' => [],
-                        'albums' => [],
                         'permissions' => [],
                         'roles' => [],
                     ],
                     'fields' => [
                         'password' => [ // password allowed
                             'permissive' => true,
-                        ],
+                        ]
                     ]
-
                 ],
                 'update' => [
                     'extends' => [':default:create'],
@@ -648,19 +595,22 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                             'id' => $this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id'])
                         ],
                     ],
-                    'fields' => [ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
-                        'albums' => [
-                            'permissive' => false,
-                            'assign' => [
-                                'add' => true,
-                                'remove' => true,
-                                'addSingle' => true,
-                                'removeSingle' => true,
-                            ],
-                            'chain' => [
-                                'read' => true
-                            ]
+                    'fields'=>[ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'name'=>[ // Users can update their name
+                            'permissive'=>true,
                         ],
+                        'job'=>[ // job allowed
+                            'permissive'=>true,
+                        ],
+                        'address'=>[ // address allowed
+                            'permissive'=>true,
+                        ],
+                        'email'=>[ // email allowed
+                            'permissive'=>true,
+                        ],
+                        'password'=>[ // password allowed
+                            'permissive'=>true,
+                        ]
                     ],
                 ],
                 'update' => [
@@ -693,7 +643,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         'albums' => [
                             'permissive' => true,
                         ]
-                    ],
+                    ]
                 ],
                 'update' => [
                     'extends' => [':admin:create'],
