@@ -11,6 +11,7 @@ trait Authenticatable
 	
 	/**
 	 * @ORM\Column(name="email", type="string", unique=true)
+   * @Gedmo\Versioned
 	 * @var string $email
 	 */
 	protected $email;

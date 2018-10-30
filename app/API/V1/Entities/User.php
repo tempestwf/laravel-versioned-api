@@ -5,16 +5,14 @@ namespace App\API\V1\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-use App\Entities\Traits\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use App\API\V1\Traits\Entities\Blameable;
+use phpDocumentor\Reflection\Types\Integer;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
-use TempestTools\Common\Entities\Traits\SoftDeleteable;
-use TempestTools\Common\Entities\Traits\IpTraceable;
-use TempestTools\Common\Entities\Traits\Timestampable;
+use TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator;
 
 use TempestTools\Moat\Contracts\HasRolesContract;
 use TempestTools\Moat\Entity\HasPermissionsOptimizedTrait;
@@ -26,6 +24,12 @@ use TempestTools\Raven\Contracts\Orm\NotifiableEntityContract;
 use TempestTools\Raven\Laravel\Orm\NotifiableTrait;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
 use TempestTools\Moat\Contracts\HasPermissionsContract;
+
+use App\Entities\Traits\GenerateRandomString;
+use App\Entities\Traits\Authenticatable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
+use TempestTools\Common\Entities\Traits\IpTraceable;
+use TempestTools\Common\Entities\Traits\Timestampable;
 
 
 /** @noinspection LongInheritanceChainInspection */
@@ -40,46 +44,119 @@ use TempestTools\Moat\Contracts\HasPermissionsContract;
  */
 class User extends EntityAbstract implements HasRolesContract, HasPermissionsContract, ExtractableContract, AuthenticatableContract, NotifiableEntityContract
 {
-    use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait, NotifiableTrait;
+    use Authenticatable, Blameable, SoftDeleteable, IpTraceable, Timestampable, HasPermissionsOptimizedTrait, ExtractorOptionsTrait, NotifiableTrait, GenerateRandomString;
 
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer", name="id")
-     * @var int $id
+     * @ORM\Column(type="string", name="id")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="\TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator")
+     * @var string $id
      */
     public $id;
 
     /**
-     * @ORM\Column(type="string", nullable=true, name="name")
-     * @var string $name
-     * @Gedmo\Versioned
+     * @ORM\Column(type="string", name="identification_key")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="\TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator")
+     * @var string $identificationKey
      */
-    protected $name;
+    public $identificationKey;
 
     /**
-     * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string", name="instadat_uuid", nullable=true)
      * @Gedmo\Versioned
+     * @var string $instadatUUid
      */
-    protected $slug;
+    protected $instadatUUid;
 
     /**
-     * @ORM\Column(type="string", nullable=true, name="address")
+     * @ORM\Column(type="string", name="first_name", nullable=true)
+     * @Gedmo\Versioned
+     * @var string $firstName
+     */
+    protected $firstName;
+
+    /**
+     * @ORM\Column(type="string", name="middle_initial", nullable=true)
+     * @Gedmo\Versioned
+     * @var string $middleInitial
+     */
+    protected $middleInitial;
+
+    /**
+     * @ORM\Column(type="string", name="last_name", nullable=true)
+     * @Gedmo\Versioned
+     * @var string $lastName
+     */
+    protected $lastName;
+
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @Gedmo\Versioned
+     * @var integer $age
+     */
+    private $age;
+
+    /**
+     * @ORM\Column(type="float", scale=2, nullable=false)
+     * @Gedmo\Versioned
+     * @var float $height
+     */
+    private $height;
+
+    /**
+     * @ORM\Column(type="float", scale=2, nullable=false)
+     * @Gedmo\Versioned
+     * @var float $weight
+     */
+    private $weight;
+
+    /**
+     * @ORM\Column(type="integer", name="gender", nullable=false)
+     * @Gedmo\Versioned
+     * @var int $gender
+     */
+    protected $gender;
+
+    /**
+     * @ORM\Column(type="string", name="phone_number", nullable=true)
+     * @Gedmo\Versioned
+     * @var string $phoneNumber
+     */
+    protected $phoneNumber;
+
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @Gedmo\Versioned
+     * @var int $lifestyle
+     */
+    private $lifestyle;
+
+    /**
+     * @ORM\Column(type="string", name="address", nullable=true)
      * @var string $name
      * @Gedmo\Versioned
      */
     protected $address;
 
     /**
-     * @ORM\Column(type="string", nullable=false, name="locale", options={"default"="en"})
+     * @ORM\Column(type="string", name="locale", options={"default"="en"}, nullable=false)
      * @var string $locale
      * @Gedmo\Versioned
      */
     protected $locale;
 
     /**
-     * @ORM\Column(type="string", nullable=true, name="job")
+     * @Gedmo\Slug(fields={"firstName", "middleInitial", "lastName"})
+     * @ORM\Column(type="string", unique=true)
+     * @Gedmo\Versioned
+     * @var string $name
+     */
+    protected $slug;
+
+    /**
+     * @ORM\Column(type="string", name="job", nullable=true)
      * @var string $job
      * @Gedmo\Versioned
      */
@@ -152,60 +229,218 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
-     * @return int
+     * @return null|String
      */
-    public function getId(): ?int
+    public function getId(): ?String
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
-     *
+     * @param string $id
      * @return User
      */
-    public function setId($id): User
+    public function setId(string $id): User
     {
         $this->id = $id;
-
         return $this;
     }
 
     /**
-     * Used by BasicDataExtractorMiddleware to retrieve the information about the currently logged in user.
-     * @return array
+     * @return null|String
      */
-    public function extractValues(): array
+    public function getIdentificationKey(): ?String
     {
-        return [
-            CommonArrayObjectKeyConstants::USER_KEY_NAME => [
-                'id' => $this->getId(),
-                'name' => $this->getName(),
-                'job' => $this->getJob(),
-                'password' => $this->getPassword(),
-                'email' => $this->getEmail(),
-                'deletedAt' => $this->getDeletedAt()
-            ]
-        ];
+        return $this->identificationKey;
     }
 
     /**
-     * @return string
-     */
-    public function getName(): ?String
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     *
+     * @param $identificationKey
      * @return User
      */
-    public function setName(string $name): User
+    public function setIdentificationKey(string $identificationKey): User
     {
-        $this->name = $name;
+        $this->identificationKey = $identificationKey;
+        return $this;
+    }
 
+    /**
+     * @return null|String
+     */
+    public function getInstadatUUid(): ?String
+    {
+        return $this->instadatUUid;
+    }
+
+    /**
+     * @param $instadatUUid
+     * @return User
+     */
+    public function setInstadatUUid(string $instadatUUid): User
+    {
+        $this->instadatUUid = $instadatUUid;
+        return $this;
+    }
+
+    /**
+     * @return null|String
+     */
+    public function getFirstName(): ?String
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param string $firstName
+     * @return User
+     */
+    public function setFirstName(string $firstName): User
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    /**
+     * @return null|String
+     */
+    public function getMiddleInitial(): ?String
+    {
+        return $this->middleInitial;
+    }
+
+    /**
+     * @param string $middleInitial
+     * @return User
+     */
+    public function setMiddleInitial(string $middleInitial): User
+    {
+        $this->middleInitial = $middleInitial;
+        return $this;
+    }
+
+    /**
+     * @return null|String
+     */
+    public function getLastName(): ?String
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param string $lastName
+     * @return User
+     */
+    public function setLastName(string $lastName): User
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
+    /**
+     * @return Int|null
+     */
+    public function getGender(): ?Int
+    {
+        return $this->gender;
+    }
+
+    /**
+     * @param int $gender
+     * @return User
+     */
+    public function setGender(int $gender): User
+    {
+        $this->gender = $gender;
+        return $this;
+    }
+
+    /**
+     * @return null|String
+     */
+    public function getPhoneNumber(): ?String
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * @param string $phoneNumber
+     * @return User
+     */
+    public function setPhoneNumber(string $phoneNumber): User
+    {
+        $this->phoneNumber = $phoneNumber;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getHeight(): ?Float
+    {
+        return $this->height;
+    }
+
+    /**
+     * @param float $height
+     * @return User
+     */
+    public function setHeight(float $height): User
+    {
+        $this->height = $height;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getWeight(): ?Float
+    {
+        return $this->weight;
+    }
+
+    /**
+     * @param float $weight
+     * @return User
+     */
+    public function setWeight(float $weight): User
+    {
+        $this->weight = $weight;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAge(): ?Int
+    {
+        return $this->age;
+    }
+
+    /**
+     * @param int $age
+     * @return User
+     */
+    public function setAge(int $age): User
+    {
+        $this->age = $age;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLifestyle(): ?Int
+    {
+        return $this->lifestyle;
+    }
+
+    /**
+     * @param int $lifestyle
+     * @return User
+     */
+    public function setLifestyle(int $lifestyle): User
+    {
+        $this->lifestyle = $lifestyle;
         return $this;
     }
 
@@ -382,7 +617,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
         return $this;
     }
 
-
     /**
      * @param Permission $permission
      * @param bool $preventLoop
@@ -510,6 +744,43 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     }
 
     /**
+     * Used by BasicDataExtractorMiddleware to retrieve the information about the currently logged in user.
+     * @return array
+     */
+    public function extractValues(): array
+    {
+        return [
+            CommonArrayObjectKeyConstants::USER_KEY_NAME => [
+                'id'    => $this->getId(),
+                'email' => $this->getEmail(),
+                'firstName' => $this->getFirstName(),
+                'middleInitial' => $this->getMiddleInitial(),
+                'lastName' => $this->getLastName(),
+                'age' => $this->getAge(),
+                'weight' => $this->getWeight(),
+                'height' => $this->getHeight(),
+                'gender' => $this->getGender(),
+                'phoneNumber' => $this->getPhoneNumber(),
+                'lifestyle' => $this->getLifestyle(),
+                'local' => $this->getLocale(),
+                'job' => $this->getJob(),
+                'createdAd' => $this->getCreatedAt(),
+                'deletedAt' => $this->getDeletedAt()
+            ]
+        ];
+    }
+
+    /**
+     * Gets triggered only on insert
+     * Set identificationKey
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->setIdentificationKey($this->generateRandomString(16));
+    }
+
+    /**
      * @return array
      * @throws \RuntimeException
      */
@@ -525,9 +796,17 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     'settings' => [
                         'validate' => [ // Validates name and email and inherited by the rest of the config
                             'rules' => [
-                                'name' => 'required|max:255',
                                 'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
-                                'password' => 'required|min:6',
+                                'firstName' => 'max:255',
+                                'middleInitial' => 'max:1',
+                                'lastName' => 'max:255',
+                                'age' => 'required|numeric|integer|between:0,120',
+                                'height' => 'required|numeric|between:0,999.99',
+                                'weight' => 'required|numeric|between:0,999.99',
+                                'lifestyle' => 'required',
+                                'gender' => 'required',
+                                'phoneNumber' => 'phone:AUTO,US',
+                                'password' => 'required|regex:/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/',
                                 'locale' => 'required',
                             ],
                             'messages' => NULL,
@@ -537,8 +816,17 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     // When converted to an array, the following fields can be returned
                     'toArray' => [
                         'id' => [],
-                        'name' => [],
+                        'identificationKey'=> [],
                         'email' => [],
+                        'firstName' => [],
+                        'middleInitial' => [],
+                        'lastName' => [],
+                        'age' => [],
+                        'height' => [],
+                        'weight' => [],
+                        'lifestyle' => [],
+                        'gender' => [],
+                        'phoneNumber' => [],
                         'address' => [],
                         'job' => [],
                         'locale' => [],
@@ -546,38 +834,115 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                         'permissions' => [],
                         'roles' => [],
                     ],
-                    'fields' => [
+                    'fields'=>[
+                        'identificationKey'=> [ // identificationKey allowed
+                            'permissive' => true,
+                        ],
+                        'firstName' => [ // firstName allowed
+                            'permissive' => true,
+                        ],
+                        'middleInitial' => [ // middleInitial allowed
+                            'permissive' => true,
+                        ],
+                        'lastName' => [ // lastName allowed
+                            'permissive' => true,
+                        ],
+                        'job' => [ // job allowed
+                            'permissive' => true,
+                        ],
+                        'address' => [ // address allowed
+                            'permissive' => true,
+                        ],
+                        'email' => [ // email allowed
+                            'permissive' => true,
+                        ],
                         'password' => [ // password allowed
                             'permissive' => true,
                         ],
-                    ]
-
-                ],
-                'update' => [
-                    'extends' => [':default:create'],
-                    'settings' => [
-                        'validate' => [ // The fields here are not required when doing an update, so change them to not required.
-                            'rules' => [
-                                'name' => 'required|max:255',
-                                'email' => 'required|email|max:255|unique:App\API\V1\Entities\User',
-                                'password' => 'required|min:6',
-                                'locale' => 'required',
-                            ],
+                        'locale' => [ // locale allowed
+                            'permissive' => true,
+                        ],
+                        'passwordReset' => [
+                            'permissive' => false,
                         ],
                     ],
                 ],
+                'update' => [
+                    'extends' => [':default:create'],
+                    'allowed' => false,
+                    'permissive' => false,
+                    'settings' => [
+                        'validate' => [ // Validates name and email and inherited by the rest of the config
+                            'rules' => [
+                                'email' => 'email|max:255',
+                                'firstName' => 'max:255',
+                                'middleInitial' => 'max:1',
+                                'lastName' => 'max:255',
+                                'age' => 'numeric|integer|between:0,120',
+                                'height' => 'numeric|between:0,999.99',
+                                'weight' => 'numeric|between:0,999.99',
+                                'phoneNumber' => 'phone:AUTO,US',
+                                'password' => 'regex:/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/',
+                                'lifestyle' => '',
+                                'gender' => '',
+                                'locale' => '',
+                            ],
+                            'messages' => NULL,
+                            'customAttributes' => NULL,
+                        ],
+                    ],
+                    'fields'=>[
+                        'identificationKey'=> [ // identificationKey allowed
+                            'permissive' => false,
+                        ],
+                        'firstName' => [ // firstName allowed
+                            'permissive' => true,
+                        ],
+                        'middleInitial' => [ // middleInitial allowed
+                            'permissive' => true,
+                        ],
+                        'lastName' => [ // lastName allowed
+                            'permissive' => true,
+                        ],
+                        'job' => [ // job allowed
+                            'permissive' => true,
+                        ],
+                        'address' => [ // address allowed
+                            'permissive' => true,
+                        ],
+                        'email' => [ // email allowed
+                            'permissive' => false,
+                        ],
+                        'password' => [ // password allowed
+                            'permissive' => false,
+                        ],
+                        'locale' => [ // locale allowed
+                            'permissive' => true,
+                        ],
+                        'passwordReset' => [
+                            'permissive' => false,
+                        ],
+                        'notifications' => [
+                            'permissive' => false,
+                        ]
+                    ]
+                ],
                 'delete' => [
-                    'extends' => [':default:update'],
+                    'extends' => [':default:create'],
+                    'allowed' => false,
+                    'permissive' => false
                 ],
                 'read' => [ // Same as default create
-                    'extends' => [':default:update']
+                    'extends' => [':default:create'],
+                    'allowed' => false,
+                    'permissive' => false
                 ],
             ],
             'guest' => [
                 'create' => [
+                    'extends' => [':default:create'],
                     'allowed' => true,
                     'permissive' => true,
-                    'extends' => [':default:create'],
                     'settings' => [
                         // When a guest makes a new user we make a new email token for them. The id of the token is generated automatically is a unique randomly generated string
                         'mutate' => ArrayExpressionBuilder::closure(
@@ -588,27 +953,6 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 $entity->setEmailVerification($emailToken);
                             }
                         )
-                    ],
-                    'name' => [ // name allowed
-                        'permissive' => true,
-                    ],
-                    'job' => [ // job allowed
-                        'permissive' => true,
-                    ],
-                    'address' => [ // address allowed
-                        'permissive' => true,
-                    ],
-                    'email' => [ // email allowed
-                        'permissive' => true,
-                    ],
-                    'password' => [ // password allowed
-                        'permissive' => true,
-                    ],
-                    'locale' => [ // locale allowed
-                        'permissive' => true,
-                    ],
-                    'passwordReset' => [
-                        'permissive' => false,
                     ],
                     'notifications' => [ // A list of arbitrary key names with the actual notifications that will be sent
                         'emailVerification' => [
@@ -624,24 +968,32 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     ]
                 ],
                 'update' => [
+                    'extends' => [':default:update'],
                     'allowed' => false,
-                    'extends' => [':default:create'],
+                    'permissive' => false,
                 ],
                 'delete' => [
+                    'extends' => [':default:delete'],
                     'allowed' => false,
-                    'extends' => [':default:create'],
+                    'permissive' => false,
                 ],
                 'read' => [
-                    'extends' => [':default:create'],
+                    'extends' => [':default:read'],
                     'allowed' => false,
+                    'permissive' => false,
                 ],
             ],
             // Configuration for when in user context. Extends default.
             'user' => [
                 'create' => [
-                    'extends' => [':guest:create'],
+                    'extends' => [':default:create'],
                     'allowed' => false,
                     'permissive' => false,
+                ],
+                'update' => [
+                    'extends' => [':guest:update'],
+                    'allowed' => true,
+                    'permissive' => true,
                     'settings' => [
                         // If you are in user context, then you should only be able to alter your self. We enforce that the userId match with currently logged in user.
                         'enforce' => [
@@ -650,7 +1002,7 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     ],
                     'fields' => [ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
                         'albums' => [
-                            'permissive' => false,
+                            'permissive' => true,
                             'assign' => [
                                 'add' => true,
                                 'remove' => true,
@@ -658,26 +1010,21 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                                 'removeSingle' => true,
                             ],
                             'chain' => [
+                                'update' => true,
                                 'read' => true
                             ]
                         ],
                     ],
                 ],
-                'update' => [
-                    'extends' => [':user:create'], // inherits all of user create, but turns on the allowed flag so now a user can update them selves
-                    'fields' => [ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
-                        'email' => [ // Users can't update their email
-                            'permissive' => false,
-                        ],
-                    ],
-                    'allowed' => true
-                ],
                 'delete' => [
-                    'extends' => [':user:create'], // users can not delete them selves
-                    'allowed' => false
+                    'extends' => [':guest:delete'], // users can not delete them selves
+                    'allowed' => false,
+                    'permissive' => false
                 ],
                 'read' => [ // Same as default create
-                    'extends' => [':guest:create']
+                    'extends' => [':guest:read'],
+                    'allowed' => false,
+                    'permissive' => false
                 ],
             ],
             'admin' => [ // admins can do the same thing as users except to any user, and they do not have update and delete restricted
@@ -696,16 +1043,28 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     ],
                 ],
                 'update' => [
-                    'extends' => [':admin:create'],
+                    'extends' => [':user:update'],
                     'allowed' => true,
+                    'permissive' => true,
+                    'settings' => [
+                      // If you are in user context, then you should only be able to alter your self. We enforce that the userId match with currently logged in user.
+                        'enforce' => null,
+                    ],
+                    'fields' => [ // Users should only be able to add remove albums from them selves with no chaining to create, update or delete
+                        'password' => [
+                            'permissive' => true,
+                        ]
+                    ],
                 ],
                 'delete' => [
-                    'extends' => [':admin:create'],
+                    'extends' => [':user:delete'],
                     'allowed' => true,
+                    'permissive' => true
                 ],
                 'read' => [ // Same as default create
-                    'extends' => [':admin:create'],
+                    'extends' => [':user:read'],
                     'allowed' => true,
+                    'permissive' => true
                 ],
             ],
             'superAdmin' => [ // can do everything in default, and is allowed to do it when a super admin
@@ -723,32 +1082,76 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
                     ],
                 ],
                 'update' => [
-                    'extends' => [':superAdmin:create'],
+                    'extends' => [':admin:update'],
                 ],
                 'delete' => [
-                    'extends' => [':superAdmin:create'],
+                    'extends' => [':admin:delete'],
                 ],
                 'read' => [ // Same as default create
-                    'extends' => [':superAdmin:create']
+                    'extends' => [':admin:read']
                 ],
             ],
             // Below here is for testing purposes only
             'testing' => [
                 'create' => [
-                    'allowed' => true,
                     'extends' => [':superAdmin:create'],
+                    'allowed' => true,
+                    'permissive' => true,
+                    'settings' => [
+                        'validate' => [ // Validates name and email and inherited by the rest of the config
+                            'rules' => [
+                                'email' => 'email|max:255',
+                                'firstName' => 'max:255',
+                                'middleInitial' => 'max:1',
+                                'lastName' => 'max:255',
+                                'age' => 'numeric|integer|between:0,120',
+                                'height' => 'numeric|between:0,999.99',
+                                'weight' => 'numeric|between:0,999.99',
+                                'phoneNumber' => 'phone:AUTO,US',
+                                'password' => 'regex:/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/',
+                                'lifestyle' => '',
+                                'gender' => '',
+                                'locale' => '',
+                            ],
+                            'messages' => NULL,
+                            'customAttributes' => NULL,
+                        ],
+                    ],
                 ],
                 'update' => [
+                    'extends' => [':default:update'],
                     'allowed' => true,
-                    'extends' => [':superAdmin:update'],
+                    'permissive' => true,
+                    'settings' => [
+                        'validate' => [ // Validates name and email and inherited by the rest of the config
+                            'rules' => [
+                                'email' => 'email|max:255',
+                                'firstName' => 'max:255',
+                                'middleInitial' => 'max:1',
+                                'lastName' => 'max:255',
+                                'age' => 'numeric|integer|between:0,120',
+                                'height' => 'numeric|between:0,999.99',
+                                'weight' => 'numeric|between:0,999.99',
+                                'phoneNumber' => 'phone:AUTO,US',
+                                'password' => 'regex:/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,}$/',
+                                'lifestyle' => '',
+                                'gender' => '',
+                                'locale' => '',
+                            ],
+                            'messages' => NULL,
+                            'customAttributes' => NULL,
+                        ],
+                    ],
                 ],
                 'delete' => [
-                    'allowed' => true,
                     'extends' => [':superAdmin:delete'],
+                    'allowed' => true,
+                    'permissive' => true
                 ],
                 'read' => [ // Same as default create
                     'extends' => [':superAdmin:read'],
                     'allowed' => true,
+                    'permissive' => true
                 ],
             ],
         ];

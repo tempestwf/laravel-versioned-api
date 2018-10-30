@@ -152,26 +152,14 @@ class LoginAttemptRepository extends Repository
 
         /** Check for attempts */
         if ($max_partial_lock && $attempt->getCount() >= $max_partial_lock) {
-            if ($partialLockTimeOut && $diffSec >= $partialLockTimeOut) {
-                $attempt = $this->resetAttempt($attempt, $attempt->getFullLockCount() + 1);
-                if ($max_full_lock && $attempt->getFullLockCount() >= $max_full_lock) {
-                    return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_FULL_LOCKED;
-                } else {
-                    return self::LOGIN_ATTEMPT_DEFAULT;
-                }
+            if ($partialLockTimeOut && $diffSec < $partialLockTimeOut && $attempt->getFullLockCount() + 1 < $max_full_lock) {
+                return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED;
             } else {
-                if ($attempt->getCount() >= $max_partial_lock) {
-                    $attempt = $this->resetAttempt($attempt, $attempt->getFullLockCount() + 1);
-                    if ($max_full_lock && $attempt->getFullLockCount() >= $max_full_lock) {
-                        return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_FULL_LOCKED;
-                    } else {
-                        return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED;
-                    }
-                } else {
-                    return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_PARTIAL_LOCKED;
-                }
+                $attempt = $this->resetAttempt($attempt, $attempt->getFullLockCount() + 1);
             }
-        } else if ($max_full_lock && $attempt->getFullLockCount() >= $max_full_lock) {
+        }
+
+        if ($max_full_lock && $attempt->getFullLockCount() >= $max_full_lock) {
             if ($fullLockTimeOut && $diffSec >= $fullLockTimeOut) {
                 $this->resetAttempt($attempt);
                 return self::LOGIN_ATTEMPT_DEFAULT;
@@ -179,9 +167,9 @@ class LoginAttemptRepository extends Repository
                 $this->lockUser($attempt->getUser(), true);
                 return self::LOGIN_ATTEMPT_ERROR_ACCOUNT_FULL_LOCKED;
             }
-        } else {
-            return self::LOGIN_ATTEMPT_DEFAULT;
         }
+
+        return self::LOGIN_ATTEMPT_DEFAULT;
     }
 
     /**

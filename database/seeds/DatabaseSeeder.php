@@ -70,9 +70,19 @@ class DatabaseSeeder extends Seeder
                 /* Init base user */
                 $user = new User();
                 $user
+                    ->setIdentificationKey(bin2hex(random_bytes(16)))
+                    ->setInstadatUUid(bin2hex(random_bytes(16)))
                     ->setEmail(env('BASE_USER_EMAIL'))
                     ->setPassword(env('BASE_USER_PASSWORD'))
-                    ->setName(env('BASE_USER_NAME'))
+                    ->setFirstName(env('BASE_FIRST_NAME'))
+                    ->setMiddleInitial(env('BASE_MIDDLE_INITIAL'))
+                    ->setLastName(env('BASE_LAST_NAME'))
+                    ->setAge(32)
+                    ->setHeight(180.34)
+                    ->setWeight(210)
+                    ->setGender(1)
+                    ->setLifestyle(1)
+                    ->setPhoneNumber('+1 999-999-9999')
                     ->setJob($generator->jobTitle)
                     ->setLocale('en')
                     ->setAddress($generator->address);
@@ -91,7 +101,7 @@ class DatabaseSeeder extends Seeder
 
                 $conn->beginTransaction();
                 /** @var User $baseUser **/
-                $baseUser = $this->em->getRepository(User::class)->find(1);
+                $baseUser = $this->em->getRepository(User::class)->find($user->getId());
                 $baseUser->addRole($userRole);
                 $baseUser->addRole($adminRole);
                 $baseUser->addRole($superAdminRole);

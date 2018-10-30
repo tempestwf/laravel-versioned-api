@@ -6,15 +6,14 @@ use App\API\V1\Entities\User;
 use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\UnitTest\CrudTestBase;
 use TempestTools\Scribe\Constants\EntityEventsConstants;
 use TempestTools\Scribe\Constants\RepositoryEventsConstants;
 use TempestTools\Scribe\Exceptions\Orm\EntityException;
 use TempestTools\Scribe\Exceptions\Orm\Helper\DataBindHelperException;
 use TempestTools\Scribe\Exceptions\Orm\Helper\EntityArrayHelperException;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-
-class CudTest extends CrudTestBaseAbstract
+class CudTest extends CrudTestBase
 {
 
     /**
@@ -66,6 +65,7 @@ class CudTest extends CrudTestBaseAbstract
                 [
                     'id'=>$result[0]->getId(),
                     'name'=>'UPDATED',
+                    'releaseDate'=>new \DateTime('now'),
                     'artist'=> [ // test nested updated in single relation
                         'id'=>$result[0]->getArtist()->getId(),
                         'name'=>'UPDATED',
@@ -73,7 +73,7 @@ class CudTest extends CrudTestBaseAbstract
                     'users'=>[ //test nested update in many relation
                         [
                             'id'=>$users[0]->getId(),
-                            'name'=>'UPDATED',
+                            'firstName'=>'UPDATED',
                             'assignType'=>'null'
                         ]
                     ],
@@ -83,7 +83,7 @@ class CudTest extends CrudTestBaseAbstract
             $this->assertEquals($result[0]->getName(), 'UPDATED');
             /** @noinspection NullPointerExceptionInspection */
             $this->assertEquals($result[0]->getArtist()->getName(), 'UPDATED');
-            $this->assertEquals($result[0]->getUsers()[0]->getName(), 'UPDATED');
+            $this->assertEquals($result[0]->getUsers()[0]->getFirstName(), 'UPDATED');
 
 
 
@@ -91,11 +91,12 @@ class CudTest extends CrudTestBaseAbstract
             $resultRemove = $albumRepo->update([ // Test top level update
                 [
                     'id'=>$result[0]->getId(),
+                    'releaseDate'=>new \DateTime('now'),
                     'artist'=> null,
                     'users'=>[ //test nested update in many relation
                         [
                             'id'=>$users[0]->getId(),
-                            'name'=>'REMOVED',
+                            'firstName'=>'REMOVED',
                             'assignType'=>'removeSingle'
                         ]
                     ],
@@ -119,7 +120,7 @@ class CudTest extends CrudTestBaseAbstract
                     'users'=>[ //test nested update in many relation
                         [
                             'id'=>$users[0]->getId(),
-                            'name'=>'UPDATED',
+                            'firstName'=>'UPDATED',
                             'assignType'=>'null'
                         ]
                     ],
@@ -703,24 +704,24 @@ class CudTest extends CrudTestBaseAbstract
             $this->assertEquals($result[0]->getAlbums()[0]->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
             $this->assertEquals($result[0]->getAlbums()[1]->getName(), 'BEETHOVEN: THE COMPLETE STRING QUARTETS');
             $user = $result[0]->getAlbums()[0]->getUsers()[0];
-            $this->assertEquals($user->getName(), 'bob');
+            $this->assertEquals($user->getFirstName(), 'bob');
             $user = $result[0]->getAlbums()[0]->getUsers()[1];
-            $this->assertEquals($user->getName(), 'rob');
+            $this->assertEquals($user->getFirstName(), 'rob');
             $user = $result[0]->getAlbums()[1]->getUsers()[0];
-            $this->assertEquals($user->getName(), 'bob');
+            $this->assertEquals($user->getFirstName(), 'bob');
             $user = $result[0]->getAlbums()[1]->getUsers()[1];
-            $this->assertEquals($user->getName(), 'rob');
+            $this->assertEquals($user->getFirstName(), 'rob');
             $this->assertEquals($result[1]->getName(), 'BACH');
             $this->assertEquals($result[1]->getAlbums()[0]->getName(), 'Amsterdam Baroque Orchestra');
             $this->assertEquals($result[1]->getAlbums()[1]->getName(), 'The English Suites');
             $user = $result[1]->getAlbums()[0]->getUsers()[0];
-            $this->assertEquals($user->getName(), 'bob');
+            $this->assertEquals($user->getFirstName(), 'bob');
             $user = $result[1]->getAlbums()[0]->getUsers()[1];
-            $this->assertEquals($user->getName(), 'rob');
+            $this->assertEquals($user->getFirstName(), 'rob');
             $user = $result[1]->getAlbums()[1]->getUsers()[0];
-            $this->assertEquals($user->getName(), 'bob');
+            $this->assertEquals($user->getFirstName(), 'bob');
             $user = $result[1]->getAlbums()[1]->getUsers()[1];
-            $this->assertEquals($user->getName(), 'rob');
+            $this->assertEquals($user->getFirstName(), 'rob');
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -1027,7 +1028,7 @@ class CudTest extends CrudTestBaseAbstract
             $user = $users[0];
             $this->assertEquals($album->getName(), 'BEETHOVEN: THE COMPLETE PIANO SONATAS');
             $this->assertEquals($artist->getName(), 'BEETHOVEN');
-            $this->assertEquals($user->getId(), 1);
+            $this->assertEquals($user->getEmail(), env('BASE_USER_EMAIL'));
 
             $em->flush();
             $conn->rollBack();

@@ -4,10 +4,9 @@ use App\API\V1\Entities\Artist;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
+use App\API\V1\UnitTest\CrudTestBase;
 
-
-class CrudControllerTest extends CrudTestBaseAbstract
+class CrudControllerTest extends CrudTestBase
 {
 
     /**
@@ -42,16 +41,16 @@ class CrudControllerTest extends CrudTestBaseAbstract
         $artistRepo = null;
         try {
             $arrayHelper = $this->makeArrayHelper();
-            /** @var ArtistRepository $artistRepo */
+            /** @var ArtistRepository $artiystRepo */
             $artistRepo = $this->em->getRepository(Artist::class);
             $artistRepo->init($arrayHelper, ['testNullAssignType'], ['testing']);
             /** @var UserRepository $userRepo */
             $userRepo = $this->em->getRepository(User::class);
             $userRepo->init($arrayHelper, ['testing'], ['testing']);
 
-            $testUser = $userRepo->findOneBy(['id'=>1]);
+            $testUser = $userRepo->findOneBy(['email' => env('BASE_USER_EMAIL')]);
 
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => 'password']);
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => env('BASE_USER_PASSWORD')]);
             $result = $response->decodeResponseJson();
 
             $this->refreshApplication();
@@ -200,9 +199,9 @@ class CrudControllerTest extends CrudTestBaseAbstract
             $userRepo = $this->em->getRepository(User::class);
             $userRepo->init($arrayHelper, ['testing'], ['testing']);
 
-            $testUser = $userRepo->findOneBy(['id'=>1]);
+            $testUser = $userRepo->findOneBy(['email'=> env('BASE_USER_EMAIL')]);
 
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => 'password']);
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => env('BASE_USER_PASSWORD')]);
             $result = $response->decodeResponseJson();
 
             /** @var string $token */

@@ -6,10 +6,11 @@ use App\API\V1\Entities\Permission;
 use App\API\V1\Entities\Role;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\UserRepository;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
+use App\API\V1\UnitTest\CrudTestBase;
+use Faker\Factory;
 
 
-class SkeletonApplicationTest extends CrudTestBaseAbstract
+class SkeletonApplicationTest extends CrudTestBase
 {
 
     /**
@@ -69,7 +70,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                     'users'=>[
                         [
                             'id'=>$user->getId(),
-                            'name'=>'Test User',
+                            'firstName'=>'Test User',
                             'assignType'=>'null'
                         ]
                     ],
@@ -162,7 +163,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                     'users'=>[
                         [
                             'id'=>$user->getId(),
-                            'name'=>'Test User',
+                            'firstName'=>'Test User',
                             'assignType'=>'null'
                         ]
                     ],
@@ -476,15 +477,24 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $token = $this->getToken();
             $time = new DateTime();
             $this->refreshApplication();
+            $generator = Factory::create();
             $create = [
                 'params'=>[
                     [
-                        'name'=>'Test User',
-                        'email'=>'test@test.com',
-                        'job'=>'doing stuff!',
-                        'address'=>'my home!',
-                        'password'=>'zipityzapity',
-                        'locale'=>'en',
+                        'email' => $generator->safeEmail,
+                        'firstName'=> $generator->firstName,
+                        'middleInitial'=>'X',
+                        'lastName'=> $generator->lastName,
+                        'age' => $generator->randomNumber(2),
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => $generator->password,
+                        'job' => $generator->jobTitle,
+                        'address' => $generator->address,
+                        'locale' => "en",
                         'albums'=>[
                             [
                                 'name'=>'Test Album',
@@ -534,12 +544,20 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
             $create = [
                 'params'=>[
                     [
-                        'name'=>'Test User2',
-                        'email'=>'test2@test.com',
+                        'email' => "test2@test.com",
+                        'firstName'=> 'Test',
+                        'middleInitial'=>'b',
+                        'lastName'=>'User2',
+                        'age' => 32,
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => "Zipityzapity00!",
+                        'locale' => "en",
                         'job'=>'doing stuff!',
                         'address'=>'my home!',
-                        'password'=>'zipityzapity',
-                        'locale'=>'en',
                         'albums'=>[
                             [
                                 'name'=>'Test Album2',
@@ -579,8 +597,19 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                 'params'=>[
                     [
                         'id'=>$user->getId(),
-                        'name'=>'Test User2 Updated',
-                        'email'=>'test2@test.com',
+                        'firstName'=>'Test Updated',
+                        'middleInitial'=>'b',
+                        'lastName'=>'User2',
+                        'age' => 32,
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => "Zipityzapity00!",
+                        'locale' => "en",
+                        'job'=>'doing stuff!',
+                        'address'=>'my home!',
                         'roles'=>[
                             [
                                 'name'=>'test'
@@ -591,9 +620,6 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                                 'name'=>'test'
                             ]
                         ],
-                        'job'=>'doing stuff!',
-                        'address'=>'my home!',
-                        'locale'=>'en',
                         'albums'=>[
                             [
                                 'id'=>$album->getId(),
@@ -641,14 +667,20 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
                 'params'=>[
                     [
                         'id'=>$user->getId(),
-                        'name'=>'Test User2 Updated',
-                        'email'=>'test2@test.com',
-                        'locale'=>'en',
-                        'roles'=>[
-                            [
-                                'id'=>$role->getId(),
-                            ]
-                        ],
+                        'email' => 'test2@test.com',
+                        'firstName'=>'Test Updated',
+                        'middleInitial'=>'b',
+                        'lastName'=>'User2',
+                        'age' => 32,
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => "Zipityzapity00!",
+                        'locale' => "en",
+                        'job'=>'doing stuff!',
+                        'address'=>'my home!',
                         'permissions'=>[
                             [
                                 'id'=>$permission->getId(),
@@ -702,9 +734,9 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
         $em = $this->em();
         /** @var UserRepository $userRepo */
         $userRepo = $em->getRepository(User::class);
-        $testUser = $userRepo->findOneBy(['id'=>1]);
+        $testUser = $userRepo->findOneBy(['email'=>env('BASE_USER_EMAIL')]);
 
-        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => 'password']);
+        $response = $this->json('POST', '/auth/authenticate', ['email' => $testUser->getEmail(), 'password' => env('BASE_USER_PASSWORD')]);
         $result = $response->decodeResponseJson();
 
         $this->refreshApplication();
@@ -744,7 +776,7 @@ class SkeletonApplicationTest extends CrudTestBaseAbstract
     protected function getFixtureData():array
     {
         $em = $this->em();
-        $user = $em->getRepository(User::class)->findOneBy(['id'=>1]);
+        $user = $em->getRepository(User::class)->findOneBy(['email'=>env('BASE_USER_EMAIL')]);
         $album = $em->getRepository(Album::class)->findOneBy(['name'=>'Brahms: Complete Edition']);
         $artist = $em->getRepository(Artist::class)->findOneBy(['name'=>'Brahms']);
         $role = $em->getRepository(Role::class)->findOneBy(['name'=>'user']);

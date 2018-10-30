@@ -2,12 +2,12 @@
 
 use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\UnitTest\CrudTestBase;
 use Faker\Factory;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-class RegistrationFlowTest extends CrudTestBaseAbstract
+class RegistrationFlowTest extends CrudTestBase
 {
-    protected $password = '441520435a0a2dac143af05b55f4b751';
+    protected $password = 'Password00!';
 
     /**
      * @group registrationFlow
@@ -27,12 +27,20 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
                 'POST', '/contexts/guest/users',
                 [
                     "params" => [
-                        "name" => $generator->name,
-                        "email" => $generator->safeEmail,
-                        "password" => $this->password,
-                        "job" => $generator->jobTitle,
-                        "address" => $generator->address,
-                        "locale" => "en"
+                        'email' => $generator->safeEmail,
+                        'firstName'=> $generator->firstName,
+                        'middleInitial'=>'X',
+                        'lastName'=> $generator->lastName,
+                        'age' => $generator->randomNumber(2),
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => $this->password,
+                        'job' => $generator->jobTitle,
+                        'address' => $generator->address,
+                        'locale' => "en"
                     ],
                     "options" => [
                         "email" => false,
@@ -86,7 +94,7 @@ class RegistrationFlowTest extends CrudTestBaseAbstract
             $response = $this->json('GET', '/auth/me', [],['HTTP_AUTHORIZATION'=>'Bearer ' . $result["token"]]);
             $result = $response->decodeResponseJson();
             $this->assertArrayHasKey('id', $result);
-            $this->assertEquals( $user->getName(), $userResult["name"]);
+            $this->assertEquals( $user->getEmail(), $userResult["email"]);
 
             /** Leave no trace of test **/
             $conn->rollBack();

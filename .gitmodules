@@ -5,9 +5,9 @@
 	path = packages/tempesttools/common
 	url = https://tempestwf@github.com/tempestwf/tempest-tools-common.git
 [submodule "packages/tempesttools/scribe"]
-        path = packages/tempesttools/scribe
-        url = https://tempestwf@github.com/tempestwf/tempest-tools-scribe.git
-[submodule "packages/tempesttools/doctrine/gedmo"]	
+  path = packages/tempesttools/scribe
+  url = https://tempestwf@github.com/tempestwf/tempest-tools-scribe.git
+[submodule "packages/tempesttools/doctrine/gedmo"]
 	path = packages/tempesttools/doctrine/gedmo
 	url = https://github.com/tempestwf/DoctrineExtensions.git
 [submodule "packages/tempesttools/raven"]

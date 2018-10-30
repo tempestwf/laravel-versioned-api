@@ -31,6 +31,6 @@ return [
 
     'auth_full_lock_subject' => 'ALERT: Account Lock Notification',
     'auth_full_lock_line_1' => 'Detecting suspicious activity on your account.',
-    'auth_full_lock_line_2' => 'We temporarily locked your account as we detected suspicious login attempts. Please contact us to reactivate your account.',
+    'auth_full_lock_line_2' => 'We have locked your account as we detected suspicious login attempts. Please contact us to reactivate your account.',
     'auth_full_lock_action' => 'Reactivate Account',
 ];

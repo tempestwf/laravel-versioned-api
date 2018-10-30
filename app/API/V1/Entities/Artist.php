@@ -179,15 +179,15 @@ class Artist extends EntityAbstract
                     'allowed'=>true
                 ],
                 'update'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                     'allowed'=>true
                 ],
                 'delete'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:delete'],
                     'allowed'=>true
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':default:read']
                 ],
             ],
             'superAdmin'=>[ // Extends default because default has no additional rules on it, so super admins can do anything
@@ -195,13 +195,13 @@ class Artist extends EntityAbstract
                     'extends'=>[':admin:create'],
                 ],
                 'update'=>[
-                    'extends'=>[':admin:create'],
+                    'extends'=>[':admin:update'],
                 ],
                 'delete'=>[
-                    'extends'=>[':admin:create'],
+                    'extends'=>[':admin:delete'],
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':admin:create']
+                    'extends'=>[':admin:read']
                 ],
             ],
             // Below here is for testing purposes only
@@ -212,14 +212,14 @@ class Artist extends EntityAbstract
                 ],
                 'update'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                 ],
                 'delete'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':default:read']
                 ],
             ],
             'testNullAssignType'=>[ // can do everything in default, and is allowed to do it when a super admin
@@ -228,7 +228,7 @@ class Artist extends EntityAbstract
                     'allowed'=>true
                 ],
                 'update'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                     'allowed'=>true,
                     'fields'=>[
                         'albums'=>[
@@ -239,11 +239,11 @@ class Artist extends EntityAbstract
                     ]
                 ],
                 'delete'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:delete'],
                     'allowed'=>true
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':default:read']
                 ],
             ],
             'testLazyLoadEnabled'=>[

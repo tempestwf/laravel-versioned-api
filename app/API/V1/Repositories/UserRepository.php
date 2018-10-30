@@ -34,7 +34,7 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
         $user = null;
         try {
             $user = new User();
-            $user->setName($socialiteUser->name);
+            //$user->setName($socialiteUser->name);
             $user->setEmail($socialiteUser->email);
             $user->setLocale('en');
             $user->setPassword(Hash::make($socialiteUser->token));
@@ -79,13 +79,13 @@ class UserRepository extends Repository implements RepoHasPermissionsContract
                     'query'=>[
                         // Get just the id, name, address, job fields for read actions default.
                         'select'=>[
-                            'standardSelect'=>'partial u.{id, name, address, job, locale, createdAt, updatedAt}'
+                            'standardSelect'=>'partial u.{id, email, firstName, middleInitial, lastName, locale, address, job, locale, createdAt, updatedAt}'
                         ],
                         'where'=>[
                             // Only retrieve data about the currently logged in user by default.
                             'onlyCurrentUser'=>[
                                 'type'=>'and',
-                                'value'=>$expr->eq('u.id', $this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']))
+                                'value'=>$expr->eq('u.id', "'" . $this->getArrayHelper()->parseArrayPath([CommonArrayObjectKeyConstants::USER_KEY_NAME, 'id']) . "'")
                             ]
                         ],
                     ],

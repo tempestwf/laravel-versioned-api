@@ -69,7 +69,7 @@ class EmailVerificationRepository extends Repository
                     ],
                     'query'=>[
                         'select'=>[
-                            'tokenAndUser'=>'e, partial u.{id, name, address, job, locale, createdAt, updatedAt}'
+                            'tokenAndUser'=>'e, partial u.{id, firstName, middleInitial, lastName, locale, address, job, locale, createdAt, updatedAt}'
                         ],
                         'innerJoin'=>[
                             'user'=>[

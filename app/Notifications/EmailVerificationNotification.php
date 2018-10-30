@@ -23,9 +23,7 @@ class EmailVerificationNotification extends GeneralNotificationAbstract
      * @return MailMessage
      */
     protected function addToMailMessage(MailMessage $mailMessage, EntityContract $notifiable, array $settings):MailMessage {
-        /**
-         * @var User $notifiable
-         */
+        /* @var User $notifiable */
         return $this->addUserEntityToMailMessage($mailMessage, $notifiable, $settings);
     }
     /**
@@ -42,7 +40,7 @@ class EmailVerificationNotification extends GeneralNotificationAbstract
         App::setLocale($user->getLocale());
 
         $mailMessage->subject(trans('email.subject_account_activation'));
-        $mailMessage->greeting(trans('email.activation_greetings', ['username' => $user->getName()]));
+        $mailMessage->greeting(trans('email.activation_greetings', ['username' => $user->getFirstName()]));
         $mailMessage->line(trans('email.lorem_ipsum'));
         $mailMessage->action(trans('email.activate_now'), env('APP_URL') . 'contexts/guest/email-verification/' . $verificationKey);
         return $mailMessage;
