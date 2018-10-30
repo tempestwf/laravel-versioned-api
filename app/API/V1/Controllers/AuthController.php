@@ -71,16 +71,19 @@ class AuthController extends APIControllerAbstract
                 /** Login Attempt */
                 try {
                     if (!Hash::check($credentials['password'], $user->getPassword()) || ($token = $this->auth->attempt($credentials)) === false) {
+                        unset($credentials['password']);
                         $attemptResult = $this->loginAttemptRepo->logAttempt($user, $credentials, LoginAttemptRepository::LOGIN_ATTEMPT_INVALID_PASSWORD);
                     } else {
                         $this->loginAttemptRepo->resetUserAttempt($user);
                     }
                 } catch(JWTException $e) {
+                    unset($credentials['password']);
                     $attemptResult = $this->loginAttemptRepo->logAttempt($user, $credentials, LoginAttemptRepository::LOGIN_ATTEMPT_COULD_NOT_CREATE_TOKEN);
                 }
 
                 /** Check for activation */
                 if ($token && $user->isActivated() === false) {
+                    unset($credentials['password']);
                     $attemptResult = $this->loginAttemptRepo->logAttempt($user, $credentials, LoginAttemptRepository::LOGIN_ATTEMPT_NOT_ACTIVATED);
                 }
             }
