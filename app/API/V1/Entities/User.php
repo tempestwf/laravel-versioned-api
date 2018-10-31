@@ -66,9 +66,9 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     /**
      * @ORM\Column(type="string", name="instadat_uuid", nullable=true)
      * @Gedmo\Versioned
-     * @var string $instadatUUid
+     * @var string $thirdPartyUuid
      */
-    protected $instadatUUid;
+    protected $thirdPartyUuid;
 
     /**
      * @ORM\Column(type="string", name="first_name", nullable=true)
@@ -267,18 +267,18 @@ class User extends EntityAbstract implements HasRolesContract, HasPermissionsCon
     /**
      * @return null|String
      */
-    public function getInstadatUUid(): ?String
+    public function getThirdPartyUuid(): ?String
     {
-        return $this->instadatUUid;
+        return $this->thirdPartyUuid;
     }
 
     /**
-     * @param $instadatUUid
+     * @param $thirdPartyUuid
      * @return User
      */
-    public function setInstadatUUid(string $instadatUUid): User
+    public function setThirdPartyUuid(string $thirdPartyUuid): User
     {
-        $this->instadatUUid = $instadatUUid;
+        $this->thirdPartyUuid = $thirdPartyUuid;
         return $this;
     }
 
