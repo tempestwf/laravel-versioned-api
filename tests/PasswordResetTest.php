@@ -10,12 +10,12 @@ use App\API\V1\Entities\PasswordReset;
 use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Repositories\PasswordResetRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\UnitTest\CrudTestBase;
 use Faker\Factory;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-class PasswordResetTest extends CrudTestBaseAbstract
+class PasswordResetTest extends CrudTestBase
 {
-    protected $password = '441520435a0a2dac143af05b55f4b751';
+    protected $password = 'Password00!';
 
     /**
      * Test that acl middle ware works in allowing some one to access an end point
@@ -35,12 +35,20 @@ class PasswordResetTest extends CrudTestBaseAbstract
                 'POST', '/contexts/guest/users',
                 [
                     "params" => [
-                        "name" => $generator->name,
-                        "email" => $email,
-                        "password" => $password,
-                        "job" => $generator->jobTitle,
-                        "address" => $generator->address,
-                        "locale" => "en"
+                        'email' => $email,
+                        'firstName'=> $generator->firstName,
+                        'middleInitial'=>'X',
+                        'lastName'=> $generator->lastName,
+                        'age' => $generator->randomNumber(2),
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => $password,
+                        'job' => $generator->jobTitle,
+                        'address' => $generator->address,
+                        'locale' => "en"
                     ],
                     "options" => [
                         "email" => false,
@@ -108,7 +116,7 @@ class PasswordResetTest extends CrudTestBaseAbstract
                 [
                     "params" => ["verified" => true] ,
                     "options" => [
-                        "password"=>"1ce51220016dbb4443e19a7ce308555f",
+                        "password"=>"Password00!",
                         "simplifiedParams" => true
                     ]
                 ]
@@ -138,7 +146,7 @@ class PasswordResetTest extends CrudTestBaseAbstract
                 [
                     "params" => ["verified" => true] ,
                     "options" => [
-                        "password"=>"1ce51220016dbb4443e19a7ce308555f",
+                        "password"=>"Password00!",
                         "simplifiedParams" => true
                     ]
                 ]
@@ -151,7 +159,7 @@ class PasswordResetTest extends CrudTestBaseAbstract
                 [
                     "params" => ["verified" => true],
                     "options" => [
-                        "password"=>"1ce51220016dbb4443e19a7ce308555f",
+                        "password"=>"Password00!",
                         "simplifiedParams" => true
                     ]
                 ]
@@ -159,7 +167,7 @@ class PasswordResetTest extends CrudTestBaseAbstract
             $response->assertResponseStatus(500);
 
             /** Test login validated **/
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $email, 'password' => '1ce51220016dbb4443e19a7ce308555f']);
+            $response = $this->json('POST', '/auth/authenticate', ['email' => $email, 'password' => 'Password00!']);
             $tokenResult = $response->decodeResponseJson();
             $response->assertResponseStatus(200);
             $this->assertArrayHasKey('token', $tokenResult);

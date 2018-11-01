@@ -27,8 +27,19 @@ class UserTransformer extends Transformer
 			return array(
 				'id'    => $entity->getId(),
 				'email' => $entity->getEmail(),
-				'name'  => $entity->getName(),
-				'job'   => $entity->getJob(),
+                'firstName' => $entity->getFirstName(),
+                'middleInitial' => $entity->getMiddleInitial(),
+                'lastName' => $entity->getLastName(),
+                'age' => $entity->getAge(),
+                'weight' => $entity->getWeight(),
+                'height' => $entity->getHeight(),
+                'gender' => $entity->getGender(),
+                'phoneNumber' => $entity->getPhoneNumber(),
+                'lifestyle' => $entity->getLifestyle(),
+                'local' => $entity->getLocale(),
+                'job' => $entity->getJob(),
+                'createdAd' => $entity->getCreatedAt(),
+                'deletedAt' => $entity->getDeletedAt()
 			);
 		}
 		

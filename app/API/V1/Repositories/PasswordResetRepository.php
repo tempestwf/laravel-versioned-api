@@ -109,7 +109,8 @@ class PasswordResetRepository extends Repository
      * After a verification token is verified, it's user should be given the user role
      *
      * @param GenericEventArgs $e
-     * @throws PasswordResetException
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function postUpdate(GenericEventArgs $e): void
     {
@@ -125,7 +126,16 @@ class PasswordResetRepository extends Repository
                 throw PasswordResetException::noPassword();
             }
             $user = $entity->getUser();
-            $user->setPassword($k['frontEndOptions']['password']);
+            $userRepo = $this->getEm()->getRepository(User::class);
+            $userRepo->init($entity->getArrayHelper(), ['admin'], ['admin']);
+            $userRepo->update(
+                [
+                    [
+                        'id' => $user->getId(),
+                        'password' => $k['frontEndOptions']['password']
+                    ],
+                ], ['flush' => false], ['simplifiedParams' => true]
+            );
         }
     }
 

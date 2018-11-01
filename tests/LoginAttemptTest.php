@@ -2,12 +2,12 @@
 
 use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\UnitTest\CrudTestBase;
 use Faker\Factory;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-class LoginAttemptTest extends CrudTestBaseAbstract
+class LoginAttemptTest extends CrudTestBase
 {
-    protected $password = '441520435a0a2dac143af05b55f4b751';
+    protected $password = 'Password00!';
 
     /**
      * @group registrationFlow
@@ -31,12 +31,20 @@ class LoginAttemptTest extends CrudTestBaseAbstract
                 'POST', '/contexts/guest/users',
                 [
                     "params" => [
-                        "name" => $generator->name,
-                        "email" => $generator->safeEmail,
-                        "password" => $this->password,
-                        "job" => $generator->jobTitle,
-                        "address" => $generator->address,
-                        "locale" => "en"
+                        'email' => $generator->safeEmail,
+                        'firstName'=> $generator->firstName,
+                        'middleInitial'=>'X',
+                        'lastName'=> $generator->lastName,
+                        'age' => $generator->randomNumber(2),
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => $this->password,
+                        'job' => $generator->jobTitle,
+                        'address' => $generator->address,
+                        'locale' => "en"
                     ],
                     "options" => [
                         "email" => false,
@@ -79,31 +87,7 @@ class LoginAttemptTest extends CrudTestBaseAbstract
 
             /** Try to log in with wrong password **/
             $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
-            $response->assertResponseStatus(403);
-
-            /** Try to log in with wrong password **/
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
-            $response->assertResponseStatus(401);
-
-            /** Try to log in with wrong password **/
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
-            $response->assertResponseStatus(401);
-
-            /** Try to log in with wrong password **/
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
-            $response->assertResponseStatus(403);
-
-            /** Try to log in with wrong password **/
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
-            $response->assertResponseStatus(401);
-
-            /** Try to log in with wrong password **/
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
-            $response->assertResponseStatus(401);
-
-            /** Try to log in with wrong password **/
-            $response = $this->json('POST', '/auth/authenticate', ['email' => $userResult["email"], 'password' => 'wrong password']);
-            $response->assertResponseStatus(423);
+            $response->assertResponseStatus(403, env('MAX_LOGIN_ATTEMPTS_BEFORE_PARTIAL_LOCK') === 3 ? 403: 401);
 
             /** Leave no trace of test **/
             $conn->rollBack();

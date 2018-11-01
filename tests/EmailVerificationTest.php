@@ -3,12 +3,12 @@
 use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Repositories\UserRepository;
 use App\API\V1\Repositories\LoginAttemptRepository;
+use App\API\V1\UnitTest\CrudTestBase;
 use Faker\Factory;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-class EmailVerificationTest extends CrudTestBaseAbstract
+class EmailVerificationTest extends CrudTestBase
 {
-    protected $password = '441520435a0a2dac143af05b55f4b751';
+    protected $password = 'Password00!';
 
 
     /**
@@ -29,12 +29,20 @@ class EmailVerificationTest extends CrudTestBaseAbstract
                 'POST', '/contexts/guest/users',
                 [
                     "params" => [
-                        "name" => $generator->name,
-                        "email" => $email,
-                        "password" => $password,
-                        "job" => $generator->jobTitle,
-                        "address" => $generator->address,
-                        "locale" => "en"
+                        'email' => $email,
+                        'firstName'=> $generator->firstName,
+                        'middleInitial'=>'X',
+                        'lastName'=> $generator->lastName,
+                        'age' => $generator->randomNumber(2),
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => $password,
+                        'job' => $generator->jobTitle,
+                        'address' => $generator->address,
+                        'locale' => "en"
                     ],
                     "options" => [
                         "email" => false,

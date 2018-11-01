@@ -171,6 +171,12 @@ return [
         /** Gedmo **/
         LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider::class,
         LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
+
+        /**
+         * Laravel Phone
+         * https://github.com/propaganistas/laravel-phone#validation
+         */
+        Propaganistas\LaravelPhone\PhoneServiceProvider::class
     ],
 
 	/*

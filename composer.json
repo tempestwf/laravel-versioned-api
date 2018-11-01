@@ -34,7 +34,8 @@
     "predis/predis": "^1.1",
     "ramsey/uuid-doctrine": "^1.4",
     "ageras/laravel-onesky": "^0.8.0",
-    "behat/transliterator": "^1.2"
+    "behat/transliterator": "^1.2",
+    "propaganistas/laravel-phone": "^4.0"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",

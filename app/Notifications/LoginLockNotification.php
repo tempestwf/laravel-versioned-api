@@ -41,7 +41,7 @@ class LoginLockNotification extends GeneralNotificationAbstract
         $max_full_lock = (int) env('MAX_LOGIN_ATTEMPTS_BEFORE_FULL_LOCK', 0);
 
         $user = $notifiable->getUser();
-        $mailMessage->greeting(trans('email.greetings',  ['username' => $user->getName()]));
+        $mailMessage->greeting(trans('email.greetings',  ['username' => $user->getFirstName()]));
         App::setLocale($user->getLocale());
 
         if ($notifiable->getFullLockCount() < $max_full_lock) {

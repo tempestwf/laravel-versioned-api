@@ -36,7 +36,7 @@ class SampleRecordsSeeder extends Seeder
             if (!$artist) {
                 $conn->beginTransaction();
                 $userRepo =  $this->em->getRepository(User::class);
-                $user = $userRepo->findOneBy(['id'=>1]);
+                $user = $userRepo->findOneBy(['email'=>env('BASE_USER_EMAIL')]);
                 $artist = new Artist();
                 $artist->setName('Brahms');
 

@@ -1,15 +1,18 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 use App\API\V1\Repositories\EmailVerificationRepository;
 use App\API\V1\Repositories\RoleRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\UnitTest\CrudTestBase;
 use Faker\Factory;
 use App\API\V1\Entities\User;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-class AclMiddlewareTest extends CrudTestBaseAbstract
+class AclMiddlewareTest extends CrudTestBase
 {
-    protected $password = '441520435a0a2dac143af05b55f4b751';
+    protected $password = 'Password00!';
 
     /**
      * Test that acl middle ware works in allowing some one to access an end point
@@ -29,12 +32,20 @@ class AclMiddlewareTest extends CrudTestBaseAbstract
                 'POST', '/contexts/guest/users',
                 [
                     "params" => [
-                        "name" => $generator->name,
-                        "email" => $generator->safeEmail,
-                        "password" => $this->password,
-                        "job" => $generator->jobTitle,
-                        "address" => $generator->address,
-                        "locale" => "en"
+                        'email' => $generator->safeEmail,
+                        'firstName'=> $generator->firstName,
+                        'middleInitial'=>'X',
+                        'lastName'=> $generator->lastName,
+                        'age' => $generator->randomNumber(2),
+                        'gender' => 1,
+                        'weight' => 210,
+                        'height' => 180.34,
+                        'phoneNumber' => "+1 757-571-2711",
+                        'lifestyle' => 1,
+                        'password' => $this->password,
+                        'job' => $generator->jobTitle,
+                        'address' => $generator->address,
+                        'locale' => "en"
                     ],
                     "options" => [
                         "email" => false,
