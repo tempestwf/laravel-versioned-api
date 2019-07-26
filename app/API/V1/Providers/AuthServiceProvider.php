@@ -28,7 +28,6 @@ class AuthServiceProvider extends Authorization implements AuthInterface, UserPr
 	{
 		/** @var User $user */
 		$user = \App::make(UserRepository::class)->find($id);
-
 		$this->user = $user;
 		return ($user == NULL) ? (FALSE) : ($user);
 	}

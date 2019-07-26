@@ -5,13 +5,13 @@ use App\API\V1\Entities\Artist;
 use App\API\V1\Entities\User;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\UnitTest\CrudTestBase;
 use Doctrine\ORM\Query;
 use TempestTools\Scribe\Constants\RepositoryEventsConstants;
 use TempestTools\Scribe\Exceptions\Orm\Helper\QueryBuilderHelperException;
 use TempestTools\Scribe\Exceptions\Orm\Wrapper\QueryBuilderWrapperException;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-class CrudReadTest extends CrudTestBaseAbstract
+class CrudReadTest extends CrudTestBase
 {
     /**
      * @group CrudReadOnly
@@ -619,6 +619,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testReadPermissions () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -718,6 +719,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testSqlQueryFunctionality () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -831,6 +833,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testGeneralDataRetrieval () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -1014,6 +1017,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testGeneralQueryBuilding () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -1140,6 +1144,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testBasicRead () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -1150,9 +1155,7 @@ class CrudReadTest extends CrudTestBaseAbstract
             $userRepo = $this->em->getRepository(User::class);
             $userRepo->init($arrayHelper, ['user'], ['testing']);
             $result = $userRepo->read();
-            $this->assertEquals($result['result'][0]['id'], 1);
-
-
+            $this->assertEquals($result['result'][0]['email'], env('BASE_USER_EMAIL'));
 
             $conn->rollBack();
         } catch (Exception $e) {
@@ -1166,6 +1169,7 @@ class CrudReadTest extends CrudTestBaseAbstract
      * @throws Exception
      */
     public function testFixedLimit () {
+        $this->refreshApplication();
         $em = $this->em();
         $conn = $em->getConnection();
         $conn->beginTransaction();
@@ -1208,7 +1212,4 @@ class CrudReadTest extends CrudTestBaseAbstract
             throw $e;
         }
     }
-
-
-
 }

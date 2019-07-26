@@ -20,8 +20,8 @@ class AuthAdapter implements AuthInterface
 	{
 		/** @var JWTGuard $guard */
 		$guard = $auth->guard('api');
-		
-		$this->provider = $guard->getProvider();
+
+        $this->provider = $guard->getProvider();
 	}
 	
 	/**

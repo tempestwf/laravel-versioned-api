@@ -51,7 +51,7 @@ return [
 				'subscribers' => []
 			],
 			'filters'       => [
-				'deletable' => \App\Entities\Filters\DeletableFilter::class,
+                'soft-deleteable' => Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter::class
 			],
 			/*
 			|--------------------------------------------------------------------------
@@ -93,15 +93,15 @@ return [
 	*/
 	'extensions'                 => [
 		LaravelDoctrine\ORM\Extensions\TablePrefix\TablePrefixExtension::class,
-		LaravelDoctrine\Extensions\Timestamps\TimestampableExtension::class,
-		LaravelDoctrine\Extensions\SoftDeletes\SoftDeleteableExtension::class,
-		//LaravelDoctrine\Extensions\Sluggable\SluggableExtension::class,
-		//LaravelDoctrine\Extensions\Sortable\SortableExtension::class,
-		//LaravelDoctrine\Extensions\Tree\TreeExtension::class,
-		//LaravelDoctrine\Extensions\Loggable\LoggableExtension::class,
-		//LaravelDoctrine\Extensions\Blameable\BlameableExtension::class,
-		LaravelDoctrine\Extensions\IpTraceable\IpTraceableExtension::class,
-		//LaravelDoctrine\Extensions\Translatable\TranslatableExtension::class
+        Gedmo\Blameable\BlameableExtension::class,
+        Gedmo\Timestampable\TimestampableExtension::class,
+        Gedmo\SoftDeleteable\SoftDeleteableExtension::class,
+        Gedmo\Sluggable\SluggableExtension::class,
+        Gedmo\Sortable\SortableExtension::class,
+        Gedmo\Tree\TreeExtension::class,
+        Gedmo\Loggable\LoggableExtension::class,
+        Gedmo\IpTraceable\IpTraceableExtension::class,
+        Gedmo\Translatable\TranslatableExtension::class
 	],
 	/*
 	|--------------------------------------------------------------------------
@@ -113,7 +113,7 @@ return [
 	*/
 	'custom_types'               => [
 		'json' => LaravelDoctrine\ORM\Types\Json::class,
-        //'uuid' => Ramsey\Uuid\Doctrine\UuidType::class,
+        'uuid' => Ramsey\Uuid\Doctrine\UuidType::class,
 		'datetime' => App\Providers\DateTimeTypeProvider::class,
 	],
 	/*

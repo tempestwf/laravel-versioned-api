@@ -122,10 +122,7 @@ return [
 	*/
 
 	'providers' => [
-
-		/*
-		 * Laravel Framework Service Providers...
-		 */
+		/** Laravel Framework Service Providers... **/
 		Illuminate\Auth\AuthServiceProvider::class,
 		Illuminate\Broadcasting\BroadcastServiceProvider::class,
 		Illuminate\Bus\BusServiceProvider::class,
@@ -147,40 +144,39 @@ return [
 		Illuminate\Translation\TranslationServiceProvider::class,
 		Illuminate\Validation\ValidationServiceProvider::class,
 		Illuminate\View\ViewServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
 
-        /**
-         * Laravel Doctrine
-         */
+        /** Laravel Doctrine **/
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
 
-        /*
-		 * Additional Extensions...
-		 */
-        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-        LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider::class,
-        LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
-        LaravelDoctrine\Migrations\MigrationsServiceProvider::class,
-		Dingo\Api\Provider\LaravelServiceProvider::class,
-        //LaravelDoctrine\ACL\AclServiceProvider::class,
-
-        /*
-         * Application Service Providers...
-         */
+        /** Application Service Providers... **/
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\API\V1\Providers\APIServiceProvider::class,
 
-        /*
-         * Socialite
-         */
+        /** Additional Extensions... **/
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        LaravelDoctrine\Migrations\MigrationsServiceProvider::class,
+		Dingo\Api\Provider\LaravelServiceProvider::class,
+        //LaravelDoctrine\ACL\AclServiceProvider::class,
+
+        /** Socialite **/
         Laravel\Socialite\SocialiteServiceProvider::class,
 
-        /*
-         * Laravel One Sky
-         */
+        /** Laravel One Sky **/
         Ageras\LaravelOneSky\ServiceProvider::class,
+
+        /** Gedmo **/
+        LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider::class,
+        LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
+
+        /**
+         * Laravel Phone
+         * https://github.com/propaganistas/laravel-phone#validation
+         */
+        Propaganistas\LaravelPhone\PhoneServiceProvider::class
     ],
 
 	/*
@@ -226,24 +222,25 @@ return [
 		'URL'       => Illuminate\Support\Facades\URL::class,
 		'Validator' => Illuminate\Support\Facades\Validator::class,
 		'View'      => Illuminate\Support\Facades\View::class,
+        'Notification' => Illuminate\Support\Facades\Notification::class,
 
         /**
          * Laravel Doctrine
          */
 		'EntityManager' => LaravelDoctrine\ORM\Facades\EntityManager::class,
-        'Registry' => LaravelDoctrine\ORM\Facades\Registry::class,
-        'Doctrine' => LaravelDoctrine\ORM\Facades\Doctrine::class,
+        'Registry'   => LaravelDoctrine\ORM\Facades\Registry::class,
+        'Doctrine'   => LaravelDoctrine\ORM\Facades\Doctrine::class,
 
         /**
          * JWT Auth
          */
-		'JWTAuth'       => Tymon\JWTAuth\Facades\JWTAuth::class,
-
+		'JWTAuth'    => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
 
         /**
          * Socialite
          */
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class
+        'Socialite'  => Laravel\Socialite\Facades\Socialite::class
 	],
 
 ];

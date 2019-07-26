@@ -2,13 +2,15 @@
 namespace App\API\V1\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-use App\API\V1\Entities\User;
-use TempestTools\Common\Entities\Traits\Deletable;
-use TempestTools\Common\Entities\Traits\Blameable;
+use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
+
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
+
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -16,75 +18,48 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\EmailVerificationRepository")
  * @ORM\Table(name="email_verification")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class EmailVerification extends EntityAbstract
 {
-    use Blameable, Deletable, IpTraceable, Timestampable;
+    use Blameable, SoftDeleteable, IpTraceable, Timestampable;
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="string")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="\TempestTools\Common\Doctrine\Generator\SecureUniqueIdGenerator")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $verificationCode;
-
-    /**
      * @ORM\Column(type="boolean", nullable=false)
+     * @Gedmo\Versioned
      */
     private $verified = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", inversedBy="email_verification")
+     * @ORM\OneToOne(targetEntity="User", inversedBy="emailVerification")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
 
     /**
-     * EmailVerification constructor.
+     * @return null|string
      */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return EmailVerification
      */
-    public function setId(int $id): EmailVerification
+    public function setId(string $id): EmailVerification
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return string|NULL
-     */
-    public function getVerificationCode(): ?string
-    {
-        return $this->verificationCode;
-    }
-
-    /**
-     * @param string $verificationCode
-     * @return EmailVerification
-     */
-    public function setVerificationCode(string $verificationCode): EmailVerification
-    {
-        $this->verificationCode = $verificationCode;
         return $this;
     }
 
@@ -100,7 +75,7 @@ class EmailVerification extends EntityAbstract
      * @param bool $verified
      * @return EmailVerification
      */
-    public function verify(bool $verified): EmailVerification
+    public function setVerified(bool $verified): EmailVerification
     {
         $this->verified = $verified;
         return $this;
@@ -132,20 +107,12 @@ class EmailVerification extends EntityAbstract
         return [
             'default'=>[
                 'create'=>[
-                    'allowed'=>false,
-                    'settings'=>[
-                        'validate'=>[
-                            'rules'=>[
-                                'name'=>'required|min:2',
-                            ],
-                            'messages'=>NULL,
-                            'customAttributes'=>NULL,
-                        ],
-                    ],
-                    'toArray'=> [
-                        'id'=>[],
-                        'name'=>[],
-                        'albums'=>[],
+                    'allowed'=>false, // all actions off by default, they get turned on for guests and hire levels
+                    'toArray'=> [],
+                    'fields'=>[
+                        'verified'=>[ // Can't create this with verified
+                            'permissive'=>false,
+                        ]
                     ]
                 ],
                 'update'=>[
@@ -158,58 +125,42 @@ class EmailVerification extends EntityAbstract
                     'extends'=>[':default:create']
                 ],
             ],
-            'admin'=>[
-                'create'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'update'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'delete'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-            ],
-            'superAdmin'=>[
-                'create'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'update'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'delete'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-            ],
             'guest'=>[
                 'create'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>true
+                    'allowed'=>false
                 ],
                 'update'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>false
+                    'allowed'=>true,
+                    'permissive'=>true,
+                    'fields'=>[
+                        'verified'=>[ // A guest can set the token to verified because they won't be able to find the token with out having received it in their email
+                            'permissive'=>true,
+                        ]
+                    ]
                 ],
                 'delete'=>[
                     'extends'=>[':default:create'],
-                    'allowed'=>false
                 ],
                 'read'=>[
                     'extends'=>[':default:create'],
                     'allowed'=>true
+                ],
+            ],
+            'admin'=>[
+                'create'=>[
+                    'extends'=>[':guest:create'],
+                ],
+                'update'=>[
+                    'extends'=>[':guest:update'],
+                ],
+                'delete'=>[ // It takes admin access to revoke a token in order to reissue it
+                    'extends'=>[':guest:delete'],
+                    'allowed'=>true
+                ],
+                'read'=>[
+                    'extends'=>[':guest:read'],
                 ],
             ]
         ];

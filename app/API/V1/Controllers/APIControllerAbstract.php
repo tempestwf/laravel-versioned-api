@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use TempestTools\Moat\Contracts\HasIdContract;
 use TempestTools\Common\Contracts\HasUserContract;
-use TempestTools\Common\Laravel\Controller\BaseControllerAbstract;
+use TempestTools\Scribe\Laravel\Controllers\BaseControllerAbstract;
 
 use App, Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -30,10 +30,11 @@ abstract class APIControllerAbstract extends BaseControllerAbstract implements H
 		App::register(App\API\V1\Providers\APIServiceProvider::class);
 		parent::__construct();
 
-        $this->middleware(function ($request, $next) {
-            $this->user = Auth::user();
+        $this->user = Auth::user();
+        /*$this->middleware(function ($request, $next) {
+
             return $next($request);
-        });
+        });*/
 	}
 
     /**
@@ -43,23 +44,24 @@ abstract class APIControllerAbstract extends BaseControllerAbstract implements H
      */
 	public function getUser():?HasIdContract
 	{
-		try
-		{
-			if(($user = JWTAuth::parseToken()->authenticate()) === FALSE)
+        $user = null;
+		try {
+            $user = JWTAuth::parseToken()->authenticate();
+			if(($user) === FALSE)
 			{
-				throw new UnauthorizedHttpException('user_not_found', trans('auth.user_not_found'));
+				//throw new UnauthorizedHttpException('user_not_found', trans('auth.user_not_found'));
 			}
-		} catch(TokenExpiredException $e)
-		{
-			throw new UnauthorizedHttpException('token_expired', trans('auth.user_not_found'));
-		} catch(TokenInvalidException $e)
-		{
-			throw new UnauthorizedHttpException('token_invalid', trans('auth.user_not_found'));
-		} catch(JWTException $e)
-		{
-			throw new BadRequestHttpException(trans('auth.user_not_found'));
+		} catch(TokenExpiredException $e) {
+            $user = null;
+			//throw new UnauthorizedHttpException('token_expired', trans('auth.user_not_found'));
+		} catch(TokenInvalidException $e) {
+            $user = null;
+			//throw new UnauthorizedHttpException('token_invalid', trans('auth.user_not_found'));
+		} catch(JWTException $e) {
+            $user = null;
+			//throw new BadRequestHttpException(trans('auth.user_not_found'));
 		}
-		
+
 		return $user;
 	}
 	/** @noinspection MoreThanThreeArgumentsInspection */

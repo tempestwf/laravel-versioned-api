@@ -2,10 +2,12 @@
 namespace App\API\V1\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\API\V1\Entities\User;
-use TempestTools\Common\Entities\Traits\Deletable;
-use TempestTools\Common\Entities\Traits\Blameable;
+use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
+
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
@@ -16,10 +18,12 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\SocializeUserRepository")
  * @ORM\Table(name="socialize_user")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class SocializeUser extends EntityAbstract
 {
-    use Blameable, Deletable, IpTraceable, Timestampable;
+    use Blameable, SoftDeleteable, IpTraceable, Timestampable;
 
     /**
      * @ORM\Id
@@ -30,46 +34,55 @@ class SocializeUser extends EntityAbstract
 
     /**
      * @ORM\Column(name="socialize_id", type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $socializeId;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $nickname;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $avatar;
 
     /**
      * @ORM\Column(name="avatar_original", type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $avatarOriginal;
 
     /**
      * @ORM\Column(name="profile_url", type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $profileUrl;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $token;
 
     /**
      * @ORM\Column(name="refresh_token", type="string", nullable=true)
+     * @Gedmo\Versioned
      */
     private $refreshToken;
 
     /**
      * @ORM\Column(name="expires_in", type="integer", nullable=true)
+     * @Gedmo\Versioned
      */
     private $expiresIn;
 
@@ -277,9 +290,10 @@ class SocializeUser extends EntityAbstract
                 'create'=>[
                     'allowed'=>false,
                     'settings'=>[
-                        'validate'=>[
+                        'validate'=>[ // Validates name and email and inherited by the rest of the config
                             'rules'=>[
-                                'name'=>'required|min:2',
+                                'user_id' => 'required',
+                                'socialize_id' => 'required'
                             ],
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
@@ -287,8 +301,11 @@ class SocializeUser extends EntityAbstract
                     ],
                     'toArray'=> [
                         'id'=>[],
-                        'name'=>[],
-                        'albums'=>[],
+                        'user_id'=>[],
+                        'nickname'=>[],
+                        'avatar'=>[],
+                        'profile_url'=>[],
+                        'type'=>[],
                     ]
                 ],
                 'update'=>[
@@ -299,42 +316,6 @@ class SocializeUser extends EntityAbstract
                 ],
                 'read'=>[ // Same as default create
                     'extends'=>[':default:create']
-                ],
-            ],
-            'admin'=>[
-                'create'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'update'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'delete'=>[
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':default:create'],
-                    'allowed'=>true
-                ],
-            ],
-            'superAdmin'=>[
-                'create'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'update'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'delete'=>[
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
-                ],
-                'read'=>[ // Same as default create
-                    'extends'=>[':admin:create'],
-                    'allowed'=>true
                 ],
             ],
             'guest'=>[
@@ -354,7 +335,37 @@ class SocializeUser extends EntityAbstract
                     'extends'=>[':default:create'],
                     'allowed'=>true
                 ],
-            ]
+            ],
+            'admin'=>[
+                'create'=>[
+                    'extends'=>[':default:create'],
+                ],
+                'update'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
+                'delete'=>[
+                    'extends'=>[':default:create'],
+                    'allowed'=>true
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':default:create'],
+                ],
+            ],
+            'superAdmin'=>[
+                'create'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'update'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'delete'=>[
+                    'extends'=>[':admin:create'],
+                ],
+                'read'=>[ // Same as default create
+                    'extends'=>[':admin:create'],
+                ],
+            ],
         ];
     }
 }

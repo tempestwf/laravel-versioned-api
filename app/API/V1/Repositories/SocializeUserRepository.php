@@ -24,13 +24,11 @@ class SocializeUserRepository extends Repository
                     ]
                 ]
             ],
-            'superAdmin'=>[
+            'user'=>[
                 'extends'=>[':default'],
-                'read'=>[
-                    'permissions'=>[
-                        'allowed'=>true
-                    ]
-                ]
+            ],
+            'admin'=>[
+                'extends'=>[':default'],
             ]
         ];
     }

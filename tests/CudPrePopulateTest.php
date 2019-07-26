@@ -6,12 +6,11 @@ use App\API\V1\Entities\User;
 use App\API\V1\Repositories\AlbumRepository;
 use App\API\V1\Repositories\ArtistRepository;
 use App\API\V1\Repositories\UserRepository;
+use App\API\V1\UnitTest\CrudTestBase;
 use TempestTools\Common\Constants\CommonArrayObjectKeyConstants;
 use TempestTools\Scribe\Orm\Helper\DataBindHelper;
-use TempestTools\Scribe\PHPUnit\CrudTestBaseAbstract;
 
-
-class CudPrePopulateTest extends CrudTestBaseAbstract
+class CudPrePopulateTest extends CrudTestBase
 {
 
     /**
@@ -96,6 +95,7 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
             $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
             $this->assertNull($prePopulate);
+
             /** @var Artist[] $result2 */
             $artistRepo->update([
                 $result[0]->getId() => [
@@ -103,7 +103,8 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
                     'albums'=>[
                         'update'=>[
                             $result[0]->getAlbums()[0]->getId() => [
-                                'name'=>'Kick Ass Piano Solos!'
+                                'name'=>'Kick Ass Piano Solos!',
+                                'releaseDate'=>new \DateTime('now')
                             ]
                         ]
                     ]
@@ -178,8 +179,8 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
 
             $prePopulate = $array[CommonArrayObjectKeyConstants::ORM_KEY_NAME][DataBindHelper::PRE_POPULATED_ENTITIES_KEY];
 
-            $this->assertEquals($prePopulate['App\API\V1\Entities\User'][$userIds[0]]->getName(), 'bob');
-            $this->assertEquals($prePopulate['App\API\V1\Entities\User'][$userIds[1]]->getName(), 'rob');
+            $this->assertEquals($prePopulate['App\API\V1\Entities\User'][$userIds[0]]->getfirstName(), 'bob');
+            $this->assertEquals($prePopulate['App\API\V1\Entities\User'][$userIds[1]]->getfirstName(), 'rob');
             /** @var Artist[] $result2 */
             $result2 = $artistRepo->update([
                 $result[0]->getId() => [
@@ -187,7 +188,8 @@ class CudPrePopulateTest extends CrudTestBaseAbstract
                     'albums'=>[
                         'update'=>[
                             $result[0]->getAlbums()[0]->getId() => [
-                                'name'=>'Kick Ass Piano Solos!'
+                                'name'=>'Kick Ass Piano Solos!',
+                                'releaseDate'=>new \DateTime('now')
                             ]
                         ]
                     ]

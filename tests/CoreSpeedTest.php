@@ -33,6 +33,7 @@ class CoreSpeedTest extends TestCase
      */
     public function testCoreSpeed():void
     {
+        $this->refreshApplication();
         $testObject = new TestClass();
         $start = microtime(true);
         for ($n=0; $n<1000; $n++) {

@@ -5,9 +5,11 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-use TempestTools\Common\Entities\Traits\Deletable;
-use TempestTools\Common\Entities\Traits\Blameable;
+use App\API\V1\Traits\Entities\Blameable;
+use TempestTools\Common\Entities\Traits\SoftDeleteable;
+
 use TempestTools\Common\Entities\Traits\IpTraceable;
 use TempestTools\Common\Entities\Traits\Timestampable;
 use TempestTools\Common\ArrayExpressions\ArrayExpressionBuilder;
@@ -20,10 +22,12 @@ use TempestTools\Scribe\Laravel\Doctrine\EntityAbstract;
  * @ORM\Entity(repositoryClass="App\API\V1\Repositories\ArtistRepository")
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="name_unq", columns={"name"})})
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Artist extends EntityAbstract
 {
-    use Blameable, Deletable, IpTraceable, Timestampable;
+    use Blameable, SoftDeleteable, IpTraceable, Timestampable;
 
     /**
      * @ORM\Id
@@ -33,6 +37,7 @@ class Artist extends EntityAbstract
     private $id;
 
     /**
+     * @Gedmo\Versioned
      * @ORM\Column(type="string", nullable=true, unique=true)
      */
     private $name;
@@ -146,7 +151,7 @@ class Artist extends EntityAbstract
                     'settings'=>[
                         'validate'=>[ // the only thing we enforce on artists is the validator
                             'rules'=>[
-                                'name'=>'required|min:2',
+                                'name'=>'required|min:2|unique:App\API\V1\Entities\Artist',
                             ],
                             'messages'=>NULL,
                             'customAttributes'=>NULL,
@@ -174,15 +179,15 @@ class Artist extends EntityAbstract
                     'allowed'=>true
                 ],
                 'update'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                     'allowed'=>true
                 ],
                 'delete'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:delete'],
                     'allowed'=>true
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':default:read']
                 ],
             ],
             'superAdmin'=>[ // Extends default because default has no additional rules on it, so super admins can do anything
@@ -190,13 +195,13 @@ class Artist extends EntityAbstract
                     'extends'=>[':admin:create'],
                 ],
                 'update'=>[
-                    'extends'=>[':admin:create'],
+                    'extends'=>[':admin:update'],
                 ],
                 'delete'=>[
-                    'extends'=>[':admin:create'],
+                    'extends'=>[':admin:delete'],
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':admin:create']
+                    'extends'=>[':admin:read']
                 ],
             ],
             // Below here is for testing purposes only
@@ -207,14 +212,14 @@ class Artist extends EntityAbstract
                 ],
                 'update'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                 ],
                 'delete'=>[
                     'allowed'=>true,
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':default:read']
                 ],
             ],
             'testNullAssignType'=>[ // can do everything in default, and is allowed to do it when a super admin
@@ -223,7 +228,7 @@ class Artist extends EntityAbstract
                     'allowed'=>true
                 ],
                 'update'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:update'],
                     'allowed'=>true,
                     'fields'=>[
                         'albums'=>[
@@ -234,11 +239,11 @@ class Artist extends EntityAbstract
                     ]
                 ],
                 'delete'=>[
-                    'extends'=>[':default:create'],
+                    'extends'=>[':default:delete'],
                     'allowed'=>true
                 ],
                 'read'=>[ // Same as default create
-                    'extends'=>[':default:create']
+                    'extends'=>[':default:read']
                 ],
             ],
             'testLazyLoadEnabled'=>[
