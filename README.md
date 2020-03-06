@@ -22,7 +22,22 @@ Also note that the packages folder holds the 1st party components.
 
 Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://github.com/mitchdav/laravel-versioned-api
 
-## What’s currently included in v1.0.0 (3rd Party)
+## What’s currently included in v2.0.4 (1st Party)
+1. https://github.com/tempestwf/tempest-tools-common
+  a. Contains common libraries used by other Tempest Tools packages.
+2. https://github.com/tempestwf/tempest-tools-moat
+  a. Contains easily configurable middleware that can be applied to any route restrict access to it based on a templating system that allows developers to easily define which permissions (stored in the database VIA;  https://packagist.org/packages/laravel-doctrine/acl) are required to access it.
+3. https://github.com/tempestwf/tempest-tools-raven
+  a. Contains tools to easily configure event-based messaging and real-time alerts.
+4. Sign Up / User email verification.
+5. Oauth sign in from 3rd party services (google, facebook, twitter).
+6. 9. Improved localization features.
+7. Tempest Tools CRUD
+  a. The fastest, most secure, and extendable way to write RESTful APIs
+8. User management system
+  a. A user management system based on Tempest Tools CRUD
+
+## What’s currently included in v2.0.4 (3rd Party)
 1. Everything that laravel-versioned-api ships with
 2. https://packagist.org/packages/laravel-doctrine/extensions
 3. https://packagist.org/packages/gedmo/doctrine-extensions
@@ -30,19 +45,9 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
 5. https://packagist.org/packages/laravel-doctrine/migrations
 6. https://packagist.org/packages/laravel-doctrine/acl
 
-## What’s currently included in v1.0.0 (1st Party)
-1. https://github.com/tempestwf/tempest-tools-common
-  a. Contains common libraries used by other Tempest Tools packages.
-2. https://github.com/tempestwf/tempest-tools-moat
-  a. Contains easily configurable middleware that can be applied to any route restrict access to it based on a templating system that allows developers to easily define which permissions (stored in the database VIA;  https://packagist.org/packages/laravel-doctrine/acl) are required to access it.
-
 ## What’s currently in development
-1. Tempest Tools CRUD
-  a. The fastest, most secure, and extendable way to write RESTful APIs
-2. Tempest Tools Cache Tagging System
+1. Tempest Tools Cache Tagging System
   a. Tag cache items based on the templating system from Tempest Tools Common ArrayHelper. Apply tags to cache in distributed cache environments that don’t commonly support it.
-3. User management system
-  a. A user management system based on Tempest Tools CRUD
 
 ## What’s planned:
 1. Improved error handling and logging.
@@ -50,18 +55,15 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
 3. Better implementation of Gedmo extensions (applying the extensions to provided entities).
 4. Full Text Search.
 5. Result Caching.
-6. Sign Up / User email verification.
-7. Oauth sign in from 3rd party services (google, facebook, twitter).
-8. Database sharding for large datasets.
-9. Improved localization features.
+6. Database sharding for large datasets.
 
 ## Requirements
 * PHP >= 7.1.0
+* [Composer](https://getcomposer.org/)
 * laravel/framework 5.3.*
 * laravel-doctrine/orm 1.2.*,
 * Cache system (Redis, Memcached, File cache)
 * A database (MySQL, or any others supported by Laravel and Doctrine)
-* [Composer](https://getcomposer.org/).
 
 ## Installation
 You may fork the repo first and then update the git clone command below. Or you may optionally save the cloned repo into your own repository.
