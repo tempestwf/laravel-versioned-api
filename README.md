@@ -29,13 +29,13 @@ Tempest Tools Skeleton is a fork of Laravel versioned API. Please see: https://g
  - Contains easily configurable middleware that can be applied to any route restrict access to it based on a templating system that allows developers to easily define which permissions (stored in the database VIA;  https://packagist.org/packages/laravel-doctrine/acl) are required to access it.
 3. https://github.com/tempestwf/tempest-tools-raven
  - Contains tools to easily configure event-based messaging and real-time alerts.
-4. Sign Up / User email verification.
-5. Oauth sign in from 3rd party services (google, facebook, twitter).
-6. Improved localization features.
-7. Tempest Tools CRUD
+4. https://github.com/tempestwf/tempest-tools-scribe
+ - Contains a user management system.
+5. Sign Up / User email verification.
+6. Oauth sign in from 3rd party services (google, facebook, twitter).
+7. Improved localization features.
+8. Tempest Tools CRUD
  - The fastest, most secure, and extendable way to write RESTful APIs
-8. User management system
- - A user management system based on Tempest Tools CRUD
 
 ## What’s currently included in v2.0.4 (3rd Party)
 1. Everything that laravel-versioned-api ships with
